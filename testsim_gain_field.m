@@ -28,7 +28,9 @@ switch modulation_type % eye position modulation type
 	case 'linear_gain' % 
 
 		% E = interp1([gazepos(1) gazepos(end)],[-10 10],gazepos); % Gaze effect: leads to "loss" of main target effect
-		E = interp1([gazepos(1) gazepos(end)],[10 0],gazepos); % Gaze effect
+		% E = interp1([gazepos(1) 0 gazepos(end)],[10 0 10],gazepos); % Gaze effect: bidirectinal increase from center
+		E = interp1([gazepos(1) gazepos(end)],[10 0],gazepos); % Gaze effect: standard monotonic unidirectional 
+		
 		
 		for k = 1:n_trials_per_cond
 			FR(:,:,k) = E'*R + Noise*randn(length(gazepos),length(retpos)); % one trial
