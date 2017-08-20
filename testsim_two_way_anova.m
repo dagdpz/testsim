@@ -64,3 +64,13 @@ DF_main2 = length(unique(gender)) -1
 DF_interaction = DF_main1*DF_main2
 DF_error = length(rating) -  length(unique(alcohol))*length(unique(gender))
 
+
+
+% compare with non-parametric Friedman test, on alcohol factor (8x2 repetitions, ignoring two genders)
+% Friedman is presumably for one-way repeated measures ANOVA, but here it is used for one factor, and rows are blocks (observations) and/or a "nuisance" factor
+r = reshape(rating,6,8)';
+r = reshape(r,16,3); % alcohol in columns
+[p,tbl,stats] = friedman(r,8); % when using reps=1, p value (0.0009) is equal ot InStat repeated measured Friedman: friedman(r,1)
+
+% compare with non-parametric Kruskal-Wallis test, on alcohol factor (8x2 repetitions, ignoring two genders)
+[p,tbl,stats] = kruskalwallis(r); % (same results as InStat)

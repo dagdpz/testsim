@@ -6,7 +6,7 @@ end
 	
 % see also testsim_lip_activity_profile
 
-Noise		= 5;	% Firing rate noise
+Noise		= 50;	% Firing rate noise
 n_trials_per_cond = 10;
 
 % retinotopic Gaussian RF
@@ -15,7 +15,8 @@ Center		= 0;	% deg
 Amplitude	= 20;	%spikes/s
 Sigma		= 10;	% tuning width 
 retpos		= [-40:40]; % retinotopic position
-R		= 1/(sqrt(2*pi)*Sigma)*exp(-(retpos - Center).^2/(2*Sigma^2));
+R		= 1/(sqrt(2*pi)*Sigma)*exp(-(retpos - Center).^2/(2*Sigma^2)); % Gaussian RF profile
+% R		= ones(size(retpos)); % no target position modulation
 R		= R/max(R)*Amplitude;
 
 target_positions = retpos(1):10:retpos(end);
@@ -29,7 +30,7 @@ switch modulation_type % eye position modulation type
 
 		% E = interp1([gazepos(1) gazepos(end)],[-10 10],gazepos); % Gaze effect: leads to "loss" of main target effect
 		% E = interp1([gazepos(1) 0 gazepos(end)],[10 0 10],gazepos); % Gaze effect: bidirectinal increase from center
-		E = interp1([gazepos(1) gazepos(end)],[10 0],gazepos); % Gaze effect: standard monotonic unidirectional 
+		E = interp1([gazepos(1) gazepos(end)],[1.5 0],gazepos); % Gaze effect: standard monotonic unidirectional 
 		
 		
 		for k = 1:n_trials_per_cond
@@ -83,10 +84,17 @@ end
 [p,table,stats,terms] = anovan(FRtarget4ANOVA,[target_pos gaze_pos],'model','full','varnames',{'target' 'gaze'});
 % c = multcompare(stats)
 
-if 0
+if 1 % one-way vs two-way ANOVA on gaze
+	% the question here if presence of another factor (target position) affects the first factor, e.g. in the initial fixation period
+	% for this, we should remove the the effect of target position from the simulation, set "no target position modulation" above
+	[p,table,stats,terms] = anovan(FRtarget4ANOVA,[gaze_pos],'model','full','varnames',{'gaze'});
 	
-% Different ANOVA variants
-% 3 gaze positions, 2 targets, 10 trials
+	
+end % of 
+
+
+if 0 % Test different ANOVA variants
+% 3 gaze positions, 2 or 3 targets, 10 trials
 
 Noise			= 1;	% Firing rate noise
 n_trials_per_cond	= 10;
@@ -107,4 +115,13 @@ target_pos	= repmat([1;1;1;2;2;2],n_trials_per_cond,1);
 gaze_pos	= repmat([1;2;3;1;2;3],n_trials_per_cond,1);
 [p,table,stats,terms] = anovan(FRtarget4ANOVA,[target_pos gaze_pos],'model','full','varnames',{'target' 'gaze'});
 
-end
+% variant 3: target effect and interaction
+FRtarget4ANOVA = repmat(reshape([	0 10 40
+					5 15 30
+					10 20 20],9,1),n_trials_per_cond,1) + Noise*randn(3*3*10,1);			
+target_pos	= repmat([1;1;1;2;2;2;3;3;3],n_trials_per_cond,1);
+gaze_pos	= repmat([1;2;3;1;2;3;1;2;3],n_trials_per_cond,1);
+[p,table,stats,terms] = anovan(FRtarget4ANOVA,[target_pos gaze_pos],'model','full','varnames',{'target' 'gaze'});
+
+end % of Test different ANOVA variants
+
