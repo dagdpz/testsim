@@ -6,6 +6,7 @@
 % https://dag-wiki.dpz.eu/doku.php?id=analysis:stat:fisherexacttest
 % http://www.socscistatistics.com/tests/fisher/Default2.aspx
 if 1
+disp('Example 1')
 Ns1 = 10; % condition, or status 1 (e.g. control)
 Ns2 = 10; % condition, or status 2 (e.g. stimulation)
  
@@ -22,6 +23,7 @@ x2 = [zeros(1,round(  (1-p_suc2)*Ns2 )) ones( 1, round(p_suc2*Ns2) )];	% status 
 p = fexact( [x1 x2]' , [y1 y2]' )
 
 else % 
+disp('Example 2')
 Ns1 = 4; % preceding L
 Ns2 = 8; % preceding R
  
