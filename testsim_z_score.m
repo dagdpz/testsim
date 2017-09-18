@@ -4,9 +4,8 @@ function testsim_z_score
 % s = [1 + 2*randn(1,100)]; % mean 1, SD 2
 s = [1 + 2*randn(1,100) 2 + 3*randn(1,100)]; 
 
-zs1 = zscore(s);
-
-zs2 = z_score(s);
+zs1 = zscore(s); % MATLAB
+zs2 = z_score(s); % just to make sure they are the same
 
 subplot(2,1,1);
 plot(s);
@@ -16,7 +15,7 @@ subplot(2,1,2);
 
 plot(zs1,'r'); hold on
 plot(zs2,'g:');
-title(sprintf('Z-score: mean %.2f SD %.2f',mean(zs1),std(zs1)));
+title(sprintf('Z-scored signal: mean %.2f SD %.2f',mean(zs1),std(zs1)));
 
 
 
