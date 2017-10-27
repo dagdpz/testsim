@@ -71,6 +71,7 @@ ftm = fittype('x*a','options',s);
 [f_l_m,gf_l_m] = fit(ra_c_l,ra_s_l,ftm)
 [f_r_m,gf_r_m] = fit(ra_c_r,ra_s_r,ftm)
 
+
 % PLOT
 
 ig_figure('Name','Response amplitude','Position',fig_size);
@@ -92,6 +93,8 @@ h = plot(f_l_a); set(h,'Color','b');
 h = plot(f_r_a); set(h,'Color','r');
 h = plot(f_l_m); set(h,'Color','b','LineStyle',':');
 h = plot(f_r_m); set(h,'Color','r','LineStyle',':');
+
+title(sprintf('Adj. r-square add. %.2f %.2f mult. %.2f %.2f',gf_l_a.adjrsquare,gf_r_a.adjrsquare,gf_l_m.adjrsquare,gf_r_m.adjrsquare));
 
 ig_figure('Name','contraversive selectivity','Position',fig_size);
 if strcmp(hemi,'right'),
@@ -141,6 +144,39 @@ title(sprintf(' %s hemi stim effect: %.2f contraversive, %.2f ipsi',hemi,mean(ra
 	
 xlabel('contraversive');
 ylabel('ipsiversive');
+
+
+% Another question: how additive or multiplicative effects translate into ANOVA task-dependence, within eacj ROI
+N_trials = [100 100 100 100 100 100];
+task_ra = [1.3 1.6 1.9];
+task_ra_noise_level = [0.5 0.5 0.5];
+Stim_effect_noise_level = [0.1 0.1 0.1];
+
+task = [ones(N_trials(1),1) ; 2*ones(N_trials(2),1) ; 3*ones(N_trials(3),1) ; ones(N_trials(4),1) ; 2*ones(N_trials(5),1) ; 3*ones(N_trials(6),1)];
+stim = [ones(sum(N_trials(1:3)),1) ; 2*ones(sum(N_trials(4:6)),1)];
+
+% additive model, same or different addition for all tasks
+stim_effect = [0.2 0.2 0.2];
+% stim_effect = [0.2 0.4 0.6];
+ra1 = task_ra(1) + task_ra_noise_level(1)*randn(N_trials(1),1); ra4 = task_ra(1)+task_ra_noise_level(1)*randn(N_trials(4),1)+stim_effect(1)+randn(N_trials(4),1)*Stim_effect_noise_level(1);
+ra2 = task_ra(2) + task_ra_noise_level(2)*randn(N_trials(2),1); ra5 = task_ra(2)+task_ra_noise_level(2)*randn(N_trials(5),1)+stim_effect(2)+randn(N_trials(5),1)*Stim_effect_noise_level(2);
+ra3 = task_ra(3) + task_ra_noise_level(3)*randn(N_trials(3),1); ra6 = task_ra(3)+task_ra_noise_level(3)*randn(N_trials(6),1)+stim_effect(3)+randn(N_trials(6),1)*Stim_effect_noise_level(3);
+
+if 1
+% multiplicative model, same or different multiplication for all tasks
+stim_effect = [1.5 1.5 1.5];
+% stim_effect = [1.2 1.5 1.8];
+ra1 = task_ra(1) + task_ra_noise_level(1)*randn(N_trials(1),1); ra4 = (task_ra(1)+task_ra_noise_level(1)*randn(N_trials(4),1))*stim_effect(1)+randn(N_trials(4),1)*Stim_effect_noise_level(1);
+ra2 = task_ra(2) + task_ra_noise_level(2)*randn(N_trials(2),1); ra5 = (task_ra(2)+task_ra_noise_level(2)*randn(N_trials(5),1))*stim_effect(2)+randn(N_trials(5),1)*Stim_effect_noise_level(2);
+ra3 = task_ra(3) + task_ra_noise_level(3)*randn(N_trials(3),1); ra6 = (task_ra(3)+task_ra_noise_level(3)*randn(N_trials(6),1))*stim_effect(3)+randn(N_trials(6),1)*Stim_effect_noise_level(3);
+end
+
+[p,table,stats,terms] = anovan([ra1; ra2; ra3; ra4; ra5; ra6],[task stim],'model','full','varnames',{'task' 'stim'});
+% c = multcompare(stats);
+ig_figure('Name','ANOVA','Position',fig_size);
+
+ig_errorbar([1 2 3 4 5 6],[ra1 ra2 ra3 ra4 ra5 ra6],1);
+
 
 
 
