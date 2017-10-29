@@ -1,4 +1,4 @@
-function testsim_gain_field(modulation_type)
+function testsim_gain_field_dPulv2017(modulation_type)
 
 if nargin < 1,
     modulation_type = 'linear_gain';
