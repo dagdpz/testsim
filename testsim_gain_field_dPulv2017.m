@@ -17,7 +17,7 @@ bootstrap_method='hierarchical';
 % retinotopic Gaussian RF
 
 Center              = 0;	% deg
-Amplitude           = 40;	% spikes/s, RF response peak
+Amplitude           = 50;	% spikes/s, RF response peak
 UnmodulatedFR       = 5;	% spikes/s, ongoing/unmodulated firing
 Sigma               = pi/4;	% tuning width
 target_positions    = [-pi -pi*3/4 -pi/2 -pi/4 0 pi/4 pi/2 pi*3/4]; % retinotopic position
