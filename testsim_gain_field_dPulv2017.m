@@ -40,6 +40,8 @@ gaze_col = {'r' 'g' 'b'};
 
 gaze_col_rgb = [227 6 19; 54 169 225; 243 146 0]/255;
 
+% some additional comments to be detected in GitHub
+
 switch modulation_type % eye position modulation type
     
     case 'linear_gain' %
