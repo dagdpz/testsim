@@ -3,7 +3,7 @@ function testsim_gain_field_dPulv2017(modulation_type)
 if nargin < 1,
     modulation_type = 'linear_gain';
 end
-% see also testsim_lip_activity_profile
+
 
 Noise		= 5;	% Firing rate noise
 n_trials_per_cond = 10;
@@ -15,6 +15,7 @@ bootstrap_method='hierarchical';
 
 Center              = 0;	% deg
 Amplitude           = 35;	% spikes/s, RF response peak
+Amplitude           = 30;	% spikes/s, RF response peak
 UnmodulatedFR       = 5;	% spikes/s, ongoing/unmodulated firing
 Sigma               = pi/4;	% tuning width
 target_positions    = [-pi -pi*3/4 -pi/2 -pi/4 0 pi/4 pi/2 pi*3/4]; % retinotopic position
@@ -88,7 +89,6 @@ ylabel('gaze pos');
 
 
 
-% von mises
 F = @(a,x) a(3)+a(1)*exp(cos(x-a(2))*a(4))*exp(a(4)*-1);
 opts = optimset('lsqcurvefit');
 opts.Display='off';
