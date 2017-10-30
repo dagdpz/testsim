@@ -17,7 +17,7 @@ bootstrap_method='hierarchical';
 % retinotopic Gaussian RF
 
 Center              = 0;	% deg
-Amplitude           = 50;	% spikes/s, RF response peak
+Amplitude           = 30;	% spikes/s, RF response peak
 UnmodulatedFR       = 5;	% spikes/s, ongoing/unmodulated firing
 Sigma               = pi/4;	% tuning width
 target_positions    = [-pi -pi*3/4 -pi/2 -pi/4 0 pi/4 pi/2 pi*3/4]; % retinotopic position
@@ -39,8 +39,6 @@ n_trials_per_gaze=numel(target_positions)*n_trials_per_cond;
 gaze_col = {'r' 'g' 'b'};
 
 gaze_col_rgb = [227 6 19; 54 169 225; 243 146 0]/255;
-
-% some additional comments to be detected in GitHub
 
 switch modulation_type % eye position modulation type
     
