@@ -31,7 +31,7 @@ fprintf('\np=%1.3f cutoff for %d trials: %3.1f%%, %d correct trials\n\n', p_cuto
 
 % OBSOLETE:
 % Another way as in the https://cogsci.stackexchange.com/questions/13386/in-a-forced-choice-task-what-proportion-of-responses-is-above-chance-level
-% BUT TAKING SEQUENCE OF TRIALS IS NOT NEEDED, WE ARE ONLY INTERESTED IN HOW MANY CORRECT 
+% BUT TAKING SEQUENCE OF TRIALS IS NOT NEEDED, WE ARE ONLY INTERESTED IN HOW MANY ARE CORRECT 
 
 % % Create a vector of n_trials 'correct' responses and replicate it across n_permutations
 % expected_values = repmat(randi([0 1],[1 n_trials]),[n_permutations 1]);
