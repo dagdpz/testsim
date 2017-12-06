@@ -8,9 +8,14 @@ function testsim_binomial_prob
 % n_success = 527; % for 1000 trials with 0.5 random prob, 526 trials correct trials can occur at random at p 0.05, p_binom = 0.0468, but at n_success = 526, p_binom = 0.0534
 
 % 2. Curius example M2S 2nd session, 2017
-n_trials = 1454;
+% n_trials = 1454;
+% random_prob_of_success = 0.333; % in case of random outcomes
+% n_success = 565; 
+
+% 3. manuscript_cued_faces
+n_trials = 4;
 random_prob_of_success = 0.333; % in case of random outcomes
-n_success = 565; 
+n_success = 4; 
 
 p_binom = myBinomTest(n_success,n_trials,random_prob_of_success,'one') % part of Igtools/external
 
