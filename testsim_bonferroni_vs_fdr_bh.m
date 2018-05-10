@@ -1,7 +1,7 @@
 function testsim_bonferroni_vs_fdr_bh
 
-n1 = 100;
-n2 = 10;
+n1 = 3000;
+n2 = 100;
 
 n_obs = 100;
 
