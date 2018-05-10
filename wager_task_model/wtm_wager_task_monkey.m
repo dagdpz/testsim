@@ -2,7 +2,7 @@
 
 % 3 wagers, 1 difficulty level
 
-perf = 0.5
+perf = 0.75
 
 N_trials = 100;
 
@@ -35,10 +35,14 @@ N_trials = 100;
 % 		2  1  -2]; % incorrect
 
 % Correct > incorrect except low wager
-PayOff =	[0  2  4; % correct
-		1  0  -3.9]; % incorrect
+% PayOff =	[0  2  4; % correct
+% 		1  0  -3.9]; % incorrect
 
-behavioral_pattern = 'not_risky_bidirectional_metacognition'
+PayOff =	[0  3  5; % correct
+		2  1  -4.9]; % incorrect
+
+
+behavioral_pattern = 'moderately_risky_no_metacognition'
 
 switch behavioral_pattern
 	
@@ -54,15 +58,20 @@ switch behavioral_pattern
 	case 'absolutely_risky_no_metacognition'
 		wager_proportions = [	0 0 1;
 					0 0 1];
+	case 'moderately_risky_no_metacognition'
+		wager_proportions = [	0.2 0.4 0.4;
+					0.2 0.4 0.4];			
+				
 end
 
-EVw = perf*PayOff(1,:) + (1-perf)*PayOff(2,:)
+EVw = perf*PayOff(1,:) + (1-perf)*PayOff(2,:) % EV per wager given the performance
 
+% 
 Outcomes = [
 	N_trials*perf*wager_proportions(1,:).*PayOff(1,:);
 	N_trials*(1-perf)*wager_proportions(2,:).*PayOff(2,:)]
 
-EV = sum(Outcomes,1) % expected value of 3 wagers
+EarningsPerWager = sum(Outcomes,1) % summary earnings of each of 3 wagers, given the performance and each wager frequency
 
 Earnings = sum(EV)
 
