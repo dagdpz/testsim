@@ -1,6 +1,6 @@
 function testsim_csi
 
-if 1
+if 0
 C = [-1:0.02:1];
 I = [-1:0.02:1];
 
@@ -12,10 +12,33 @@ end
 
 surf(C,I,CSI);
 
-else % test csi_rosen_et_al
+elseif 0 % test csi_rosen_et_al
 	Contra = 0.5 + 0.5*randn(100,1);
 	Ipsi = 0.25 + 0.5*randn(100,1);
 	CSI = csi_rosen_et_al(Contra,Ipsi)
+	
+else % simulate effects of inactivation on tuning
+	base1 = 10; % [0:5:50];
+	R1_c = 5:5:50;
+	R1_i = 5;
+	% R1_i = ones(size(R1_c))*5;
+	
+	base2 = base1 + 0;
+	R2_c = R1_c-5;
+	R2_i = R1_i;
+	
+	MI1 = csi(base1+R1_c,base1+R1_i);
+	MI2 = csi(base2+R2_c,base2+R2_i);
+	
+	map = jet(length(MI1));
+	for k=1:length(MI1),	
+		plot(MI1(k),MI2(k),'o','Color',map(k,:)); hold on
+	end
+	add_equality_line;
+	axis equal
+	axis square
+	xlabel('MI control');
+	ylabel('MI inactivaton');
 	
 end
 
@@ -24,8 +47,8 @@ end
 
 function CSI = csi(Contra,Ipsi)
 
-% CSI = (Contra-Ipsi)./(Contra+Ipsi);
-CSI = (Contra-Ipsi)./max( [abs(Contra) abs(Ipsi)],[],2 );
+CSI = (Contra-Ipsi)./(Contra+Ipsi);
+% CSI = (Contra-Ipsi)./max( [abs(Contra) abs(Ipsi)],[],2 );
 % CSI = (Contra-Ipsi);
 
 function CSI = csi_rosen_et_al (Contra,Ipsi)
