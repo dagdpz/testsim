@@ -8,7 +8,6 @@ N_trials = 100;
 
 % payoff matrix
 
-
 % EV same for all wagers
 % PayOff =	[0  1  4; % correct
 % 		0  1  4]; % incorrect
@@ -73,7 +72,7 @@ Outcomes = [
 
 EarningsPerWager = sum(Outcomes,1) % summary earnings of each of 3 wagers, given the performance and each wager frequency
 
-Earnings = sum(EV)
+Earnings = sum(EarningsPerWager)
 
 
 
