@@ -18,27 +18,30 @@ elseif 0 % test csi_rosen_et_al
 	CSI = csi_rosen_et_al(Contra,Ipsi)
 	
 else % simulate effects of inactivation on tuning
-	base1 = 10; % [0:5:50];
+	% 1 - control
+	base1 = 10; % [0:5:50]; % baseline firing
 	R1_c = 5:5:50;
 	R1_i = 5;
 	% R1_i = ones(size(R1_c))*5;
 	
-	base2 = base1 + 0;
-	R2_c = R1_c-5;
+	% inactivation
+	base2 = base1 + 10;
+	R2_c = R1_c*1;
 	R2_i = R1_i;
 	
-	MI1 = csi(base1+R1_c,base1+R1_i);
-	MI2 = csi(base2+R2_c,base2+R2_i);
+	TI1 = csi(base1+R1_c,base1+R1_i);
+	TI2 = csi(base2+R2_c,base2+R2_i);
 	
-	map = jet(length(MI1));
-	for k=1:length(MI1),	
-		plot(MI1(k),MI2(k),'o','Color',map(k,:)); hold on
+	map = jet(length(TI1));
+	for k=1:length(TI1),	
+		plot(TI1(k),TI2(k),'o','Color',map(k,:)); hold on
 	end
-	add_equality_line;
+	colorbar
+	ig_add_equality_line;
 	axis equal
 	axis square
-	xlabel('MI control');
-	ylabel('MI inactivaton');
+	xlabel('TI control');
+	ylabel('TI inactivaton');
 	
 end
 

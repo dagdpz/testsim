@@ -2,7 +2,7 @@
 
 % 3 wagers, 1 difficulty level
 
-perf = 0.75
+perf = 0.50
 
 N_trials = 100;
 
@@ -41,7 +41,7 @@ PayOff =	[0  3  5; % correct
 		2  1  -4.9]; % incorrect
 
 
-behavioral_pattern = 'moderately_risky_no_metacognition'
+behavioral_pattern = 'moderately_risky_no_metacognition';
 
 switch behavioral_pattern
 	
@@ -63,6 +63,12 @@ switch behavioral_pattern
 				
 end
 
+%--
+% wager_proportions = [ 0 0.5 0.5; 1 0 0];
+wager_proportions = [ 0 0 1; 0.5 0.5 0];
+
+PayOff = round2(wtm_utility([0 2 5; 3 1 -45]),0.1)
+%--
 EVw = perf*PayOff(1,:) + (1-perf)*PayOff(2,:) % EV per wager given the performance
 
 % 
