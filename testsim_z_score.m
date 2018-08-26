@@ -4,7 +4,7 @@ function testsim_z_score
 % s = [1 + 2*randn(1,100)]; % mean 1, SD 2
 s = [1 + 2*randn(1,100) 2 + 3*randn(1,100)]; 
 
-zs1 = zscore(s); % MATLAB
+zs1 = zscore(s); % MATLAB or NaN toolbox -- difference in dim argument (cf. std)!!! NOTE: MATLAB zscore does not deal with NaNs!
 zs2 = z_score(s); % just to make sure they are the same
 
 subplot(2,1,1);
