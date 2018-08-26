@@ -66,6 +66,7 @@ hz_fdr = fdr_bh(pz);
 
 t = 1:n_samples;
 
+figure('Position',[100 100 1200 400]);
 subplot(2,4,1);
 plot(s1'); hold on
 plot(mean_s1,'k','LineWidth',3); hold on
