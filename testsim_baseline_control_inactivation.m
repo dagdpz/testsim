@@ -1,4 +1,6 @@
 function testsim_baseline_control_inactivation
+
+if 0
 % variant 1: one task, two conditions (e.g. pre- and post-injection), two epochs: "baseline" and "response"
 % the question is, how to assess potential changes in baseline after inactivation, when working with PSC (% signal change)
 
@@ -164,7 +166,6 @@ title(sprintf('psc zs 2 - psc zs 1'));
 grid on
 
 
-
 subplot(4,4,4);
 plot(t,Cohen_d,'k','LineWidth',1); hold on
 title(sprintf('Cohen d'));
@@ -174,3 +175,91 @@ subplot(4,4,8);
 plot(t,Cohen_dz,'k','LineWidth',1); hold on
 title(sprintf('Cohen d on z-scored'));
 grid on
+
+elseif 1
+% variant 2: one task, two conditions (e.g. pre- and post-injection), two epochs: "baseline" and "response", two trial types (contralesional and ipsilesional)
+	close all;
+	% 1 - control
+	%base1 = 10*ones(1,10); % [0:5:50]; % baseline firing
+	base1 = 2:11;
+	R1_c = 5:5:50;
+	R1_i = 5*ones(1,10);
+	% R1_i = ones(size(R1_c))*5;
+	
+	A1_c = base1 + R1_c;
+	A1_i = base1 + R1_i;
+	
+	% 2 - inactivation
+	base2 = base1 + 1;
+	R2_c = R1_c;
+	R2_i = R1_i;
+	
+	A2_c = base2 + R2_c;
+	A2_i = base2 + R2_i;
+
+	
+	TI1 = csi(A1_c,A1_i);
+	TI2 = csi(A2_c,A2_i);
+	
+	TIbc1 = csi(R1_c,R1_i);
+	TIbc2 = csi(R2_c,R2_i);
+	
+	
+	map = jet(length(TI1));
+	
+	subplot(2,2,1)
+	for k=1:length(A1_c),	
+		plot(A1_c(k),A2_c(k),'o','Color',map(k,:)); hold on
+		plot(A1_c(k)-base1(k),A2_c(k)-base2(k),'*','Color',map(k,:)); hold on		
+	end
+	colorbar
+	ig_add_equality_line;
+	axis equal
+	axis square
+	xlabel('control c');
+	ylabel('inactivaton c');
+	
+	subplot(2,2,2)
+	for k=1:length(A1_c),	
+		plot(A1_i(k),A2_i(k),'o','Color',map(k,:)); hold on
+		plot(A1_i(k)-base1(k),A2_i(k)-base2(k),'*','Color',map(k,:)); hold on		
+	end
+	colorbar
+	ig_add_equality_line;
+	axis equal
+	axis square
+	xlabel('control i');
+	ylabel('inactivaton c');
+
+	subplot(2,2,3)
+	for k=1:length(TI1),	
+		plot(TI1(k),TI2(k),'o','Color',map(k,:)); hold on
+		plot(TIbc1(k),TIbc2(k),'*','Color',map(k,:)); hold on
+	end
+	colorbar
+	ig_add_equality_line;
+	axis equal
+	axis square
+	xlabel('TI control');
+	ylabel('TI inactivaton');
+	
+	subplot(2,2,4)
+	for k=1:length(TI1),	
+		plot(1,base2(k)-base1(k),'o','Color',map(k,:)); hold on
+		plot(2,A2_c(k)-base2(k)-A1_c(k)+base1(k),'o','Color',map(k,:)); hold on
+		plot(4,base2(k)-base1(k),'o','Color',map(k,:)); hold on
+		plot(5,A2_i(k)-base2(k)-A1_i(k)+base1(k),'o','Color',map(k,:)); hold on
+	end
+	colorbar
+	set(gca,'Xlim',[0 6]);
+	ig_add_zero_lines;
+
+
+end
+
+
+function CSI = csi(Contra,Ipsi)
+
+CSI = (Contra-Ipsi)./(Contra+Ipsi);
+% CSI = (Contra-Ipsi)./max( [abs(Contra) abs(Ipsi)],[],2 );
+% CSI = (Contra-Ipsi);
