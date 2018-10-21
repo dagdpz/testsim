@@ -1,6 +1,6 @@
 function testsim_baseline_control_inactivation
 
-if 0
+if 1
 % variant 1: one task, two conditions (e.g. pre- and post-injection), two epochs: "baseline" and "response"
 % the question is, how to assess potential changes in baseline after inactivation, when working with PSC (% signal change)
 
@@ -17,8 +17,8 @@ noise_response1 = noise;
 % condition 2 (inactivation)
 n_trials2 = 25;
 
-baseline_amp2 = 1500;
-response_amp2 = 1510;
+baseline_amp2 = 950;
+response_amp2 = 955;
 noise_baseline2 = noise; % the more is noise, the smaller is the z-score
 noise_response2 = noise;
 
@@ -176,7 +176,7 @@ plot(t,Cohen_dz,'k','LineWidth',1); hold on
 title(sprintf('Cohen d on z-scored'));
 grid on
 
-elseif 1
+elseif 0
 % variant 2: one task, two conditions (e.g. pre- and post-injection), two epochs: "baseline" and "response", two trial types (contralesional and ipsilesional)
 	close all;
 	% 1 - control
