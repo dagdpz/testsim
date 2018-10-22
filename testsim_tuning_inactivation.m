@@ -180,8 +180,8 @@ CSI = (Contra-Ipsi)./(Contra+Ipsi);
 
 function hArrow = drawArrow(p0,p1,color)
 % drawArrow(p0,p1)
-%
 % Draws a simple arrow in 2D, from p0 to p1.
+% from: https://de.mathworks.com/matlabcentral/fileexchange/55181-drawarrow by Matthew Kelly
 %
 % INPUTS:
 %   p0 = [x0; y0] = position of the tail
