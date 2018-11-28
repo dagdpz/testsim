@@ -12,26 +12,35 @@ function testsim_dprime_2AFC_type2std
 % rating:   1xN vector. rating(i) = X --> rating on i'th trial was X.
 %                       X must be in the range 1 <= X <= nRatings.
 
+rating_scale = [1 2 3 4 5 6];
+nRatings	= length(rating_scale);
+
 % random performance and certainty rating
 stimID		= [zeros(1,30) ones(1,30)];
 response	= randsample([0 1],60,1);
-rating		= randsample([1 2 3 4 5 6],60,1);
-nRatings	= length(unique(rating));
+rating		= randsample(rating_scale,60,1);
+
 
 % good performance, random certainty rating
 stimID		= [zeros(1,30) ones(1,30)];
 response	= [zeros(1,25) ones(1,5) ones(1,25) zeros(1,5)];
-rating		= randsample([1 2 3 4 5 6],60,1);
-nRatings	= length(unique(rating));
+rating		= randsample(rating_scale,60,1);
 
 % good performance, good certainty rating
 stimID		= [zeros(1,30) ones(1,30)];
 response	= [zeros(1,25) ones(1,5) ones(1,25) zeros(1,5)];
-rating		= [randsample([1 2 3 4 5 6],25,1,[0.05 0.1 0.15 0.2 0.2 0.3]) randsample([1 2 3 4 5 6],5,1,[0.3 0.2 0.2 0.15 0.1 0.05])...
-		   randsample([1 2 3 4 5 6],25,1,[0.05 0.1 0.15 0.2 0.2 0.3]) randsample([1 2 3 4 5 6],5,1,[0.3 0.2 0.2 0.15 0.1 0.05])];
-nRatings	= length(unique(rating));
+rating		= [randsample(rating_scale,25,1,[0.05 0.1 0.15 0.2 0.2 0.3]) randsample(rating_scale,5,1,[0.3 0.2 0.2 0.15 0.1 0.05])...
+		   randsample(rating_scale,25,1,[0.05 0.1 0.15 0.2 0.2 0.3]) randsample(rating_scale,5,1,[0.3 0.2 0.2 0.15 0.1 0.05])];
 
-[nR_S1, nR_S2] = trials2counts(stimID, response, rating, nRatings);
+
+% % good performance, almost optimal certainty rating
+stimID		= [zeros(1,30) ones(1,30)];
+response	= [zeros(1,25) ones(1,5) ones(1,25) zeros(1,5)];
+rating		= [randsample(rating_scale,25,1,[0.025 0.025 0.025 0.025 0.05 0.85]) randsample(rating_scale,5,1,[0.85 0.05 0.025 0.025 0.025 0.025])...
+		   randsample(rating_scale,25,1,[0.025 0.025 0.025 0.025 0.05 0.85]) randsample(rating_scale,5,1,[0.85 0.05 0.025 0.025 0.025 0.025])];
+
+
+[nR_S1, nR_S2] = trials2counts(stimID, response, rating, nRatings,0,0);
 
 % basic d'
 % the question has to be reformulated from "is there S1 or S2?" to "is there S1?"
