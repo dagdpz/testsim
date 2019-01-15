@@ -5,7 +5,7 @@ function testsim_bootstrap
 % http://courses.washington.edu/matlab1/Bootstrap_examples.html#36
 % http://courses.washington.edu/matlab1/Library/bootstrap.m
 
-N_exp = 100;
+N_exp = 1;
 
 if N_exp == 1,
 	TOPLOT = 1;
@@ -42,8 +42,8 @@ x2 = m2+noise2*randn(n_samples,1);
 fun = @(x)mean(x);
 
 ci_type = 'percentile'; % bca is default
-[ci1,bootstat1] = bootci(n_boot, {fun, x1},'type',ci_type);
-[ci2,bootstat2] = bootci(n_boot, {fun, x2},'type',ci_type);
+[ci1,bootstat1] = bootci(n_boot, {fun, x1},'alpha',alpha,'type',ci_type);
+[ci2,bootstat2] = bootci(n_boot, {fun, x2},'alpha',alpha,'type',ci_type);
 
 % using bootstrp instead of bootci: equals to 'percentile' method
 bootstat11 =bootstrp(n_boot, fun, x1);
@@ -60,7 +60,7 @@ ci11 =[lower;upper];
 % http://courses.washington.edu/matlab1/Bootstrap_examples.html#36
 
 fun_diff = @(s1,s2) mean(s1)-mean(s2);
-[ci_diff,bootstat_diff] = bootci(n_boot, {fun_diff, x1, x2},'type',ci_type);
+[ci_diff,bootstat_diff] = bootci(n_boot, {fun_diff, x1, x2},'alpha',alpha,'type',ci_type);
 % Hypothesis test: Does the confidence interval cover zero?
 H = ci_diff(1)>0 | ci_diff(2)<0;
 sampStat = fun_diff(x1,x2);

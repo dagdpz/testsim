@@ -20,7 +20,6 @@ stimID		= [zeros(1,30) ones(1,30)];
 response	= randsample([0 1],60,1);
 rating		= randsample(rating_scale,60,1);
 
-
 % good performance, random certainty rating
 stimID		= [zeros(1,30) ones(1,30)];
 response	= [zeros(1,25) ones(1,5) ones(1,25) zeros(1,5)];
@@ -31,7 +30,6 @@ stimID		= [zeros(1,30) ones(1,30)];
 response	= [zeros(1,25) ones(1,5) ones(1,25) zeros(1,5)];
 rating		= [randsample(rating_scale,25,1,[0.05 0.1 0.15 0.2 0.2 0.3]) randsample(rating_scale,5,1,[0.3 0.2 0.2 0.15 0.1 0.05])...
 		   randsample(rating_scale,25,1,[0.05 0.1 0.15 0.2 0.2 0.3]) randsample(rating_scale,5,1,[0.3 0.2 0.2 0.15 0.1 0.05])];
-
 
 % % good performance, almost optimal certainty rating
 stimID		= [zeros(1,30) ones(1,30)];
