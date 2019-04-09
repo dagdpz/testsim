@@ -1,7 +1,7 @@
 function testsim_instr_choice_FR
 % response amplitudes for instr and choice trials
 % null hypothesis: just noise (no tuning)
-noise_level = 1; % [0.5:0.5:20];
+noise_level = [0.5:0.5:20];
 N_rep = 1;
 
 for n = 1:length(noise_level),
@@ -72,7 +72,7 @@ if TOPLOT,
 
 	axis equal
 	axis square
-	add_equality_line;
+	ig_add_equality_line;
 	
 	corrcoef_eval(CII,CCI);
 	
