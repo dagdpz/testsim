@@ -47,7 +47,7 @@ out.AUC = AUC;
 out.d_prime = d_prime;
 
 if ~doPlot, return; end
-
+figure;
 plot([faRate 0], [hitRate 0], '-');
 e = 0.05; axis([0-e 1+e 0-e 1+e])
 xlabel('false alarm rate')
