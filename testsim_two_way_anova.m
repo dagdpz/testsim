@@ -1,7 +1,7 @@
-% try_two_way_anova
+% testsim_two_way_anova
 % http://www.statisticshell.com/docs/twoway.pdf
 
-
+if 0 % main test
 alcohol = repmat([1; 1; 2; 2; 3; 3],8,1);
 gender = repmat([1; 2],24,1);
 rating = [
@@ -74,3 +74,44 @@ r = reshape(r,16,3); % alcohol in columns
 
 % compare with non-parametric Kruskal-Wallis test, on alcohol factor (8x2 repetitions, ignoring two genders)
 [p,tbl,stats] = kruskalwallis(r); % (same results as InStat)
+
+else
+	% initial gaze and final gaze : saccade paper
+	n_trials = 10; % per condition, 16 conditions
+	noise    = 1;	
+	
+	% * 12 123 23 *
+	% *  * 1 3 *  * 
+	% * 12 123 23 *
+	
+	% *  1  2  3  *
+	% *  *  4  *  *
+	% *  5  6  7  *
+	
+	ini_gaze = [ones(10,1); 2*ones(10,1); ones(10,1); 2*ones(10,1); 3*ones(10,1); 2*ones(10,1); 3*ones(10,1); ...
+						      ones(10,1); 3*ones(10,1);...
+		    ones(10,1); 2*ones(10,1); ones(10,1); 2*ones(10,1); 3*ones(10,1); 2*ones(10,1); 3*ones(10,1);];
+	    
+	fin_gaze = [ones(10,1); ones(10,1); 2*ones(10,1); 2*ones(10,1); 2*ones(10,1); 3*ones(10,1); 3*ones(10,1); ...
+						      4*ones(10,1); 4*ones(10,1);...
+		    5*ones(10,1); 5*ones(10,1); 6*ones(10,1); 6*ones(10,1); 6*ones(10,1); 7*ones(10,1); 7*ones(10,1);];
+	
+	% only final gaze
+	FR = [10*ones(10,1); 10*ones(10,1); 20*ones(10,1); 20*ones(10,1); 20*ones(10,1); 30*ones(10,1); 30*ones(10,1); ...
+						      40*ones(10,1); 40*ones(10,1);...
+		50*ones(10,1); 50*ones(10,1); 60*ones(10,1); 60*ones(10,1); 60*ones(10,1); 70*ones(10,1); 70*ones(10,1);];
+	    
+	% only initial gaze
+	FR = [10*ones(10,1); 20*ones(10,1); 10*ones(10,1); 20*ones(10,1); 30*ones(10,1); 20*ones(10,1); 30*ones(10,1); ...
+						      10*ones(10,1); 30*ones(10,1);...
+		10*ones(10,1); 20*ones(10,1); 10*ones(10,1); 20*ones(10,1); 30*ones(10,1); 20*ones(10,1); 30*ones(10,1);];
+	    
+	% interaction
+	FR = [1*10*ones(10,1); 2*10*ones(10,1); 1*20*ones(10,1); 2*20*ones(10,1); 3*20*ones(10,1); 2*30*ones(10,1); 3*30*ones(10,1); ...
+						      1*40*ones(10,1); 3*40*ones(10,1);...
+	      1*50*ones(10,1); 2*50*ones(10,1); 1*60*ones(10,1); 2*60*ones(10,1); 3*60*ones(10,1); 2*70*ones(10,1); 3*70*ones(10,1);];
+	    
+	FR = FR + noise*randn(160,1);
+
+	[p,table,stats,terms] = anovan(FR,[ini_gaze fin_gaze],'model','full','varnames',{'ini gaze' 'fin gaze'})
+end
