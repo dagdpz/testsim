@@ -95,3 +95,13 @@ S = [repmat([1:10],9,1)']; % subjects
 % matches http://www.discoveringstatistics.com/docs/repeatedmeasures.pdf, page 12
 stats = rm_anova2(reshape(Y,10*9,1),reshape(S,10*9,1),reshape(F1,10*9,1),reshape(F2,10*9,1),{'looks','charisma'}) 
 
+% df for the two-way, factorial, within-subjects ANOVA
+%     A = a - 1, where a = number of levels of A
+%     B = b - 1, where b = number of levels of B
+%     A x B = (a - 1)(b - 1)
+%     S = n - 1, where s = number of levels of S (i.e., number of subjects)
+%     A x S = (a - 1)(n - 1)
+%     B x S = (b - 1)(n - 1)
+%     A x B x S = (a - 1)(b - 1)(n - 1)
+
+
