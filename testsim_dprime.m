@@ -7,12 +7,16 @@ function [d,beta,c] = testsim_dprime(pHit,pFA)
 
 % d'    = z(pHit) - z(pFA)
 
-% ratio of ratio of the height of the signal distribution to the noise distribution for the value of the threshold (criterion)
+% ratio of the height of the signal distribution to the noise distribution for the value of the threshold (criterion)
 % log(beta) = c * d'
 
 % criterion for yes/no: if positive - conservative (more no responses), if negative - liberal (more yes responses)
 % then the ideal observer
 % criterion c =  -(zHit + zFA) / 2
+
+
+% for special cases when rates are 0 or 100 see:
+% https://stats.stackexchange.com/questions/134779/d-prime-with-100-hit-rate-probability-and-0-false-alarm-probability
 
 
 % Convert to Z scores
