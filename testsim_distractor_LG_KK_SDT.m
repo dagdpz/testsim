@@ -12,7 +12,8 @@ n_trials = 100; % for each stimulus condition
 
 scenario = 'add spatial bias to contra';
 scenario = 'add spatial bias to contra and ipsi';
-% scenario = 'contra perceptual problem';
+scenario = 'contra perceptual problem';
+scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
 
 % Hits, Misses, FA, CR
 switch scenario
@@ -83,8 +84,32 @@ switch scenario
         FA(4)  = FA(2);
         CR(4)  = CR(2);
         
+    case 'high hit rate, but ipsi spatial bias';
+        H(1)   = 0.9;
+        M(1)   = 0.1;
+        FA(1)  = 0.25;
+        CR(1)  = 0.75;
+        
+        H(2)   = 0.9;
+        M(2)   = 0.1;
+        FA(2)  = 0.7;
+        CR(2)  = 0.3;
+        
+        sb = 0.1;
+        H(3)   = H(1);
+        M(3)   = M(1);
+        FA(3)  = FA(1);
+        CR(3)  = CR(1);
+        
+        H(4)   = H(2);
+        M(4)   = M(2);
+        FA(4)  = FA(2)+sb;
+        CR(4)  = CR(2)-sb;
+        
         
 end
+
+
 
 
 % avoid 0 or Inf probabilities
