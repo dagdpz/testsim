@@ -3,7 +3,7 @@
 
 % define targets
 
-% rng(120); % set random seed
+rng(120); % set random seed
 
 Tx = [0 0 10 0 -10];
 Ty = [0 10 0 -10 0];
@@ -44,8 +44,8 @@ TTy = reshape(repmat(Ty,n_trials_per_T,1),n_T*n_trials_per_T,1);
 
 
     
-% transformationType: 'NonreflectiveSimilarity' | 'Similarity' | 'Affine' | 'Projective'
-% or 'polynomial'
+% transformationType: 'NonreflectiveSimilarity' | 'Similarity' | 'Affine' | 'Projective' | 'pwl'
+% or 'polynomial' 
 transformationType = 'polynomial';
 switch transformationType
     case 'polynomial'
