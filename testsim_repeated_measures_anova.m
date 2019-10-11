@@ -96,7 +96,7 @@ S = [repmat([1:10],9,1)']; % subjects
 stats = rm_anova2(reshape(Y,10*9,1),reshape(S,10*9,1),reshape(F1,10*9,1),reshape(F2,10*9,1),{'looks','charisma'}) 
 
 % https://stats.stackexchange.com/questions/46735/how-to-assign-degrees-of-freedom-for-two-way-anova-with-two-within-subjects-fact
-% df for the two-way, factorial, within-subjects ANOVA
+% df for the two-way, factorial, within-subjects factors ANOVA
 %     A = a - 1, where a = number of levels of A
 %     B = b - 1, where b = number of levels of B
 %     A x B = (a - 1)(b - 1)

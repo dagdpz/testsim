@@ -5,8 +5,11 @@
 
 rng(120); % set random seed
 
-Tx = [0 0 10 0 -10];
-Ty = [0 10 0 -10 0];
+% Tx = [0 0 10 0 -10];
+% Ty = [0 10 0 -10 0];
+
+Tx = [-30 -15 0 15 30 -30 -15 0 15 30 -30 -15 0 15 30];
+Ty = [10 10 10 10 10 0 0 0 0 0 -10 -10 -10 -10 -10];
 
 n_T = length(Tx); % number of targets
 
@@ -53,9 +56,8 @@ switch transformationType
     otherwise
         tform = fitgeotrans([TTx TTy], [Gx Gy], transformationType);
 end
-    
-recG = transformPointsInverse(tform, [Gx Gy]); 
 
+recG = transformPointsInverse(tform, [Gx Gy]); 
 
 
 % plotting
