@@ -164,26 +164,24 @@ switch scenario
         % Pre: no choice bias -> Post: ipsi choice bias -> fixations doesn't change for both hemifields
         % target are highly selected
         % H(1) + M(1) + H(2) should add to 1
-        %pre 26/68 + 1/68  + 40/68 
-        %pst 11/61 + 0/61 +50/61
         % FA(1) + CR(1) + FA(2) should add to 1
-        H(1)   = 26/68;
-        M(1)   = 1/68;
+        H(1)   = 0.45;
+        M(1)   = 0.1;
         FA(1)  = 0.2;
         CR(1)  = 0.6;
         
-        H(2)   = 40/68;
+        H(2)   = 0.45;
         M(2)   = M(1);
         FA(2)  = 0.2;
         CR(2)  = CR(1);
         
-
-        H(3)   = 11/61 ;
-        M(3)   = 0/61;
+        sb = 0.1;
+        H(3)   = H(1)- sb ;
+        M(3)   = M(1);
         FA(3)  = FA(1)- sb;
         CR(3)  = CR(1);
         
-        H(4)   = 50/61 ;
+        H(4)   = H(2)+ sb ;
         M(4)   = M(3);
         FA(4)  = FA(2)+ sb;
         CR(4)  = CR(3);      
@@ -233,22 +231,6 @@ for k = 1:4,
 end
 
 %% Graph
-% Selection 
-% Hitrate vs Falsealarm rate
-% Dprime vs Criterion
-figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
-set(gcf,'Name','Dprime vs Criterion');
-for indPos = 1:length(positionExp)
-    ha(indPos) = subplot(2,2,(indPos *2)-1);
-    plot([d_prime.easy.(positionExp{indPos}).pre],mult*criterion.easy.(positionExp{indPos}).pre, 'o','color',[0 0 0]   , 'MarkerSize',10,'markerfacecolor',[1 1 1 ]); hold on;
-    plot([d_prime.easy.(positionExp{indPos}).post],mult*criterion.easy.(positionExp{indPos}).post, 'o','color',[0 0 1] ,'MarkerSize',10,'markerfacecolor',[1 1 1]);
-    
-    plot(nanmean([d_prime.easy.(positionExp{indPos}).pre]),mult*nanmean([criterion.easy.(positionExp{indPos}).pre]), 'o','color',[0 0 0] ,'Linewidth',2,'MarkerSize',18,'markerfacecolor',criterion.easy.(positionExp{indPos}).Bias_pre_Color);
-    plot(nanmean([d_prime.easy.(positionExp{indPos}).post]),mult*nanmean([criterion.easy.(positionExp{indPos}).post]), 'o','color',[0 0 1],'Linewidth',2,'MarkerSize',18,'markerfacecolor',criterion.easy.(positionExp{indPos}).Bias_post_Color);
-end
-
-
-%% OLD  graphs for criterion and dprime
 figure
 set(gcf,'Color',[1 1 1]);
 
