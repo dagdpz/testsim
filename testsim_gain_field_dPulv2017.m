@@ -26,7 +26,7 @@ retpos_continous	= -pi:pi/20:pi; % retinotopic position
 gazepos_continous	= -20:20;       % gaze position
 
 R		= 1/(sqrt(2*pi)*Sigma)*exp(-(retpos_continous - Center).^2/(2*Sigma^2)); % Gaussian RF profile
-% R		= ones(size(retpos)); % no target position modulation
+% R		= ones(size(retpos_continous)); % no target position modulation
 R		= UnmodulatedFR + R/max(R)*Amplitude;
 
 n_trials_per_gaze=numel(target_positions)*n_trials_per_cond;
@@ -53,7 +53,7 @@ switch modulation_type % eye position modulation type
         end
         
     case 'linear_addition'
-        E = interp1([gazepos_continous(1) gazepos_continous(end)],[10 0],gazepos_continous); % Gaze effect
+        E = interp1([gazepos_continous(1) gazepos_continous(end)],[20 0],gazepos_continous); % Gaze effect
         for k = 1:n_trials_per_cond
             FR(:,:,k) = 1*ones(size(gazepos_continous))'*R + 1*E'*ones(size(retpos_continous)) + Noise*randn(length(gazepos_continous),length(retpos_continous)); % one trial
         end
