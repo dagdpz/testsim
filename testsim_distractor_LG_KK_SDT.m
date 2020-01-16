@@ -14,12 +14,13 @@ scenario = 'add spatial bias to contra';
 scenario = 'add spatial bias to contra and ipsi';
 scenario = 'contra perceptual problem';
 scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
+scenario = 'DoubleStimuli add ipsi choice bias';
 
-% Hits, Misses, FA, CR
+% Enter the Proportion for Hits, Misses, FA, CR
 switch scenario
     
     case 'add spatial bias to contra';
-        H(1)   = 0.7;
+        H(1)   = 0.7; 
         M(1)   = 0.3;
         FA(1)  = 0.2;
         CR(1)  = 0.8;
@@ -73,11 +74,12 @@ switch scenario
         M(2)   = 0.4;
         FA(2)  = 0.4;
         CR(2)  = 0.6;
-        
-        H(3)   = 0.55;
-        M(3)   = 0.45;
-        FA(3)  = 0.45;
-        CR(3)  = 0.55;
+        sb = 0.15;
+        %general increase in errors: reduce Hits, increase Miss, reduce CR, increase FA
+        H(3)   = H(1) - sb; % 0.55;
+        M(3)   = M(1) + sb; %0.45;
+        FA(3)  = FA(1)+ sb; %0.45;
+        CR(3)  = CR(1)- sb; %0.55;
         
         H(4)   = H(2);
         M(4)   = M(2);
@@ -105,6 +107,58 @@ switch scenario
         M(4)   = M(2);
         FA(4)  = FA(2)+sb;
         CR(4)  = CR(2)-sb;
+    
+   case 'DoubleStimuli add ipsi choice bias _';
+       % Fixation is the same for contra vs ipsi M(1) = M(2)
+       % Pre: no choice bias -> Post: ipsi choice bias -> fixations doesn't change for both hemifields
+       % target are highly selected
+        H(1)   = 0.8; 
+        M(1)   = 0.2;
+        FA(1)  = 0.2;
+        CR(1)  = 0.8;
+        
+        H(2)   = 0.8;
+        M(2)   = M(1);
+        FA(2)  = 0.2;
+        CR(2)  = CR(1);
+       
+        sb = 0.19;
+        H(3)   = H(1)- sb ;
+        M(3)   = M(1);
+        FA(3)  = FA(1)- sb;
+        CR(3)  = CR(1);
+        
+        H(4)   = H(2)+ sb ;
+        M(4)   = M(3);
+        FA(4)  = FA(2)+ sb;
+        CR(4)  = CR(3);
+        
+    case 'DoubleStimuli add ipsi choice bias';
+        % Fixation is the same for contra vs ipsi M(1) = M(2)
+        % Pre: no choice bias -> Post: ipsi choice bias -> fixations doesn't change for both hemifields
+        % target are highly selected
+        % H(1) + M(1) + H(2) should add to 1
+        % FA(1) + CR(1) + FA(2) should add to 1
+        H(1)   = 0.45;
+        M(1)   = 0.1;
+        FA(1)  = 0.2;
+        CR(1)  = 0.6;
+        
+        H(2)   = 0.45;
+        M(2)   = M(1);
+        FA(2)  = 0.2;
+        CR(2)  = CR(1);
+        
+        sb = 0.1;
+        H(3)   = H(1)- sb ;
+        M(3)   = M(1);
+        FA(3)  = FA(1)- sb;
+        CR(3)  = CR(1);
+        
+        H(4)   = H(2)+ sb ;
+        M(4)   = M(3);
+        FA(4)  = FA(2)+ sb;
+        CR(4)  = CR(3);
         
         
 end
@@ -151,6 +205,7 @@ for k = 1:4,
     [d(k),beta(k),c(k)] = testsim_dprime(pHit(k),pFA(k));
 end
 
+%% Graph
 figure
 set(gcf,'Color',[1 1 1]);
 
