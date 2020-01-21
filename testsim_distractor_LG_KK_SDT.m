@@ -9,7 +9,7 @@ clear all
 % post    3       4
 
 %%
-IndependentCalculation = 0; 
+IndependentCalculation = 0; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
 n_trials = 100; % for each stimulus condition
 %%
 scenario = 'add spatial bias to contra';
@@ -17,7 +17,7 @@ scenario = 'add spatial bias to contra and ipsi';
 scenario = 'contra perceptual problem';
 scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
 scenario = 'DoubleStimuli add ipsi choice bias';
-scenario = 'Double Stimuli - Curius inactivation'; 
+% scenario = 'Double Stimuli - Curius inactivation session 7 20190913'; 
 
 % Enter the Proportion for Hits, Misses, FA, CR
 switch scenario
@@ -139,30 +139,37 @@ switch scenario
     case 'DoubleStimuli add ipsi choice bias';
         % Fixation is the same for contra vs ipsi M(1) = M(2)
         % Pre: no choice bias -> Post: ipsi choice bias -> fixations doesn't change for both hemifields
-        % target are highly selected
+        % targets are highly selected (easy distractor)
+        % for independent and dependent calculations
         % H(1) + M(1) + H(2) should add to 1
         % FA(1) + CR(1) + FA(2) should add to 1
+        
+        % contra pre
         H(1)   = 0.45;
         M(1)   = 0.1;
         FA(1)  = 0.2;
         CR(1)  = 0.6;
         
+        % ipsi pre
         H(2)   = 0.45;
         M(2)   = M(1);
         FA(2)  = 0.2;
         CR(2)  = CR(1);
         
         sb = 0.1;
+        % contra post
         H(3)   = H(1)- sb ;
         M(3)   = M(1);
         FA(3)  = FA(1)- sb;
         CR(3)  = CR(1);
         
+        % ispi post
         H(4)   = H(2)+ sb ;
         M(4)   = M(3);
         FA(4)  = FA(2)+ sb;
         CR(4)  = CR(3);
-  case 'Double Stimuli - Curius inactivation';
+        
+  case 'Double Stimuli - Curius inactivation session 7 20190913';
         % Fixation is the same for contra vs ipsi M(1) = M(2)
         % Pre: no choice bias -> Post: ipsi choice bias -> fixations doesn't change for both hemifields
         % target are highly selected
@@ -170,22 +177,26 @@ switch scenario
         %pre 26/67 + 1/67  + 40/67 
         %pst 11/61 + 0/61 +50/61
         % FA(1) + CR(1) + FA(2) should add to 1
+        
+        % contra pre
         H(1)   = 26/67;
         M(1)   = 1/67;
         FA(1)  = 21/65;
         CR(1)  = 23/65;
         
+        % ipsi pre
         H(2)   = 40/67;
         M(2)   = M(1);
         FA(2)  = 21/65;
         CR(2)  = CR(1);
         
-
+        % contra post
         H(3)   = 11/61 ;
         M(3)   = 0/61;
         FA(3)  = 19/62;
         CR(3)  = 19/62;
         
+        % ispi post
         H(4)   = 50/61 ;
         M(4)   = M(3);
         FA(4)  = 24/62;
@@ -248,6 +259,7 @@ else
     pHit = H ./ (H + M +H_);
     pFA = FA ./ (FA + CR +FA_);
 end
+
 for k = 1:4,
     [dprime(k),beta(k),criterion(k)] = testsim_dprime(pHit(k),pFA(k));
 end
@@ -290,8 +302,8 @@ set(gcf,'Name','Hitrate and FalseAlarmRate');
     title('ipsi')
 
     subplot(2,3,4);
-    plot([1;2], [pHit(1),pHit(1)], 'o','color',[0 0 0] , 'MarkerSize',15,'markerfacecolor',[0 0 0 ]); hold on;
-    line([1;2], [pHit(1),pHit(1)], 'Color',[0 0 0],'LineWidth', 2); hold on;
+    plot([1;2], [pHit(1),pHit(3)], 'o','color',[0 0 0] , 'MarkerSize',15,'markerfacecolor',[0 0 0 ]); hold on;
+    line([1;2], [pHit(1),pHit(3)], 'Color',[0 0 0],'LineWidth', 2); hold on;
     set(gca,'ylim',[0 1])
     ylabel( 'Hitrate','fontsize',14,'fontweight','b', 'Interpreter', 'none' );
     set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',20);
