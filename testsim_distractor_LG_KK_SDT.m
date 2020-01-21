@@ -8,8 +8,10 @@ clear all
 % pre     1       2
 % post    3       4
 
+%%
+IndependentCalculation = 0; 
 n_trials = 100; % for each stimulus condition
-
+%%
 scenario = 'add spatial bias to contra';
 scenario = 'add spatial bias to contra and ipsi';
 scenario = 'contra perceptual problem';
@@ -194,18 +196,19 @@ switch scenario
         if FA(1)+ CR(1)+ FA(2) == 1
             disp('distractor-trials: add up to 1')
         end
+     
+        
 end
 
 
 %% It should be before the dprime calculation because 0.5 is added to the Nb.of trials
-c = 0;
-for indPos = 1:2
-Tar_IpsiSelection(1+c)    = H(1+indPos) ./ (H(1+indPos) + H(2+indPos) + M(1+indPos));
-Tar_ContraSelection(1+c)  = H(2+indPos) ./ (H(1+indPos) + H(2+indPos) + M(1+indPos));
-Tar_fixation(1+c)         = M(1+indPos) ./ (H(1+indPos) + H(2+indPos) + M(1+indPos));
-c = 0+1; 
-end
 
+Tar_IpsiSelection(1)    = H(2) ./ (H(1) + H(2) + M(1)); %ipsi
+Tar_ContraSelection(1)  = H(1) ./ (H(1) + H(2) + M(1));
+Tar_fixation(1)         = M(1) ./ (H(1) + H(2) + M(1));
+Tar_IpsiSelection(2)    = H(4) ./ (H(3) + H(4) + M(3));
+Tar_ContraSelection(2)  = H(3) ./ (H(3) + H(4) + M(3));
+Tar_fixation(2)         = M(3) ./ (H(3) + H(4) + M(3));
 % avoid 0 or Inf probabilities
 if any(H==0) || any(M==0) || any(FA==0) || any(CR==0),
     % add 0.5 to both the number of hits and the number of false alarms,
@@ -236,12 +239,15 @@ else
 end
 
 
-
-pHit = H ./ (H + M);
-pFA = FA ./ (FA + CR);
-
-
-
+if IndependentCalculation == 1
+    pHit = H ./ (H + M);
+    pFA = FA ./ (FA + CR);
+else
+    H_ = [H(2) H(1) H(4) H(3) ];
+    FA_ = [FA(2) FA(1) FA(4) FA(3) ];
+    pHit = H ./ (H + M +H_);
+    pFA = FA ./ (FA + CR +FA_);
+end
 for k = 1:4,
     [dprime(k),beta(k),criterion(k)] = testsim_dprime(pHit(k),pFA(k));
 end
@@ -308,7 +314,7 @@ set(gcf,'Name','Hitrate and FalseAlarmRate');
     title('contra')
 
 
-% Dprime vs Criterion
+%% Dprime vs Criterion
 figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
 set(gcf,'Name','Dprime vs Criterion');
 c = 0;
@@ -330,6 +336,16 @@ for indPos = 1:2
 
 end
 
+%% Graph - change in criterion or change in dprime
+figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
+set(gcf,'Name','Change in Dprime and Criterion');
+plot((dprime(1)-dprime(3)),(criterion(1)-criterion(3)), 'o','color',[1 0 0] , 'MarkerSize',15,'markerfacecolor',[1 0 0 ]); hold on;
+plot((dprime(2)-dprime(4)),(criterion(2)-criterion(4)), 'o','color',[0 0 1] , 'MarkerSize',15,'markerfacecolor',[0 0 1 ]); hold on;
+xlabel('sensitivity')
+ylabel('criterion')
+set(gca,'ylim',[-2 2])
+set(gca,'xlim',[-2 2])
+legend('contra', 'ipsi')
 
 %% OLD  graphs for criterion and dprime
 figure
