@@ -9,27 +9,26 @@ clear all
 % post    3       4
 
 %%
-IndependentCalculation = 1; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
+IndependentCalculation = 0; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
 n_trials = 100; % for each stimulus condition
 %%
-scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
-% scenario = 'add spatial bias to contra and ipsi';
-% scenario = 'contra perceptual problem';
-% scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
-% scenario = 'DoubleStimuli add ipsi choice bias';
-% scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
-% %scenario = 'Double Stimuli - contra perceptual problem';
-% %scenario = 'Double Stimuli - Curius inactivation session 7 20190913'; 
+scenario = 'add spatial bias to contra';
+scenario = 'add spatial bias to contra and ipsi';
+scenario = 'contra perceptual problem';
+scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
+scenario = 'DoubleStimuli add ipsi choice bias';
+scenario = 'Double Stimuli - Criterion definition';
+%scenario = 'Double Stimuli - contra perceptual problem';
+%scenario = 'Double Stimuli - Curius inactivation session 7 20190913'; 
 
 % Enter the Proportion for Hits, Misses, FA, CR
 switch scenario
     
-    case 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
-        IndependentCalculation = 1;
-        H(1)   = 0.7; %0.7
-        M(1)   = 0.3; %0.3
-        FA(1)  = 0.5;
-        CR(1)  = 0.5;
+    case 'add spatial bias to contra';
+        H(1)   = 0.7; 
+        M(1)   = 0.3;
+        FA(1)  = 0.2;
+        CR(1)  = 0.8;
         
         H(2)   = 0.6;
         M(2)   = 0.4;
@@ -194,13 +193,13 @@ switch scenario
             % contra pre
         H(1)   = 0.5;
         M(1)   = 0.1;
-        FA(1)  = 0.5;
-        CR(1)  = 0.4;
+        FA(1)  = 0.2;
+        CR(1)  = 0.6;
         
         % ipsi pre
         H(2)   = 0.4;
         M(2)   = M(1);
-        FA(2)  = 0.1;
+        FA(2)  = 0.2;
         CR(2)  = CR(1);
         
         sb = 0.1;
