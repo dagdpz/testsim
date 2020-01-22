@@ -9,7 +9,7 @@ clear all
 % post    3       4
 
 %%
-IndependentCalculation = 1; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
+IndependentCalculation = 0; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
 n_trials = 100; % for each stimulus condition
 %%
 scenario = 'add spatial bias to contra';
@@ -17,6 +17,7 @@ scenario = 'add spatial bias to contra and ipsi';
 scenario = 'contra perceptual problem';
 scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
 scenario = 'DoubleStimuli add ipsi choice bias';
+scenario = 'Double Stimuli - contra perceptual problem';
 %scenario = 'Double Stimuli - Curius inactivation session 7 20190913'; 
 
 % Enter the Proportion for Hits, Misses, FA, CR
@@ -78,6 +79,7 @@ switch scenario
         FA(2)  = 0.4;
         CR(2)  = 0.6;
         sb = 0.15;
+        
         %general increase in errors: reduce Hits, increase Miss, reduce CR, increase FA
         H(3)   = H(1) - sb; % 0.55;
         M(3)   = M(1) + sb; %0.45;
@@ -114,7 +116,7 @@ switch scenario
     case 'DoubleStimuli add ipsi choice bias';
         % spatial-saccade choice bias  (ipsi) without same discrimination performance 
         % Fixation is the same for contra vs ipsi M(1) = M(2)
-        % Pre: no choice bias -> Post: ipsi choice bias -> fixations doesn't change for both hemifields
+        % Pre: no choice bias -> Post: ipsi choice bias -> fixations do not change for both hemifields
         % targets are highly selected (easy distractor)
         % for independent and dependent calculations
         % H(1) + M(1) + H(2) should add to 1
@@ -144,6 +146,40 @@ switch scenario
         M(4)   = M(3);
         FA(4)  = FA(2)+ sb;
         CR(4)  = CR(3);
+        
+        
+    case 'Double Stimuli - contra perceptual problem';
+        % contra pre
+        H(1)   = 0.45;
+        M(1)   = 0.1;
+        FA(1)  = 0.2;
+        CR(1)  = 0.6;
+        
+        % ipsi pre
+        H(2)   = 0.45;
+        M(2)   = M(1);
+        FA(2)  = 0.2;
+        CR(2)  = CR(1);
+        
+        sb = 0.1;
+        % contra post
+        H(3)   = H(1)- sb ;
+        M(3)   = M(1)+ sb;
+        FA(3)  = FA(1)+sb;
+        CR(3)  = CR(1)- sb;
+        
+        % ispi post
+        H(4)   = H(2) ;
+        M(4)   = M(3);
+        FA(4)  = FA(2);
+        CR(4)  = CR(3);
+        
+        if H(1)+ M(1)+ H(2) == 1
+            disp('target-trials: add up to 1')
+        end
+        if FA(1)+ CR(1)+ FA(2) == 1
+            disp('distractor-trials: add up to 1')
+        end
         
   case 'Double Stimuli - Curius inactivation session 7 20190913';
         % spatial choice bias  (ipsi) with good discrimination performance
@@ -310,8 +346,8 @@ title([scenario sprintf('\n')])
 % set(gcf,'Name','Dprime vs Criterion');
 
     subplot(Plot_Colums,Plot_Rows,6);
-    plot(dprime(1),criterion(1), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
-    plot(dprime(2),-criterion(2), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;% reverse direction of criterion for ipsi
+    plot(dprime(1),criterion(1), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+    plot(dprime(2),-criterion(2), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;% reverse direction of criterion for ipsi
 
     plot(dprime(3),criterion(3), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
     plot(dprime(4),-criterion(4), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
@@ -320,7 +356,7 @@ title([scenario sprintf('\n')])
     ylabel('criterion')
     set(gca,'ylim',[-2 2])
     set(gca,'xlim',[0 4])
-    legend('Black: pre')
+    %legend('Black: pre')
     %title('contra')
 %     
 %     subplot(Plot_Colums,Plot_Rows,3);
