@@ -17,7 +17,7 @@ scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
 % scenario = 'contra perceptual problem';
 % scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
 % scenario = 'DoubleStimuli add ipsi choice bias';
-% scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
+ scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
 % %scenario = 'Double Stimuli - contra perceptual problem';
 % %scenario = 'Double Stimuli - Curius inactivation session 7 20190913'; 
 
@@ -28,8 +28,8 @@ switch scenario
         IndependentCalculation = 1;
         H(1)   = 0.7; %0.7
         M(1)   = 0.3; %0.3
-        FA(1)  = 0.5;
-        CR(1)  = 0.5;
+        FA(1)  = 0.3;
+        CR(1)  = 0.7;
         
         H(2)   = 0.6;
         M(2)   = 0.4;
@@ -193,14 +193,14 @@ switch scenario
         % contra pre
             % contra pre
         H(1)   = 0.5;
-        M(1)   = 0.1;
-        FA(1)  = 0.5;
-        CR(1)  = 0.4;
+        M(1)   = 0.2;
+        FA(1)  = 0.1; %0.1;
+        CR(1)  = 0.5; %0.6;
         
         % ipsi pre
-        H(2)   = 0.4;
+        H(2)   = 0.3;
         M(2)   = M(1);
-        FA(2)  = 0.1;
+        FA(2)  = 0.4;
         CR(2)  = CR(1);
         
         sb = 0.1;
@@ -216,10 +216,10 @@ switch scenario
         FA(4)  = FA(2)+ sb;
         CR(4)  = CR(3);
         
-        if H(1)+ M(1)+ H(2) == 1 && M(1)+ H(2) == H(1)
+        if H(1)+ M(1)+ H(2) == 1 
             disp('Pre: target-trials: add up to 1')
         end
-        if FA(1)+ CR(1)+ FA(2) == 1 && CR(1)+ FA(2) == FA(1)
+        if FA(1)+ CR(1)+ FA(2) == 1 
             disp('Pre: distractor-trials: add up to 1')
         end
         if H(3)+ M(3)+ H(4) == 1
