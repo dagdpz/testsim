@@ -17,8 +17,8 @@ noise_response1 = noise;
 % condition 2 (inactivation)
 n_trials2 = 25;
 
-baseline_amp2 = 950;
-response_amp2 = 955;
+baseline_amp2 = 1500;
+response_amp2 = 1510;
 noise_baseline2 = noise; % the more is noise, the smaller is the z-score
 noise_response2 = noise;
 
