@@ -269,7 +269,45 @@ switch scenario
             disp('distractor-trials: add up to 1')
         end
      
+    case 'Double D-T Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
+        % contra pre
+            % contra pre
+        H(1)   = 0.5;
+        M(1)   = 0.2;
+        FA(1)  = 0.1; %0.1;
+        CR(1)  = 0.5; %0.6;
         
+        % ipsi pre
+        H(2)   = 0.3;
+        M(2)   = M(1);
+        FA(2)  = 0.4;
+        CR(2)  = CR(1);
+        
+        sb = 0.1;
+        % contra post
+        H(3)   = H(1)- sb ;
+        M(3)   = M(1);
+        FA(3)  = FA(1)- sb;
+        CR(3)  = CR(1);
+        
+        % ispi post
+        H(4)   = H(2)+ sb ;
+        M(4)   = M(3);
+        FA(4)  = FA(2)+ sb;
+        CR(4)  = CR(3);
+        
+        if H(1)+ M(1)+ H(2) == 1 
+            disp('Pre: target-trials: add up to 1')
+        end
+        if FA(1)+ CR(1)+ FA(2) == 1 
+            disp('Pre: distractor-trials: add up to 1')
+        end
+        if H(3)+ M(3)+ H(4) == 1
+            disp('Post: target-trials: add up to 1')
+        end
+        if FA(3)+ CR(3)+ FA(4) == 1
+            disp('Post: distractor-trials: add up to 1')
+        end
 end
 
 
