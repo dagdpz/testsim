@@ -12,15 +12,20 @@ clear all
 IndependentCalculation = 0; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
 n_trials = 100; % for each stimulus condition
 %%
-scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
+%scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
 % scenario = 'add spatial bias to contra and ipsi';
 % scenario = 'contra perceptual problem';
 % scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
-% scenario = 'DoubleStimuli add ipsi choice bias';
+
+%% DOUBLE STIMULI
+ scenario = 'DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit';
+ scenario = 'DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit';
+
+% scenario = 'Double Stimuli - Post: contra perceptual deficit';
+% scenario = 'Double Stimuli - Post: contra motor bias for saccades, contra perceptual deficit';
 % scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
- scenario = 'Double Stimuli - contra perceptual problem';
+
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913'; 
-% %scenario = 'Double Stimuli - contra perceptual problem';
 %scenario = 'Double D-T Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
 
 
@@ -28,6 +33,7 @@ scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
 switch scenario
     
     case 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
+        disp('Single Stimuli: Pre: no spatial bias, add spatial bias to contra')
         IndependentCalculation = 1;
         H(1)   = 0.7; %0.7
         M(1)   = 0.3; %0.3
@@ -117,16 +123,13 @@ switch scenario
         M(4)   = M(2);
         FA(4)  = FA(2)+sb;
         CR(4)  = CR(2)-sb;
-    
-    case 'DoubleStimuli add ipsi choice bias';
-        % spatial-saccade choice bias (ipsi) [without same discrimination performance]?
+    case 'DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit';
+       disp('DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit')
 
+        % A condition for double stimuli: Fixation is the same for contra vs ipsi M(1) = M(2)
         % spatial-saccade choice bias  (ipsi) without same discrimination performance 
-        % spatial-saccade choice bias (ipsi) [without same discrimination performance]?
-        % Fixation is the same for contra vs ipsi M(1) = M(2)
         % Pre: no choice bias -> Post: ipsi choice bias -> fixations do not change for both hemifields
-        % targets are highly selected (easy distractor)
-        % for independent and dependent calculations
+        % Post: ipsi targets are highly selected
         % H(1) + M(1) + H(2) should add to 1
         % FA(1) + CR(1) + FA(2) should add to 1
         
@@ -144,21 +147,40 @@ switch scenario
         
         sb = 0.1;
         % contra post
-        H(3)   = H(1)- sb ;
+        H(3)   = H(1)- sb ; %Target:less saccades to contra
         M(3)   = M(1);
-        FA(3)  = FA(1)- sb;
+        FA(3)  = FA(1)- sb; %Distractor: less saccades to contra
         CR(3)  = CR(1);
         
         % ispi post
-        H(4)   = H(2)+ sb ;
+        H(4)   = H(2)+ sb ; %Target:more saccades to ipsi
         M(4)   = M(3);
-        FA(4)  = FA(2)+ sb;
+        FA(4)  = FA(2)+ sb; %Distractor: less saccades to contra
         CR(4)  = CR(3);
         
+        if H(1)+ M(1)+ H(2) == 1
+            disp('Pre: target-trials: add up to 1')
+        end
+        if FA(1)+ CR(1)+ FA(2) == 1
+            disp('Pre: distractor-trials: add up to 1')
+        end
+        if H(3)+ M(3)+ H(4) == 1
+            disp('Post: target-trials: add up to 1')
+        end
+        if FA(3)+ CR(3)+ FA(4) == 1
+            disp('Post: distractor-trials: add up to 1')
+        end
+    
+    case 'DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit';
+       disp('DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit')
 
-   
+        % A condition for double stimuli: Fixation is the same for contra vs ipsi M(1) = M(2)
+        % spatial-saccade choice bias  (ipsi) without same discrimination performance 
+        % Pre: no choice bias -> Post: ipsi choice bias -> fixations do not change for both hemifields
+        % Post: ipsi targets are highly selected
+        % H(1) + M(1) + H(2) should add to 1
+        % FA(1) + CR(1) + FA(2) should add to 1
         
-    case 'Double Stimuli - contra perceptual problem';
         % contra pre
         H(1)   = 0.45;
         M(1)   = 0.1;
@@ -173,10 +195,51 @@ switch scenario
         
         sb = 0.1;
         % contra post
-
+        H(3)   = H(1)- sb ; %less saccades to contra
+        M(3)   = M(1);
+        FA(3)  = FA(1)- sb; %less saccades to contra
+        CR(3)  = CR(1)+ sb ;
+        
+        % ispi post
+        H(4)   = H(2)+ sb ; %more saccades to ipsi
+        M(4)   = M(3);
+        FA(4)  = FA(2); %+ sb;
+        CR(4)  = CR(3);
+        
+        if H(1)+ M(1)+ H(2) == 1
+            disp('Pre: target-trials: add up to 1')
+        end
+        if FA(1)+ CR(1)+ FA(2) == 1
+            disp('Pre: distractor-trials: add up to 1')
+        end
+        if H(3)+ M(3)+ H(4) == 1
+            disp('Post: target-trials: add up to 1')
+        end
+        if FA(3)+ CR(3)+ FA(4) == 1
+            disp('Post: distractor-trials: add up to 1')
+        end
+    
+    case 'Double Stimuli - Post: contra perceptual deficit';
+disp('Double Stimuli - Post: contra perceptual deficit') 
+% perceptual deficit: increasing errors
+%
+    % contra pre
+        H(1)   = 0.45;
+        M(1)   = 0.1;
+        FA(1)  = 0.2;
+        CR(1)  = 0.6;
+        
+        % ipsi pre
+        H(2)   = 0.45;
+        M(2)   = M(1);
+        FA(2)  = 0.2;
+        CR(2)  = CR(1);
+        
+        sb = 0.1;
+        % contra post
         H(3)   = H(1)- sb ;
-        M(3)   = M(1)+ sb;
-        FA(3)  = FA(1)+ sb;
+        M(3)   = M(1)+ sb; %contra fixation
+        FA(3)  = FA(1)+ sb;%contra Saccade
         CR(3)  = CR(1)- sb;
         
         % ispi post
@@ -197,10 +260,52 @@ switch scenario
         if FA(3)+ CR(3)+ FA(4) == 1
             disp('Post: distractor-trials: add up to 1')
         end
+    
+    case 'Double Stimuli - Post: contra motor bias for saccades, contra perceptual deficit';
+disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual deficit') 
+% perceptual deficit: increasing fixation responses
+% motor bias for saccades
+    % contra pre
+        H(1)   = 0.45;
+        M(1)   = 0.1;
+        FA(1)  = 0.2;
+        CR(1)  = 0.6;
         
+        % ipsi pre
+        H(2)   = 0.45;
+        M(2)   = M(1);
+        FA(2)  = 0.2;
+        CR(2)  = CR(1);
         
+        sb = 0.1;
+        % contra post
+        H(3)   = H(1) ;
+        M(3)   = M(1); %contra fixation
+        FA(3)  = FA(1)+ sb;%contra Saccade
+        CR(3)  = CR(1)- sb;
         
+        % ispi post
+        H(4)   = H(2) ;
+        M(4)   = M(3);
+        FA(4)  = FA(2);
+        CR(4)  = CR(3);
+        
+        if H(1)+ M(1)+ H(2) == 1
+            disp('Pre: target-trials: add up to 1')
+        end
+        if FA(1)+ CR(1)+ FA(2) == 1
+            disp('Pre: distractor-trials: add up to 1')
+        end
+        if H(3)+ M(3)+ H(4) == 1
+            disp('Post: target-trials: add up to 1')
+        end
+        if FA(3)+ CR(3)+ FA(4) == 1
+            disp('Post: distractor-trials: add up to 1')
+        end
+ 
     case 'Double Stimuli - Pre: No spatial choice bias & Post: perceptual deficit';
+        disp('Double Stimuli - Pre: No spatial choice bias & Post: perceptual deficit')        
+
         % contra pre
         H(1)   = 0.5;
         M(1)   = 0.2;
@@ -239,45 +344,7 @@ switch scenario
             disp('Post: distractor-trials: add up to 1')
         end
         
-    case 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
-        % contra pre
-            % contra pre
-        H(1)   = 0.5;
-        M(1)   = 0.2;
-        FA(1)  = 0.1; %0.1;
-        CR(1)  = 0.5; %0.6;
-        
-        % ipsi pre
-        H(2)   = 0.3;
-        M(2)   = M(1);
-        FA(2)  = 0.4;
-        CR(2)  = CR(1);
-        
-        sb = 0.1;
-        % contra post
-        H(3)   = H(1)- sb ;
-        M(3)   = M(1);
-        FA(3)  = FA(1)- sb;
-        CR(3)  = CR(1);
-        
-        % ispi post
-        H(4)   = H(2)+ sb ;
-        M(4)   = M(3);
-        FA(4)  = FA(2)+ sb;
-        CR(4)  = CR(3);
-  
-        if H(1)+ M(1)+ H(2) == 1 
-            disp('Pre: target-trials: add up to 1')
-        end
-        if FA(1)+ CR(1)+ FA(2) == 1 
-            disp('Pre: distractor-trials: add up to 1')
-        end
-        if H(3)+ M(3)+ H(4) == 1
-            disp('Post: target-trials: add up to 1')
-        end
-        if FA(3)+ CR(3)+ FA(4) == 1
-            disp('Post: distractor-trials: add up to 1')
-        end
+
 
         
   case 'Double Stimuli - Curius inactivation session 7 20190913';
@@ -366,10 +433,22 @@ end
 
 %% It should be before the dprime calculation because 0.5 is added to the Nb.of trials
 %% all rewarded trials (hits & CR)/ all trials
+
+% avoid 0 or Inf probabilities
+if any(H==0) || any(M==0) || any(FA==0) || any(CR==0),
+    % add 0.5 to both the number of hits and the number of false alarms,
+    % add 1 to both the number of signal trials and the number of noise trials; dubbed the loglinear approach (Hautus, 1995)
+    
+    disp('correcting...');
+    
+    n_trials = n_trials + 1;
+    
     H = single(H*n_trials);
     M = single(M*n_trials);
     FA = single(FA*n_trials);
     CR = single(CR*n_trials);
+    
+    
 Accuracy(1) = (H(2)+H(1)+ CR(1))/(H(1) + H(2) + M(1) +  FA(1)+ CR(1)+ FA(2)); 
 Accuracy(2) = (H(4)+H(3)+ CR(3))/   (H(3) + H(4) + M(3) +  FA(3)+ CR(3)+ FA(4)); 
 
@@ -387,19 +466,7 @@ Dis_fixation(1)         = CR(1) ./ (FA(1) + FA(2) + CR(1));
 Dis_IpsiSelection(2)    = FA(4)./ (FA(3) + FA(4) + CR(3));
 Dis_ContraSelection(2)  = FA(3)./ (FA(3) + FA(4) + CR(3));
 Dis_fixation(2)         = CR(3) ./ (FA(3) + FA(4) + CR(3));
-% avoid 0 or Inf probabilities
-if any(H==0) || any(M==0) || any(FA==0) || any(CR==0),
-    % add 0.5 to both the number of hits and the number of false alarms,
-    % add 1 to both the number of signal trials and the number of noise trials; dubbed the loglinear approach (Hautus, 1995)
     
-    disp('correcting...');
-    
-    n_trials = n_trials + 1;
-    
-    H = single(H*n_trials);
-    M = single(M*n_trials);
-    FA = single(FA*n_trials);
-    CR = single(CR*n_trials);
     
     H = H + 0.5;
     M = M + 0.5;
@@ -413,7 +480,23 @@ else
     M = single(M*n_trials);
     FA = single(FA*n_trials);
     CR = single(CR*n_trials);
-    
+    Accuracy(1) = (H(2)+H(1)+ CR(1))/(H(1) + H(2) + M(1) +  FA(1)+ CR(1)+ FA(2)); 
+Accuracy(2) = (H(4)+H(3)+ CR(3))/   (H(3) + H(4) + M(3) +  FA(3)+ CR(3)+ FA(4)); 
+
+%TargetSelection
+Tar_IpsiSelection(1)    = H(2) ./ (H(1) + H(2) + M(1)); %ipsi
+Tar_ContraSelection(1)  = H(1) ./ (H(1) + H(2) + M(1));
+Tar_fixation(1)         = M(1) ./ (H(1) + H(2) + M(1));
+Tar_IpsiSelection(2)    = H(4) ./ (H(3) + H(4) + M(3));
+Tar_ContraSelection(2)  = H(3) ./ (H(3) + H(4) + M(3));
+Tar_fixation(2)         = M(3) ./ (H(3) + H(4) + M(3));
+%DistractorSelection
+Dis_IpsiSelection(1)    = FA(2)./ (FA(1) + FA(2) + CR(1)); %ipsi
+Dis_ContraSelection(1)  = FA(1)./ (FA(1) + FA(2) + CR(1));
+Dis_fixation(1)         = CR(1) ./ (FA(1) + FA(2) + CR(1));
+Dis_IpsiSelection(2)    = FA(4)./ (FA(3) + FA(4) + CR(3));
+Dis_ContraSelection(2)  = FA(3)./ (FA(3) + FA(4) + CR(3));
+Dis_fixation(2)         = CR(3) ./ (FA(3) + FA(4) + CR(3));
 end
 
 
