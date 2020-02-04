@@ -407,21 +407,21 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
     case 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
        StimulusType = 'Double D-T Stimuli'; 
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
-        % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1 
+        % H(1)+ M(1)/CR(2)+ FA(2) == 1  &FA(1)+ CR(1)/M(2)+ H(2) == 1 
         % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased 
         % good perceptual discrimination on ipsilateral side - no change for ipsilateral distractor trials
         
         % contra pre
             % contra pre
         H(1)   = 0.5;
-        M(1)   = 0.2;
-        FA(1)  = 0.2; %0.1;
-        CR(1)  = 0.5; %0.6;
+        M(1)   = 0.1;
+        FA(1)  = 0.4; 
+        CR(1)  = 0.1; 
         
         % ipsi pre
-        H(2)   = 0.3;
+        H(2)   = 0.5;
         M(2)   = CR(1);
-        FA(2)  = 0.3;
+        FA(2)  = 0.4;
         CR(2)  = M(1);
         
         sb = 0.1;
@@ -651,6 +651,7 @@ if IndependentCalculation == 1
     pHit = H ./ (H + M);
     pFA = FA ./ (FA + CR);
 else
+    %different proprotions of trials for hitrate & falsealarm dependent on type of Stimuli
      if strcmp(StimulusType , 'Double_Stimuli')
 
     H_ = [H(2) H(1) H(4) H(3) ];
@@ -658,6 +659,8 @@ else
     pHit = H ./ (H + M +H_);
     pFA = FA ./ (FA + CR +FA_);
      elseif strcmp(StimulusType , 'Double D-T Stimuli')
+         %change the order of the Hits because 
+         % example: H (contra) ./ (H(contra) + M(contra) +FA(ipsi));
     H_ = [H(2) H(1) H(4) H(3) ];
     FA_ = [FA(2) FA(1) FA(4) FA(3) ];
     pHit = H ./ (H + M +FA_);
@@ -677,13 +680,13 @@ Plot_Colums = 3;
 MarkSize = 10; 
 figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
 if IndependentCalculation == 1
-    Title = 'pHit/FA independent Calculation: '; 
+    Title = 'pHit/FA independent Calculations: '; 
     mult = -1; 
 else
     Title = 'pHit/FA dependent Calculation'; 
     mult = -1;
 end
-set(gcf,'Name',[Title, '  Selection, Dprime, Criterion' ,scenario]);
+set(gcf,'Name',[Title, '- Secenario - ',scenario]);
 set(gcf,'Color',[1 1 1]);
 title([scenario sprintf('\n')])
 
