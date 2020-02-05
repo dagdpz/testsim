@@ -11,22 +11,22 @@ clear all
 %%
 IndependentCalculation = 0; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
 n_trials = 100; % for each stimulus condition
-%%
-%scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
-% scenario = 'add spatial bias to contra and ipsi';
-% scenario = 'contra perceptual problem';
-% scenario = 'high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
+
+% scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
+% scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
+scenario = 'Single Stimuli: contra perceptual problem';
+% scenario = 'Single Stimuli: high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
 
 %% DOUBLE STIMULI
- %scenario = 'DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit';
- %scenario = 'DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit';
+%scenario = 'DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit';
+%scenario = 'DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit';
 
 % scenario = 'Double Stimuli - Post: contra perceptual deficit';
 % scenario = 'Double Stimuli - Post: contra motor bias for saccades, contra perceptual deficit';
 % scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
 
-% scenario = 'Double Stimuli - Curius inactivation session 7 20190913'; 
- scenario = 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
+% scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
+% scenario = 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
 
 
 % Enter the Proportion for Hits, Misses, FA, CR
@@ -34,9 +34,9 @@ switch scenario
     
     case 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
         disp('Single Stimuli: Pre: no spatial bias, add spatial bias to contra')
-        StimulusType = 'Sgl_Stimuli'; 
-
+        StimulusType = 'Sgl_Stimuli';
         IndependentCalculation = 1;
+        
         H(1)   = 0.7; %0.7
         M(1)   = 0.3; %0.3
         FA(1)  = 0.3;
@@ -58,9 +58,10 @@ switch scenario
         FA(4)  = FA(2);
         CR(4)  = CR(2);
         
-    case 'add spatial bias to contra and ipsi';
-                     StimulusType = 'Sgl_Stimuli'; 
-
+    case 'Single Stimuli: add contra spatial bias to contra and ipsi';
+        StimulusType = 'Sgl_Stimuli';
+        IndependentCalculation = 1;
+        
         H(1)   = 0.7;
         M(1)   = 0.3;
         FA(1)  = 0.25;
@@ -83,9 +84,10 @@ switch scenario
         CR(4)  = CR(2)+sb;
         
         
-    case 'contra perceptual problem';
-                     StimulusType = 'Sgl_Stimuli'; 
-
+    case 'Single Stimuli: contra perceptual problem';
+        StimulusType = 'Sgl_Stimuli';
+        IndependentCalculation = 1;
+        
         H(1)   = 0.7;
         M(1)   = 0.3;
         FA(1)  = 0.25;
@@ -95,7 +97,8 @@ switch scenario
         M(2)   = 0.4;
         FA(2)  = 0.4;
         CR(2)  = 0.6;
-        sb = 0.15;
+        
+        sb = 0.15; % here sb is not spatial bias, it is perceptual deficit
         
         %general increase in errors: reduce Hits, increase Miss, reduce CR, increase FA
         H(3)   = H(1) - sb; % 0.55;
@@ -108,9 +111,10 @@ switch scenario
         FA(4)  = FA(2);
         CR(4)  = CR(2);
         
-    case 'high hit rate, but ipsi spatial bias';
-             StimulusType = 'Sgl_Stimuli'; 
-
+    case 'Single Stimuli: high hit rate, but ipsi spatial bias';
+        StimulusType = 'Sgl_Stimuli';
+        IndependentCalculation = 1;
+        
         H(1)   = 0.9;
         M(1)   = 0.1;
         FA(1)  = 0.25;
@@ -131,12 +135,13 @@ switch scenario
         M(4)   = M(2);
         FA(4)  = FA(2)+sb;
         CR(4)  = CR(2)-sb;
+        
     case 'DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit';
-       disp('DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit')
-             StimulusType = 'Double_Stimuli'; 
-
+        disp('DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit')
+        StimulusType = 'Double_Stimuli';
+        
         % A condition for double stimuli: Fixation is the same for contra vs ipsi M(1) = M(2)
-        % spatial-saccade choice bias  (ipsi) without same discrimination performance 
+        % spatial-saccade choice bias  (ipsi) without same discrimination performance
         % Pre: no choice bias -> Post: ipsi choice bias -> fixations do not change for both hemifields
         % Post: ipsi targets are highly selected
         % H(1) + M(1) + H(2) should add to 1
@@ -179,13 +184,13 @@ switch scenario
         if FA(3)+ CR(3)+ FA(4) == 1
             disp('Post: distractor-trials: add up to 1')
         end
-    
+        
     case 'DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit';
-       disp('DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit')
-             StimulusType = 'Double_Stimuli'; 
-
+        disp('DoubleStimuli - Post: ipsi selection Bias (saccade), NO perceptual deficit')
+        StimulusType = 'Double_Stimuli';
+        
         % A condition for double stimuli: Fixation is the same for contra vs ipsi M(1) = M(2)
-        % spatial-saccade choice bias  (ipsi) without same discrimination performance 
+        % spatial-saccade choice bias  (ipsi) without same discrimination performance
         % Pre: no choice bias -> Post: ipsi choice bias -> fixations do not change for both hemifields
         % Post: ipsi targets are highly selected
         % H(1) + M(1) + H(2) should add to 1
@@ -228,13 +233,13 @@ switch scenario
         if FA(3)+ CR(3)+ FA(4) == 1
             disp('Post: distractor-trials: add up to 1')
         end
-    
+        
     case 'Double Stimuli - Post: contra perceptual deficit';
-disp('Double Stimuli - Post: contra perceptual deficit') 
-             StimulusType = 'Double_Stimuli'; 
-% perceptual deficit: increasing errors
-%
-    % contra pre
+        disp('Double Stimuli - Post: contra perceptual deficit')
+        StimulusType = 'Double_Stimuli';
+        % perceptual deficit: increasing errors
+        %
+        % contra pre
         H(1)   = 0.45;
         M(1)   = 0.1;
         FA(1)  = 0.2;
@@ -271,13 +276,13 @@ disp('Double Stimuli - Post: contra perceptual deficit')
         if FA(3)+ CR(3)+ FA(4) == 1
             disp('Post: distractor-trials: add up to 1')
         end
-    
+        
     case 'Double Stimuli - Post: contra motor bias for saccades, contra perceptual deficit';
-disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual deficit') 
-             StimulusType = 'Double_Stimuli'; 
-% perceptual deficit: increasing fixation responses
-% motor bias for saccades
-    % contra pre
+        disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual deficit')
+        StimulusType = 'Double_Stimuli';
+        % perceptual deficit: increasing fixation responses
+        % motor bias for saccades
+        % contra pre
         H(1)   = 0.45;
         M(1)   = 0.1;
         FA(1)  = 0.2;
@@ -314,11 +319,11 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
         if FA(3)+ CR(3)+ FA(4) == 1
             disp('Post: distractor-trials: add up to 1')
         end
- 
+        
     case 'Double Stimuli - Pre: No spatial choice bias & Post: perceptual deficit';
-        disp('Double Stimuli - Pre: No spatial choice bias & Post: perceptual deficit')        
-             StimulusType = 'Double_Stimuli'; 
-
+        disp('Double Stimuli - Pre: No spatial choice bias & Post: perceptual deficit')
+        StimulusType = 'Double_Stimuli';
+        
         % contra pre
         H(1)   = 0.5;
         M(1)   = 0.2;
@@ -357,20 +362,20 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
             disp('Post: distractor-trials: add up to 1')
         end
         
-
-
         
-  case 'Double Stimuli - Curius inactivation session 7 20190913';
-             StimulusType = 'Double_Stimuli'; 
-  
-      % spatial choice bias  (ipsi) with good discrimination performance
+        
+        
+    case 'Double Stimuli - Curius inactivation session 7 20190913';
+        StimulusType = 'Double_Stimuli';
+        
+        % spatial choice bias  (ipsi) with good discrimination performance
         % for distractors
         % Fixation is the same for contra vs ipsi M(1) = M(2)
-
+        
         % Pre: no choice bias -> Post: ipsi choice bias -> fixations doesn't change for both hemifields
         % target are highly selected
         % H(1) + M(1) + H(2) should add to 1
-        %pre 26/67 + 1/67  + 40/67 
+        %pre 26/67 + 1/67  + 40/67
         %pst 11/61 + 0/61 +50/61
         % FA(1) + CR(1) + FA(2) should add to 1
         
@@ -396,27 +401,27 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
         H(4)   = 50/61 ;
         M(4)   = M(3);
         FA(4)  = 24/62;
-        CR(4)  = CR(3);  
+        CR(4)  = CR(3);
         if H(1)+ M(1)+ H(2) == 1
             disp('target-trials: add up to 1')
         end
         if FA(1)+ CR(1)+ FA(2) == 1
             disp('distractor-trials: add up to 1')
         end
-     
+        
     case 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
-       StimulusType = 'Double D-T Stimuli'; 
+        StimulusType = 'Double D-T Stimuli';
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
-        % H(1)+ M(1)/CR(2)+ FA(2) == 1  &FA(1)+ CR(1)/M(2)+ H(2) == 1 
-        % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased 
+        % H(1)+ M(1)/CR(2)+ FA(2) == 1  &FA(1)+ CR(1)/M(2)+ H(2) == 1
+        % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased
         % good perceptual discrimination on ipsilateral side - no change for ipsilateral distractor trials
         
         % contra pre
-            % contra pre
+        % contra pre
         H(1)   = 0.5;
         M(1)   = 0.1;
-        FA(1)  = 0.4; 
-        CR(1)  = 0.1; 
+        FA(1)  = 0.4;
+        CR(1)  = 0.1;
         
         % ipsi pre
         H(2)   = 0.5;
@@ -437,10 +442,10 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
         FA(4)  = FA(2);
         CR(4)  = M(3);
         
-        if H(1)+ M(1)+ FA(2) == 1 
+        if H(1)+ M(1)+ FA(2) == 1
             disp('Pre: target-trials: add up to 1')
         end
-        if FA(1)+ CR(1)+ H(2) == 1 
+        if FA(1)+ CR(1)+ H(2) == 1
             disp('Pre: distractor-trials: add up to 1')
         end
         if H(3)+ M(3)+ FA(4) == 1
@@ -450,15 +455,15 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
             disp('Post: distractor-trials: add up to 1')
         end
         
-         case 'Double D-T Stimuli - Post: ipsi choice Bias & ipsi perceptual deficit';
-       StimulusType = 'Double D-T Stimuli'; 
+    case 'Double D-T Stimuli - Post: ipsi choice Bias & ipsi perceptual deficit';
+        StimulusType = 'Double D-T Stimuli';
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
-        % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1 
-        % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased 
+        % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1
+        % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased
         % ipsi perceptual deficit - increased selection of FA (ipsi)
         
         % contra pre
-            % contra pre
+        % contra pre
         H(1)   = 0.5;
         M(1)   = 0.2;
         FA(1)  = 0.2; %0.1;
@@ -483,10 +488,10 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
         FA(4)  = FA(2)+ sb ;
         CR(4)  = M(3);
         
-        if H(1)+ M(1)+ FA(2) == 1 
+        if H(1)+ M(1)+ FA(2) == 1
             disp('Pre: target-trials: add up to 1')
         end
-        if FA(1)+ CR(1)+ H(2) == 1 
+        if FA(1)+ CR(1)+ H(2) == 1
             disp('Pre: distractor-trials: add up to 1')
         end
         if H(3)+ M(3)+ FA(4) == 1
@@ -495,84 +500,95 @@ disp('Double Stimuli - Post: contra motor bias for saccades, contra perceptual d
         if FA(3)+ CR(3)+ H(4) == 1
             disp('Post: distractor-trials: add up to 1')
         end
+end % of scenario selection
+
+
+switch StimulusType
+    
+    
+    case 'Sgl_Stimuli'
+        
+        Accuracy(1) = (H(2)+H(1)+ CR(1)+ CR(2))/(H(1) + H(2) + M(1)+ M(2)+CR(2) +  FA(1)+ CR(1)+ FA(2));
+        Accuracy(2) = (H(4)+H(3)+ CR(3)+ CR(4))/   (H(3) + H(4) + M(3)+ M(4)+ CR(4) +  FA(3)+ CR(3)+ FA(4));
+        %TargetSelection
+        Tar_IpsiSelection(1)    = H(2) ./ (H(2) + M(2)); %ipsi
+        Tar_IpsiFixation(1)     = M(2) ./ (H(2) + M(2)); % fixation selection when tar is ipsi
+        Tar_ContraSelection(1)  = H(1) ./ (H(1) + M(1));
+        Tar_ContraFixation(1)   = M(1) ./ (H(1) + M(1)); % fixation selection when tar is contra
+        Tar_IpsiSelection(2)    = H(4) ./ (H(4) + M(4));
+        Tar_IpsiFixation(2)     = M(4) ./ (H(4) + M(4));
+        Tar_ContraSelection(2)  = H(3) ./ (H(3) + M(3));
+        Tar_ContraFixation(2)   = M(3) ./ (H(3) + M(3));
+        %DistractorSelection
+        Dis_IpsiSelection(1)    = FA(2)./ (FA(2) + CR(2)); %ipsi
+        Dis_IpsiFixation(1)     = CR(2)./ (FA(2) + CR(2));
+        Dis_ContraSelection(1)  = FA(1)./ (FA(1) + CR(1));
+        Dis_ContraFixation(1)   = CR(1)./ (FA(1) + CR(1));
+        Dis_IpsiSelection(2)    = FA(4)./ (FA(4) + CR(4));
+        Dis_IpsiFixation(2)     = CR(4)./ (FA(4) + CR(4));
+        Dis_ContraSelection(2)  = FA(3)./ (FA(3) + CR(3));
+        Dis_ContraFixation(2)   = CR(3)./ (FA(3) + CR(3));
+        
+    case 'Double_Stimuli'
+        
+        Accuracy(1) = (H(2)+H(1)+ CR(1))/(H(1) + H(2) + M(1) +  FA(1)+ CR(1)+ FA(2));
+        Accuracy(2) = (H(4)+H(3)+ CR(3))/   (H(3) + H(4) + M(3) +  FA(3)+ CR(3)+ FA(4));
+        %TargetSelection
+        Tar_IpsiSelection(1)    = H(2) ./ (H(1) + H(2) + M(1)); %ipsi
+        Tar_ContraSelection(1)  = H(1) ./ (H(1) + H(2) + M(1));
+        Tar_IpsiFixation(1)     = M(1) ./ (H(1) + H(2) + M(1));
+        Tar_ContraFixation(1)   = Tar_IpsiFixation(1);
+        Tar_IpsiSelection(2)    = H(4) ./ (H(3) + H(4) + M(3));
+        Tar_ContraSelection(2)  = H(3) ./ (H(3) + H(4) + M(3));
+        Tar_IpsiFixation(2)     = M(3) ./ (H(3) + H(4) + M(3));
+        Tar_ContraFixation(2)     = Tar_IpsiFixation(2);
+        
+        %DistractorSelection
+        Dis_IpsiSelection(1)    = FA(2) ./ (FA(1) + FA(2) + CR(1)); %ipsi
+        Dis_ContraSelection(1)  = FA(1) ./ (FA(1) + FA(2) + CR(1));
+        Dis_IpsiFixation(1)     = CR(1) ./ (FA(1) + FA(2) + CR(1));
+        Dis_ContraFixation(1)   = Dis_IpsiFixation(1);
+        Dis_IpsiSelection(2)    = FA(4) ./ (FA(3) + FA(4) + CR(3));
+        Dis_ContraSelection(2)  = FA(3) ./ (FA(3) + FA(4) + CR(3));
+        Dis_IpsiFixation(2)     = CR(3) ./ (FA(3) + FA(4) + CR(3));
+        Dis_ContraFixation(2)   = Dis_IpsiFixation(2);
+        
+        
+        
+    case 'Double D-T Stimuli'
+        Accuracy(1) = (H(2)+H(1))/(H(1) + FA(2) + M(1) +  FA(1)+ CR(1)+ H(2) );
+        Accuracy(2) = (H(4)+H(3))/(H(3) +  FA(4)  + M(3) +  FA(3)+ CR(3)+ H(4));
+        
+        %TargetSelection
+        Tar_IpsiSelection(1)    = H(2) ./ (FA(1) + H(2) + M(1)); %ipsi
+        Tar_ContraSelection(1)  = H(1) ./ (H(1) + FA(2) + M(1));
+        Tar_fixation(1)         = M(1) ./ (FA(1) + H(2) + M(1));
+        Tar_IpsiSelection(2)    = H(4) ./ (FA(3) + H(4) + M(3));
+        Tar_ContraSelection(2)  = H(3) ./ (H(3) + FA(4) + M(3));
+        Tar_fixation(2)         = M(3) ./ (FA(3) + H(4) + M(3));
+        %DistractorSelection
+        Dis_IpsiSelection(1)    = FA(2) ./ (H(1) + FA(2) + CR(1)); %ipsi
+        Dis_ContraSelection(1)  = FA(1) ./ (FA(1) + H(2) + CR(1));
+        Dis_fixation(1)         = CR(1) ./ (H(1) + FA(2) + CR(1));
+        Dis_IpsiSelection(2)    = FA(4) ./ (H(3) + FA(4) + CR(3));
+        Dis_ContraSelection(2)  = FA(3) ./ (FA(3) + H(4) + CR(3));
+        Dis_fixation(2)         = CR(3) ./ (H(3) + FA(4) + CR(3));
+        
+        
 end
 
-
-%% It should be before the dprime calculation because 0.5 is added to the Nb.of trials
-%% all rewarded trials (hits & CR)/ all trials
 
 % avoid 0 or Inf probabilities
 if any(H==0) || any(M==0) || any(FA==0) || any(CR==0),
     % add 0.5 to both the number of hits and the number of false alarms,
     % add 1 to both the number of signal trials and the number of noise trials; dubbed the loglinear approach (Hautus, 1995)
-    
     disp('correcting...');
-    
     n_trials = n_trials + 1;
-    
+      
     H = single(H*n_trials);
     M = single(M*n_trials);
     FA = single(FA*n_trials);
     CR = single(CR*n_trials);
-    
-    if strcmp(StimulusType , 'Double D-T Stimuli')
-Accuracy(1) = (H(2)+H(1))/(H(1) + FA(2) + M(1) +  FA(1)+ CR(1)+ H(2) ); 
-Accuracy(2) = (H(4)+H(3))/(H(3) +  FA(4)  + M(3) +  FA(3)+ CR(3)+ H(4)); 
-
-%TargetSelection
-Tar_IpsiSelection(1)    = H(2) ./ (FA(1) + H(2) + M(1)); %ipsi
-Tar_ContraSelection(1)  = H(1) ./ (H(1) + FA(2) + M(1));
-Tar_fixation(1)         = M(1) ./ (FA(1) + H(2) + M(1));
-Tar_IpsiSelection(2)    = H(4) ./ (FA(3) + H(4) + M(3));
-Tar_ContraSelection(2)  = H(3) ./ (H(3) + FA(4) + M(3));
-Tar_fixation(2)         = M(3) ./ (FA(3) + H(4) + M(3));
-%DistractorSelection
-Dis_IpsiSelection(1)    = FA(2)./ (H(1) + FA(2) + CR(1)); %ipsi
-Dis_ContraSelection(1)  = FA(1)./ (FA(1) + H(2) + CR(1));
-Dis_fixation(1)         = CR(1) ./ (H(1) + FA(2) + CR(1));
-Dis_IpsiSelection(2)    = FA(4)./ (H(3) + FA(4) + CR(3));
-Dis_ContraSelection(2)  = FA(3)./ (FA(3) + H(4) + CR(3));
-Dis_fixation(2)         = CR(3) ./ (H(3) + FA(4) + CR(3));
-    elseif strcmp(StimulusType , 'Double_Stimuli')
-        
-Accuracy(1) = (H(2)+H(1)+ CR(1))/(H(1) + H(2) + M(1) +  FA(1)+ CR(1)+ FA(2)); 
-Accuracy(2) = (H(4)+H(3)+ CR(3))/   (H(3) + H(4) + M(3) +  FA(3)+ CR(3)+ FA(4));
-%TargetSelection
-Tar_IpsiSelection(1)    = H(2) ./ (H(1) + H(2) + M(1)); %ipsi
-Tar_ContraSelection(1)  = H(1) ./ (H(1) + H(2) + M(1));
-Tar_fixation(1)         = M(1) ./ (H(1) + H(2) + M(1));
-Tar_IpsiSelection(2)    = H(4) ./ (H(3) + H(4) + M(3));
-Tar_ContraSelection(2)  = H(3) ./ (H(3) + H(4) + M(3));
-Tar_fixation(2)         = M(3) ./ (H(3) + H(4) + M(3));
-%DistractorSelection
-Dis_IpsiSelection(1)    = FA(2)./ (FA(1) + FA(2) + CR(1)); %ipsi
-Dis_ContraSelection(1)  = FA(1)./ (FA(1) + FA(2) + CR(1));
-Dis_fixation(1)         = CR(1) ./ (FA(1) + FA(2) + CR(1));
-Dis_IpsiSelection(2)    = FA(4)./ (FA(3) + FA(4) + CR(3));
-Dis_ContraSelection(2)  = FA(3)./ (FA(3) + FA(4) + CR(3));
-Dis_fixation(2)         = CR(3) ./ (FA(3) + FA(4) + CR(3));
-
-    elseif strcmp(StimulusType , 'Sgl_Stimuli')
-Accuracy(1) = (H(2)+H(1)+ CR(1)+ CR(2))/(H(1) + H(2) + M(1)+ M(2)+CR(2) +  FA(1)+ CR(1)+ FA(2)); 
-Accuracy(2) = (H(4)+H(3)+ CR(3)+ CR(4))/   (H(3) + H(4) + M(3)+ M(4)+ CR(4) +  FA(3)+ CR(3)+ FA(4));
-%TargetSelection
-Tar_IpsiSelection(1)    = H(2) ./ (H(2) + M(2)); %ipsi
-Tar_ContraSelection(1)  = H(1) ./ (H(1) + M(1));
-Tar_fixation(1)         = M(1) ./ (H(1) + M(1));
-Tar_IpsiSelection(2)    = H(4) ./ (H(4) + M(4));
-Tar_ContraSelection(2)  = H(3) ./ (H(3) + M(3));
-Tar_fixation(2)         = M(3) ./ (H(3) + M(3));
-%DistractorSelection
-Dis_IpsiSelection(1)    = FA(2)./ (FA(2) + CR(2)); %ipsi
-Dis_ContraSelection(1)  = FA(1)./ (FA(1) + CR(1));
-Dis_fixation(1)         = CR(1)./ (FA(1)+ CR(1));
-Dis_IpsiSelection(2)    = FA(4)./ (FA(4) + CR(4));
-Dis_ContraSelection(2)  = FA(3)./ (FA(3) + CR(3));
-Dis_fixation(2)         = CR(3)./ (FA(3) + CR(3));
-    end
-
-
-    
     
     H = H + 0.5;
     M = M + 0.5;
@@ -581,219 +597,160 @@ Dis_fixation(2)         = CR(3)./ (FA(3) + CR(3));
     
 else
     
-    
     H = single(H*n_trials);
     M = single(M*n_trials);
     FA = single(FA*n_trials);
     CR = single(CR*n_trials);
     
-    
-    
-    if strcmp(StimulusType , 'Double D-T Stimuli')
-Accuracy(1) = (H(2)+H(1))/(H(1) + FA(2) + M(1) +  FA(1)+ CR(1)+ H(2) ); 
-Accuracy(2) = (H(4)+H(3))/(H(3) +  FA(4)  + M(3) +  FA(3)+ CR(3)+ H(4)); 
-
-%TargetSelection
-Tar_IpsiSelection(1)    = H(2) ./ (FA(1) + H(2) + M(1)); %ipsi
-Tar_ContraSelection(1)  = H(1) ./ (H(1) + FA(2) + M(1));
-Tar_fixation(1)         = M(1) ./ (FA(1) + H(2) + M(1));
-Tar_IpsiSelection(2)    = H(4) ./ (FA(3) + H(4) + M(3));
-Tar_ContraSelection(2)  = H(3) ./ (H(3) + FA(4) + M(3));
-Tar_fixation(2)         = M(3) ./ (FA(3) + H(4) + M(3));
-%DistractorSelection
-Dis_IpsiSelection(1)    = FA(2)./ (H(1) + FA(2) + CR(1)); %ipsi
-Dis_ContraSelection(1)  = FA(1)./ (FA(1) + H(2) + CR(1));
-Dis_fixation(1)         = CR(1) ./ (H(1) + FA(2) + CR(1));
-Dis_IpsiSelection(2)    = FA(4)./ (H(3) + FA(4) + CR(3));
-Dis_ContraSelection(2)  = FA(3)./ (FA(3) + H(4) + CR(3));
-Dis_fixation(2)         = CR(3) ./ (H(3) + FA(4) + CR(3));
-    elseif strcmp(StimulusType , 'Double_Stimuli')
-        
-Accuracy(1) = (H(2)+H(1)+ CR(1))/(H(1) + H(2) + M(1) +  FA(1)+ CR(1)+ FA(2)); 
-Accuracy(2) = (H(4)+H(3)+ CR(3))/   (H(3) + H(4) + M(3) +  FA(3)+ CR(3)+ FA(4));
-%TargetSelection
-Tar_IpsiSelection(1)    = H(2) ./ (H(1) + H(2) + M(1)); %ipsi
-Tar_ContraSelection(1)  = H(1) ./ (H(1) + H(2) + M(1));
-Tar_fixation(1)         = M(1) ./ (H(1) + H(2) + M(1));
-Tar_IpsiSelection(2)    = H(4) ./ (H(3) + H(4) + M(3));
-Tar_ContraSelection(2)  = H(3) ./ (H(3) + H(4) + M(3));
-Tar_fixation(2)         = M(3) ./ (H(3) + H(4) + M(3));
-%DistractorSelection
-Dis_IpsiSelection(1)    = FA(2)./ (FA(1) + FA(2) + CR(1)); %ipsi
-Dis_ContraSelection(1)  = FA(1)./ (FA(1) + FA(2) + CR(1));
-Dis_fixation(1)         = CR(1) ./ (FA(1) + FA(2) + CR(1));
-Dis_IpsiSelection(2)    = FA(4)./ (FA(3) + FA(4) + CR(3));
-Dis_ContraSelection(2)  = FA(3)./ (FA(3) + FA(4) + CR(3));
-Dis_fixation(2)         = CR(3) ./ (FA(3) + FA(4) + CR(3));
-
-    elseif strcmp(StimulusType , 'Sgl_Stimuli')
-Accuracy(1) = (H(2)+H(1)+ CR(1)+ CR(2))/(H(1) + H(2) + M(1)+ M(2)+CR(2) +  FA(1)+ CR(1)+ FA(2)); 
-Accuracy(2) = (H(4)+H(3)+ CR(3)+ CR(4))/   (H(3) + H(4) + M(3)+ M(4)+ CR(4) +  FA(3)+ CR(3)+ FA(4));
-%TargetSelection
-Tar_IpsiSelection(1)    = H(2) ./ (H(2) + M(2)); %ipsi
-Tar_ContraSelection(1)  = H(1) ./ (H(1) + M(1));
-Tar_fixation(1)         = M(1) ./ (H(1) + M(1));
-Tar_IpsiSelection(2)    = H(4) ./ (H(4) + M(4));
-Tar_ContraSelection(2)  = H(3) ./ (H(3) + M(3));
-Tar_fixation(2)         = M(3) ./ (H(3) + M(3));
-%DistractorSelection
-Dis_IpsiSelection(1)    = FA(2)./ (FA(2) + CR(2)); %ipsi
-Dis_ContraSelection(1)  = FA(1)./ (FA(1) + CR(1));
-Dis_fixation(1)         = CR(1)./ (FA(1)+ CR(1));
-Dis_IpsiSelection(2)    = FA(4)./ (FA(4) + CR(4));
-Dis_ContraSelection(2)  = FA(3)./ (FA(3) + CR(3));
-Dis_fixation(2)         = CR(3)./ (FA(3) + CR(3));
-    end
 end
-
 
 if IndependentCalculation == 1
     pHit = H ./ (H + M);
     pFA = FA ./ (FA + CR);
+    
 else
     %different proprotions of trials for hitrate & falsealarm dependent on type of Stimuli
-     if strcmp(StimulusType , 'Double_Stimuli')
-
-    H_ = [H(2) H(1) H(4) H(3) ];
-    FA_ = [FA(2) FA(1) FA(4) FA(3) ];
-    pHit = H ./ (H + M +H_);
-    pFA = FA ./ (FA + CR +FA_);
-     elseif strcmp(StimulusType , 'Double D-T Stimuli')
-         %change the order of the Hits because 
-         % example: H (contra) ./ (H(contra) + M(contra) +FA(ipsi));
-    H_ = [H(2) H(1) H(4) H(3) ];
-    FA_ = [FA(2) FA(1) FA(4) FA(3) ];
-    pHit = H ./ (H + M +FA_);
-    pFA = FA ./ (FA + CR +H_);
-         
-     end
+    if strcmp(StimulusType , 'Double_Stimuli')
+        
+        H_ = [H(2) H(1) H(4) H(3) ];
+        FA_ = [FA(2) FA(1) FA(4) FA(3) ];
+        pHit = H ./ (H + M +H_);
+        pFA = FA ./ (FA + CR +FA_);
+    elseif strcmp(StimulusType , 'Double D-T Stimuli')
+        %change the order of the Hits because
+        % example: H (contra) ./ (H(contra) + M(contra) +FA(ipsi));
+        H_ = [H(2) H(1) H(4) H(3) ];
+        FA_ = [FA(2) FA(1) FA(4) FA(3) ];
+        pHit = H ./ (H + M +FA_);
+        pFA = FA ./ (FA + CR +H_);
+        
+    end
 end
 
 for k = 1:4,
     [dprime(k),beta(k),criterion(k)] = testsim_dprime(pHit(k),pFA(k));
 end
 
-%% Graph
-% Selection 
-Plot_Rows = 3; 
-Plot_Colums = 3; 
-MarkSize = 10; 
-figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
+%% Plotting
+
+% Selection
+Plot_Rows = 3;
+Plot_Colums = 3;
+MarkSize = 10;
+fs = 10; % font size
+
 if IndependentCalculation == 1
-    Title = 'pHit/FA independent Calculations: '; 
-    mult = -1; 
+    Title = 'pHit/FA independent Calculations: ';
+    mult = -1;
 else
-    Title = 'pHit/FA dependent Calculation'; 
+    Title = 'pHit/FA dependent Calculation';
     mult = -1;
 end
-set(gcf,'Name',[Title, '- Secenario - ',scenario]);
-set(gcf,'Color',[1 1 1]);
+ig_figure('Position',[200 200 1200 900],'PaperPositionMode','auto','Name',[Title, ' - scenario - ',scenario]); % ,'PaperOrientation','landscape'
+
+
+subplot(Plot_Colums,Plot_Rows,1);
+plot([1;2], [Tar_ContraSelection(1),Tar_ContraSelection(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ],'LineWidth', 2); hold on;
+plot([1;2], [Tar_IpsiSelection(1),Tar_IpsiSelection(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1],'LineWidth', 2); hold on;
+plot([1;2], [Tar_ContraFixation(1),Tar_ContraFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0.5 0 0 ],'LineWidth', 2); hold on;
+plot([1;2], [Tar_IpsiFixation(1),Tar_IpsiFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0.5 ],'LineWidth', 2); hold on;
+
 title([scenario sprintf('\n')])
+set(gca,'ylim',[0 1])
+ylabel( 'Target selection','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
+legend('con', 'ipsi', 'fix con', 'fix ipsi','Location','BestOutside')
 
 
-    subplot(Plot_Colums,Plot_Rows,1);
-    plot([1;2], [Tar_IpsiSelection(1),Tar_IpsiSelection(2)], 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
-    plot([1;2], [Tar_ContraSelection(1),Tar_ContraSelection(2)], 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
-    line([1;2], [Tar_ContraSelection(1),Tar_ContraSelection(2)], 'Color',[1 0 0],'LineWidth', 2); hold on; 
-    line([1;2], [Tar_IpsiSelection(1),Tar_IpsiSelection(2)], 'Color',[0 0 1],'LineWidth', 2); hold on;
-    plot([1;2], [Tar_fixation(1),Tar_fixation(2)], 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
-    line([1;2], [Tar_fixation(1),Tar_fixation(2)], 'Color',[0 0 0],'LineWidth', 2); hold on;
-    
-    set(gca,'ylim',[0 1])
-    ylabel( 'target selection','fontsize',14,'fontweight','b', 'Interpreter', 'none' );
-    set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',20);
-    legend('ipsi', 'con')
+subplot(Plot_Colums,Plot_Rows,2);
+plot([1;2], [Dis_ContraSelection(1),Dis_ContraSelection(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0],'LineWidth', 2); hold on;
+plot([1;2], [Dis_IpsiSelection(1),Dis_IpsiSelection(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1],'LineWidth', 2); hold on;
+plot([1;2], [Dis_ContraFixation(1),Dis_ContraFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0.5 0 0 ],'LineWidth', 2); hold on;
+plot([1;2], [Dis_IpsiFixation(1),Dis_IpsiFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0.5 ],'LineWidth', 2); hold on;
+set(gca,'ylim',[0 1])
+ylabel( 'Distractor selection','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
+legend('con', 'ipsi', 'fix con', 'fix ipsi','Location','BestOutside')
+
+% Accuracy
+subplot(Plot_Colums,Plot_Rows,3);
+plot([1;2], [Accuracy(1),Accuracy(2)], 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+line([1;2], [Accuracy(1),Accuracy(2)], 'Color',[0 0 0],'LineWidth', 2); hold on;
+set(gca,'ylim',[0 1])
+ylabel( 'Accuracy','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
 
 
-    subplot(Plot_Colums,Plot_Rows,2);
-   
-    plot([1;2], [Dis_IpsiSelection(1),Dis_IpsiSelection(2)], 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
-    plot([1;2], [Dis_ContraSelection(1),Dis_ContraSelection(2)], 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
-    line([1;2], [Dis_ContraSelection(1),Dis_ContraSelection(2)], 'Color',[1 0 0],'LineWidth', 2); hold on; 
-    line([1;2], [Dis_IpsiSelection(1),Dis_IpsiSelection(2)], 'Color',[0 0 1],'LineWidth', 2); hold on;
-    plot([1;2], [Dis_fixation(1),Dis_fixation(2)], 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
-    line([1;2], [Dis_fixation(1),Dis_fixation(2)], 'Color',[0 0 0],'LineWidth', 2); hold on;
-    
-    set(gca,'ylim',[0 1])
-    ylabel( 'distractor selection','fontsize',14,'fontweight','b', 'Interpreter', 'none' );
-    set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',20);
-    legend('ipsi', 'con')
-   
-    %Accuracy
-    subplot(Plot_Colums,Plot_Rows,3);
-    plot([1;2], [Accuracy(1),Accuracy(2)], 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
-    line([1;2], [Accuracy(1),Accuracy(2)], 'Color',[0 0 0],'LineWidth', 2); hold on;
-    set(gca,'ylim',[0 1])
-    ylabel( 'Accuracy (%)','fontsize',14,'fontweight','b', 'Interpreter', 'none' );
-    set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',20);
+subplot(Plot_Colums,Plot_Rows,4);
+plot([1;2], [pHit(2),pHit(4)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1],'LineWidth', 2); hold on;
+plot([1;2], [pHit(1),pHit(3)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ],'LineWidth', 2); hold on;
+plot([1;2], [pFA(2),pFA(4)], '*--','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1],'LineWidth', 2); hold on;
+plot([1;2], [pFA(1),pFA(3)], '*--','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ],'LineWidth', 2); hold on;
 
-%% Hitrate vs Falsealarm rate
-% figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
-% set(gcf,'Name','Hitrate and FalseAlarmRate');
+set(gca,'ylim',[0 1])
+ylabel( 'Hitrate / FA rate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
+legend('ipsi H', 'con H', 'ipsi FA', 'con FA','Location','BestOutside')
 
-    subplot(Plot_Colums,Plot_Rows,4);
-    plot([1;2], [pHit(2),pHit(4)], 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
-    line([1;2], [pHit(2),pHit(4)], 'Color',[0 0 1],'LineWidth', 2); hold on;
-    plot([1;2], [pHit(1),pHit(3)], 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
-    line([1;2], [pHit(1),pHit(3)], 'Color',[1 0 0],'LineWidth', 2); hold on;
-    set(gca,'ylim',[0 1])
-    ylabel( 'Hitrate','fontsize',14,'fontweight','b', 'Interpreter', 'none' );
-    set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',20);
+subplot(Plot_Colums,Plot_Rows,5);
+plot([pFA(2),pFA(4)], [pHit(2),pHit(4)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', 2); hold on;
+plot([pFA(1),pFA(3)], [pHit(1),pHit(3)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', 2); hold on;
+plot([pFA(4)], [pHit(4)], 'o','color',[0 0 1] , 'MarkerSize',MarkSize-1,'markerfacecolor',[0 0 1],'LineWidth', 2); hold on;
+plot([pFA(3)], [pHit(3)], 'o','color',[1 0 0] , 'MarkerSize',MarkSize-1,'markerfacecolor',[1 0 0],'LineWidth', 2); hold on;
+line([0 1],[1 0],'Color',[0 0 0],'LineStyle',':');
+set(gca,'ylim',[0 1],'xlim',[0 1],'fontsize',fs)
+xlabel( 'FA rate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+ylabel( 'Hitrate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+axis square
 
-    subplot(Plot_Colums,Plot_Rows,5);
-    plot([1;2], [pFA(2),pFA(4)], 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
-    line([1;2], [pFA(2),pFA(4)], 'Color',[0 0 1],'LineWidth', 2); hold on;
-    plot([1;2], [pFA(1),pFA(3)], 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
-    line([1;2], [pFA(1),pFA(3)], 'Color',[1 0 0],'LineWidth', 2); hold on;
-  
-    set(gca,'ylim',[0 1])
-    ylabel( 'False alarm rate','fontsize',14,'fontweight','b', 'Interpreter', 'none' );
-    set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',20);
-    
+% subplot(Plot_Colums,Plot_Rows,5);
+% plot([1;2], [pFA(2),pFA(4)], 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
+% line([1;2], [pFA(2),pFA(4)], 'Color',[0 0 1],'LineWidth', 2); hold on;
+% plot([1;2], [pFA(1),pFA(3)], 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
+% line([1;2], [pFA(1),pFA(3)], 'Color',[1 0 0],'LineWidth', 2); hold on;
+% set(gca,'ylim',[0 1])
+% ylabel( 'False alarm rate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+% set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
 
 
 %% Dprime vs Criterion
 % figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
 % set(gcf,'Name','Dprime vs Criterion');
 
-    subplot(Plot_Colums,Plot_Rows,6);
+subplot(Plot_Colums,Plot_Rows,6);
 
-    plot(dprime(1),criterion(1), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
-    plot(dprime(2),-criterion(2), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;% reverse direction of criterion for ipsi
+plot(dprime(1),criterion(1), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+plot(dprime(2),-criterion(2), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;% reverse direction of criterion for ipsi
 
-    plot(dprime(3),criterion(3), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
-    plot(dprime(4),-criterion(4), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
+plot(dprime(3),criterion(3), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
+plot(dprime(4),-criterion(4), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
 
-    plot(dprime(1),criterion(1), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
-    plot(dprime(2),mult*criterion(2), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;% reverse direction of criterion for ipsi
+plot(dprime(1),criterion(1), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+plot(dprime(2),mult*criterion(2), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;% reverse direction of criterion for ipsi
 
-    plot(dprime(3),criterion(3), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
-    plot(dprime(4),mult*criterion(4), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
+plot(dprime(3),criterion(3), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
+plot(dprime(4),mult*criterion(4), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
 
-   
-    xlabel('sensitivity')
-    ylabel('criterion')
-    set(gca,'ylim',[-2 2])
-    set(gca,'xlim',[0 4])
- 
+
+xlabel('sensitivity')
+ylabel('criterion')
+set(gca,'ylim',[-2 2])
+set(gca,'xlim',[0 4])
+
 %% Graph - change in criterion or change in dprime
-% figure('Position',[200 200 1200 900],'PaperPositionMode','auto'); % ,'PaperOrientation','landscape'
-% set(gcf,'Name','Change in Dprime and Criterion');
-    subplot(Plot_Colums,Plot_Rows,9);
+subplot(Plot_Colums,Plot_Rows,9);
 
-plot((dprime(1)-dprime(3)),(criterion(1)-criterion(3)), 'o','color',[1 0 0] , 'MarkerSize',15,'markerfacecolor',[1 0 0 ]); hold on;
-%ipsi blue 
-plot((dprime(2)-dprime(4)),((mult*criterion(2))-(mult*criterion(4))), 'o','color',[0 0 1] , 'MarkerSize',15,'markerfacecolor',[0 0 1 ]); hold on;
-plot((dprime(2)-dprime(4)),((-criterion(2))-(-criterion(4))), 'o','color',[0 0 1] , 'MarkerSize',15,'markerfacecolor',[0 0 1 ]); hold on;
-plot((dprime(2)-dprime(4)),((mult*criterion(2))-(mult*criterion(4))), 'o','color',[0 0 1] , 'MarkerSize',15,'markerfacecolor',[0 0 1 ]); hold on;
-xlabel('deltaPrePost sensitivity')
-ylabel('deltaPrePost criterion')
+plot((dprime(1)-dprime(3)),(criterion(1)-criterion(3)), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
+plot((dprime(2)-dprime(4)),((mult*criterion(2))-(mult*criterion(4))), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
+
+xlabel('Pre-Post sensitivity')
+ylabel('Pre-Post criterion')
 set(gca,'ylim',[-2 2])
 set(gca,'xlim',[-2 2])
 legend('contra', 'ipsi')
+grid on
 
 %% OLD  graphs for criterion and dprime
-%figure
 
 subplot(Plot_Colums,Plot_Rows,7);
 title([scenario sprintf('\n') 'dprime'])
@@ -810,9 +767,5 @@ plot([0 5],[0 0],'k--');
 set(gca,'Xlim',[0 5],'Xtick',[1:4],'XtickLabel',{'con pre' 'ipsi pre' 'con pst' 'ipsi pst'},'FontSize',12,'TickDir','out','box','off');
 ylabel(['criterion'])
 set(gca,'ylim',[-2 2])
-
-
-
-
 
 
