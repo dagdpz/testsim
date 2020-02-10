@@ -14,7 +14,7 @@ n_trials = 100; % for each stimulus condition
 
 % scenario = 'Single Stimuli: Pre: no spatial bias, add spatial bias to contra';
 % scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
-scenario = 'Single Stimuli: contra perceptual problem';
+%scenario = 'Single Stimuli: contra perceptual problem';
 % scenario = 'Single Stimuli: high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
 
 %% DOUBLE STIMULI
@@ -26,8 +26,8 @@ scenario = 'Single Stimuli: contra perceptual problem';
 % scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
 
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
-% scenario = 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
-
+ scenario = 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
+%Double D-T Stimuli - Post: ipsi choice Bias & ipsi perceptual deficit
 
 % Enter the Proportion for Hits, Misses, FA, CR
 switch scenario
@@ -503,6 +503,13 @@ switch scenario
 end % of scenario selection
 
 
+
+H = single(H*n_trials);
+M = single(M*n_trials);
+FA = single(FA*n_trials);
+CR = single(CR*n_trials);
+
+
 switch StimulusType
     
     
@@ -562,18 +569,23 @@ switch StimulusType
         %TargetSelection
         Tar_IpsiSelection(1)    = H(2) ./ (FA(1) + H(2) + M(1)); %ipsi
         Tar_ContraSelection(1)  = H(1) ./ (H(1) + FA(2) + M(1));
-        Tar_fixation(1)         = M(1) ./ (FA(1) + H(2) + M(1));
+        Tar_IpsiFixation(1)     = M(1) ./ (FA(1) + H(2) + M(1));
+        Tar_ContraFixation(1)   = Tar_IpsiFixation(1);
         Tar_IpsiSelection(2)    = H(4) ./ (FA(3) + H(4) + M(3));
         Tar_ContraSelection(2)  = H(3) ./ (H(3) + FA(4) + M(3));
-        Tar_fixation(2)         = M(3) ./ (FA(3) + H(4) + M(3));
+        Tar_IpsiFixation(2)     = M(3) ./ (FA(3) + H(4) + M(3));
+        Tar_ContraFixation(2)     = Tar_IpsiFixation(2);
         %DistractorSelection
         Dis_IpsiSelection(1)    = FA(2) ./ (H(1) + FA(2) + CR(1)); %ipsi
         Dis_ContraSelection(1)  = FA(1) ./ (FA(1) + H(2) + CR(1));
-        Dis_fixation(1)         = CR(1) ./ (H(1) + FA(2) + CR(1));
+        Dis_IpsiFixation(1)     = CR(1) ./ (H(1) + FA(2) + CR(1));
+        Dis_ContraFixation(1)   = Dis_IpsiFixation(1);
+        %post
         Dis_IpsiSelection(2)    = FA(4) ./ (H(3) + FA(4) + CR(3));
         Dis_ContraSelection(2)  = FA(3) ./ (FA(3) + H(4) + CR(3));
-        Dis_fixation(2)         = CR(3) ./ (H(3) + FA(4) + CR(3));
-        
+        Dis_IpsiFixation(2)     = CR(3) ./ (H(3) + FA(4) + CR(3));
+        Dis_ContraFixation(2)   = Dis_IpsiFixation(2);
+          
         
 end
 
@@ -583,29 +595,17 @@ if any(H==0) || any(M==0) || any(FA==0) || any(CR==0),
     % add 0.5 to both the number of hits and the number of false alarms,
     % add 1 to both the number of signal trials and the number of noise trials; dubbed the loglinear approach (Hautus, 1995)
     disp('correcting...');
-    n_trials = n_trials + 1;
-      
-    H = single(H*n_trials);
-    M = single(M*n_trials);
-    FA = single(FA*n_trials);
-    CR = single(CR*n_trials);
-    
+    %n_trials = n_trials + 1;
+  
     H = H + 0.5;
     M = M + 0.5;
     FA = FA + 0.5;
     CR = CR + 0.5;
-    
-else
-    
-    H = single(H*n_trials);
-    M = single(M*n_trials);
-    FA = single(FA*n_trials);
-    CR = single(CR*n_trials);
-    
+ 
 end
 
 if IndependentCalculation == 1
-    pHit = H ./ (H + M);
+    pHit = H ./n_trials  (H + M);
     pFA = FA ./ (FA + CR);
     
 else
