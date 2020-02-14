@@ -26,9 +26,10 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
 
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
- scenario = 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
-%Double D-T Stimuli - Post: ipsi choice Bias & ipsi perceptual deficit
+ scenario = 'Double D-T Stimuli - Post: perceptual deficit';
+ scenario = 'Double D-T Stimuli - For Curius.. Post: perceptual deficit';
 
+ 
 % Enter the Proportion for Hits, Misses, FA, CR
 switch scenario
     
@@ -349,18 +350,7 @@ switch scenario
         FA(4)  = FA(2);
         CR(4)  = CR(3);
         
-        if H(1)+ M(1)+ H(2) == 1
-            disp('Pre: target-trials: add up to 1')
-        end
-        if FA(1)+ CR(1)+ FA(2) == 1
-            disp('Pre: distractor-trials: add up to 1')
-        end
-        if H(3)+ M(3)+ H(4) == 1
-            disp('Post: target-trials: add up to 1')
-        end
-        if FA(3)+ CR(3)+ FA(4) == 1
-            disp('Post: distractor-trials: add up to 1')
-        end
+
         
         
         
@@ -402,15 +392,10 @@ switch scenario
         M(4)   = M(3);
         FA(4)  = 24/62;
         CR(4)  = CR(3);
-        if H(1)+ M(1)+ H(2) == 1
-            disp('target-trials: add up to 1')
-        end
-        if FA(1)+ CR(1)+ FA(2) == 1
-            disp('distractor-trials: add up to 1')
-        end
         
     case 'Double D-T Stimuli - Post: ipsi choice Bias & no perceptual deficit';
         StimulusType = 'Double D-T Stimuli';
+        % Cornelius data looks like that
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
         % H(1)+ M(1)/CR(2)+ FA(2) == 1  &FA(1)+ CR(1)/M(2)+ H(2) == 1
         % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased
@@ -431,7 +416,7 @@ switch scenario
         
         sb = 0.1;
         % contra post
-        H(3)   = H(1) ;
+        H(3)   = H(1) - sb;
         M(3)   = M(1);
         FA(3)  = FA(1)- sb;
         CR(3)  = CR(1);
@@ -439,23 +424,12 @@ switch scenario
         % ispi post
         H(4)   = H(2)+ sb ;
         M(4)   = CR(3);
-        FA(4)  = FA(2);
+        FA(4)  = FA(2)+ sb;
         CR(4)  = M(3);
         
-        if H(1)+ M(1)+ FA(2) == 1
-            disp('Pre: target-trials: add up to 1')
-        end
-        if FA(1)+ CR(1)+ H(2) == 1
-            disp('Pre: distractor-trials: add up to 1')
-        end
-        if H(3)+ M(3)+ FA(4) == 1
-            disp('Post: target-trials: add up to 1')
-        end
-        if FA(3)+ CR(3)+ H(4) == 1
-            disp('Post: distractor-trials: add up to 1')
-        end
         
-    case 'Double D-T Stimuli - Post: ipsi choice Bias & ipsi perceptual deficit';
+    case 'Double D-T Stimuli - Post: perceptual deficit';
+        disp('Double D-T Stimuli - Post: perceptual deficit')
         StimulusType = 'Double D-T Stimuli';
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
         % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1
@@ -465,41 +439,65 @@ switch scenario
         % contra pre
         % contra pre
         H(1)   = 0.5;
-        M(1)   = 0.2;
-        FA(1)  = 0.2; %0.1;
-        CR(1)  = 0.5; %0.6;
+        M(1)   = 0.1;
+        FA(1)  = 0.4; %0.1;
+        CR(1)  = 0.1; %0.6;
         
         % ipsi pre
-        H(2)   = 0.3;
+        H(2)   = 0.5;
         M(2)   = CR(1);
-        FA(2)  = 0.3;
+        FA(2)  = 0.4;
         CR(2)  = M(1);
         
         sb = 0.1;
         % contra post
         H(3)   = H(1)- sb ;
         M(3)   = M(1);
-        FA(3)  = FA(1)- sb;
+        FA(3)  = FA(1)+ sb;
         CR(3)  = CR(1);
         
         % ispi post
-        H(4)   = H(2)+ sb ;
+        H(4)   = H(2)- sb ;
         M(4)   = CR(3);
         FA(4)  = FA(2)+ sb ;
         CR(4)  = M(3);
         
-        if H(1)+ M(1)+ FA(2) == 1
-            disp('Pre: target-trials: add up to 1')
-        end
-        if FA(1)+ CR(1)+ H(2) == 1
-            disp('Pre: distractor-trials: add up to 1')
-        end
-        if H(3)+ M(3)+ FA(4) == 1
-            disp('Post: target-trials: add up to 1')
-        end
-        if FA(3)+ CR(3)+ H(4) == 1
-            disp('Post: distractor-trials: add up to 1')
-        end
+        
+            case 'Double D-T Stimuli - For Curius.. Post: perceptual deficit';
+        disp('Double D-T Stimuli - For Curius.. Post: perceptual deficit')
+        StimulusType = 'Double D-T Stimuli';
+        %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
+        % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1
+        % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased
+        % ipsi perceptual deficit - increased selection of FA (ipsi)
+        
+        % contra pre
+        % contra pre
+        H(1)   = 0.5;
+        M(1)   = 0.1;
+        FA(1)  = 0.4; %0.1;
+        CR(1)  = 0.1; %0.6;
+        
+        % ipsi pre
+        H(2)   = 0.5;
+        M(2)   = CR(1);
+        FA(2)  = 0.4;
+        CR(2)  = M(1);
+        
+        sb = 0.1;
+        % contra post
+        H(3)   = H(1)- sb -sb;
+        M(3)   = M(1)+ sb;
+        FA(3)  = FA(1);
+        CR(3)  = CR(1);
+        
+        % ispi post
+        H(4)   = H(2)- sb  ;
+        M(4)   = CR(3)+ sb;
+        FA(4)  = FA(2)+ sb ;
+        CR(4)  = M(3);
+        
+
 end % of scenario selection
 
 
@@ -563,6 +561,19 @@ switch StimulusType
         
         
     case 'Double D-T Stimuli'
+        
+        if H(1)+ M(1)+ FA(2) == 1
+            disp('Pre: target-trials: add up to 1')
+        end
+        if FA(1)+ CR(1)+ H(2) == 1
+            disp('Pre: distractor-trials: add up to 1')
+        end
+        if H(3)+ M(3)+ FA(4) == 1
+            disp('Post: target-trials: add up to 1')
+        end
+        if FA(3)+ CR(3)+ H(4) == 1
+            disp('Post: distractor-trials: add up to 1')
+        end
         Accuracy(1) = (H(2)+H(1))/(H(1) + FA(2) + M(1) +  FA(1)+ CR(1)+ H(2) );
         Accuracy(2) = (H(4)+H(3))/(H(3) +  FA(4)  + M(3) +  FA(3)+ CR(3)+ H(4));
         
