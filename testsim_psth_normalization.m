@@ -5,31 +5,39 @@ N = 30; % number of neurons
 n_trials = 40;
 n_samples = 100; 
 
+% set this:
+normalization = 'divisive across cond';
+situation = 'contra space, contra hand already in fix';
+
 % 4 conditions
+switch situation
+   
+    case 'contra space, contra hand already in fix'
+  
+        % 1 CHCS
+        b(1) = 0.5;
+        r(1) = 1;
 
-% 1 CHCS
-b(1) = 0.5;
-r(1) = 1;
+        % 2 CHIS
+        b(2) = 0.5;
+        r(2) = 0.8;
 
-% 2 CHIS
-b(2) = 0.5;
-r(2) = 0.8;
+        % 3 IHCS
+        b(3) = 0.2;
+        r(3) = 0.7;
 
-% 3 ISCS
-b(3) = 0.2;
-r(3) = 0.8;
-
-% 4 ISIH
-b(4) = 0.2;
-r(4) = 0.4;
+        % 4 IHIS
+        b(4) = 0.2;
+        r(4) = 0.5;
+        
+end
 
 idx_b = 1:n_samples/2;
 idx_r = n_samples/2+1:n_samples;
 
 R = zeros(N,4,n_trials,n_samples);
 
-
-low_fr = 1; high_fr  = 30; RA = low_fr + (high_fr-low_fr).*rand(N,1); % response amplitude level for each neuron, between a and b
+low_fr = 1; high_fr  = 30; RA = low_fr + (high_fr-low_fr).*rand(N,1); % average response amplitude level for each neuron, between low and high
 noise = 0.01 + (0.5-0.01).*rand(N,1);
 
 for c = 1:4,
@@ -47,26 +55,26 @@ figure('Position',[100 100 1200 400]);
 subplot(2,4,1);
 plot(squeeze(mean(R(:,1,:,:),3))'); hold on
 plot(mean(squeeze(mean(R(:,1,:,:),3)),1),'k','LineWidth',3);
-title('cond 1');
+title(['CHCS']);
 
 subplot(2,4,2);
 plot(squeeze(mean(R(:,2,:,:),3))'); hold on
 plot(mean(squeeze(mean(R(:,2,:,:),3)),1),'k','LineWidth',3);
-title('cond 2');
+title('CHIS');
 
 subplot(2,4,3);
 plot(squeeze(mean(R(:,3,:,:),3))'); hold on
 plot(mean(squeeze(mean(R(:,3,:,:),3)),1),'k','LineWidth',3);
-title('cond 3');
+title('IHCS');
 
 subplot(2,4,4);
 plot(squeeze(mean(R(:,4,:,:),3))'); hold on
 plot(mean(squeeze(mean(R(:,4,:,:),3)),1),'k','LineWidth',3);
-title('cond 4');
+title('IHIS');
 
 ig_set_axes_equal_lim(get(gcf,'Children'),'all')
 
-normalization = 'divisive across cond';
+
 
 switch normalization
     
@@ -85,7 +93,7 @@ end
 hn(1) = subplot(2,4,5);
 plot(squeeze(mean(Rn(:,1,:,:),3))'); hold on
 plot(mean(squeeze(mean(Rn(:,1,:,:),3)),1),'k','LineWidth',3);
-title(normalization);
+title([situation ', normalization: ' normalization]);
 
 hn(2) = subplot(2,4,6);
 plot(squeeze(mean(Rn(:,2,:,:),3))'); hold on
