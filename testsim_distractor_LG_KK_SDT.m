@@ -26,8 +26,8 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
 
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
- scenario = 'Double D-T Stimuli - Post: perceptual deficit';
- scenario = 'Double D-T Stimuli - For Curius.. Post: perceptual deficit';
+% scenario = 'Double D-T Stimuli - Post: perceptual deficit';
+scenario = 'Double D-T Stimuli - For Curius.. Post: perceptual deficit';
 
  
 % Enter the Proportion for Hits, Misses, FA, CR
@@ -580,22 +580,22 @@ switch StimulusType
         %TargetSelection
         Tar_IpsiSelection(1)    = H(2) ./ (FA(1) + H(2) + M(1)); %ipsi
         Tar_ContraSelection(1)  = H(1) ./ (H(1) + FA(2) + M(1));
-        Tar_IpsiFixation(1)     = M(1) ./ (FA(1) + H(2) + M(1));
-        Tar_ContraFixation(1)   = Tar_IpsiFixation(1);
+        Tar_IpsiFixation(1)     = M(2) ./ (FA(1) + H(2) + M(2)); %Dis_ContraFixation(1);
+        Tar_ContraFixation(1)   = M(1) ./ (FA(2) + H(1) + M(1)); %Dis_IpsiFixation(1);
         Tar_IpsiSelection(2)    = H(4) ./ (FA(3) + H(4) + M(3));
         Tar_ContraSelection(2)  = H(3) ./ (H(3) + FA(4) + M(3));
-        Tar_IpsiFixation(2)     = M(3) ./ (FA(3) + H(4) + M(3));
-        Tar_ContraFixation(2)     = Tar_IpsiFixation(2);
+        Tar_IpsiFixation(2)     = M(4) ./ (FA(3) + H(4) + M(4));
+        Tar_ContraFixation(2)   = M(3) ./ (FA(4) + H(3) + M(3));
         %DistractorSelection
         Dis_IpsiSelection(1)    = FA(2) ./ (H(1) + FA(2) + CR(1)); %ipsi
         Dis_ContraSelection(1)  = FA(1) ./ (FA(1) + H(2) + CR(1));
-        Dis_IpsiFixation(1)     = CR(1) ./ (H(1) + FA(2) + CR(1));
-        Dis_ContraFixation(1)   = Dis_IpsiFixation(1);
+        Dis_IpsiFixation(1)     = CR(2) ./ (H(1) + FA(2) + CR(2));
+        Dis_ContraFixation(1)   = CR(1) ./ (H(2) + FA(1) + CR(1)); 
         %post
         Dis_IpsiSelection(2)    = FA(4) ./ (H(3) + FA(4) + CR(3));
         Dis_ContraSelection(2)  = FA(3) ./ (FA(3) + H(4) + CR(3));
-        Dis_IpsiFixation(2)     = CR(3) ./ (H(3) + FA(4) + CR(3));
-        Dis_ContraFixation(2)   = Dis_IpsiFixation(2);
+        Dis_IpsiFixation(2)     = CR(4) ./ (H(3) + FA(4) + CR(4));
+        Dis_ContraFixation(2)   = CR(3) ./ (H(4) + FA(3) + CR(3));
           
         
 end
@@ -616,7 +616,7 @@ if any(H==0) || any(M==0) || any(FA==0) || any(CR==0),
 end
 
 if IndependentCalculation == 1
-    pHit = H ./n_trials  (H + M);
+    pHit = H ./ (H + M);
     pFA = FA ./ (FA + CR);
     
 else
