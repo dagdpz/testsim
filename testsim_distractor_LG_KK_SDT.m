@@ -30,7 +30,10 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'DoubleSameStimuli_Post_NoGOSpatialBias_NoPerceptualDeficit';
 
 % scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
- scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit_Ver2_decreaseContraHR';
+% scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit_Ver2_decreaseContraHR';
+% scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+
+
 % scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
 
@@ -40,7 +43,7 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers3';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers2_LessFixation';
-% scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
+ scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
 
 
 % scenario = 'Double D-T Stimuli - Post: perceptual deficit';
@@ -245,6 +248,34 @@ switch scenario
         H(2)   = 0.55; %increased ipsi T selection
         M(2)   = M(1);
         FA(2)  = 0.2; 
+        CR(2)  = CR(1);
+        
+        sb = 0.1;
+        % contra post
+        H(3)   = H(1)- sb ; %less saccades to contra
+        M(3)   = M(1);
+        FA(3)  = FA(1)- sb; %less saccades to contra
+        CR(3)  = CR(1) ;
+        
+        % ispi post
+        H(4)   = H(2)+ sb ; %more saccades to ipsi
+        M(4)   = M(3);
+        FA(4)  = FA(2)+ sb;
+        CR(4)  = CR(3);
+      case 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+        disp('DoubleSameStimuli - Pre: IpsiSelectionBias (Cornelius) Post: ipsi spatial Bias (Vers1,saccade), NO perceptual deficit')
+        StimulusType = 'DoubleSameStimuli';
+        
+        % contra pre
+        H(1)   = 0.50;
+        M(1)   = 0.1;
+        FA(1)  = 0.3;
+        CR(1)  = 0.5;
+        
+        % ipsi pre
+        H(2)   = 0.4;
+        M(2)   = M(1);
+        FA(2)  = 0.2;
         CR(2)  = CR(1);
         
         sb = 0.1;
@@ -725,15 +756,15 @@ switch scenario
         
         sb = 0.1;
         % contra post
-        H(3)   = H(1)- sb ; % less saccades to contra T
+        H(3)   = H(1)- (sb/2) ; % less saccades to contra T
         M(3)   = M(1)+sb ;
-        FA(3)  = FA(1)- sb; %% more saccades to contra D
+        FA(3)  = FA(1)- (sb/2); %% more saccades to contra D
         CR(3)  = CR(1)+ sb;
         
         % ispi post
-        H(4)   = H(2); % less saccades to ipsi T
+        H(4)   = H(2)- (sb/2); % less saccades to ipsi T
         M(4)   = CR(3);
-        FA(4)  = FA(2) ;
+        FA(4)  = FA(2)- (sb/2) ;
         CR(4)  = M(3);
         
     case 'Double D-T Stimuli - For Curius.. Post: perceptual deficit';
