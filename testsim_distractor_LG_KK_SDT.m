@@ -16,7 +16,7 @@ n_trials = 100; % for each stimulus condition
 % Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  scenario = 'SingleStimuli_Post_ContraSpatialBias_NoPerceptualDeficit';
 %  scenario = 'SingleStimuli_Post_ContraPerceptualDeficit';
-%  scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
+  scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_NoSpatialBias_NoPerceptualDeficit';
 
 % scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
@@ -26,7 +26,7 @@ n_trials = 100; % for each stimulus condition
 % DOUBLE SAME STIMULI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers2_NoPerceptualDeficit';
-scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit';
+%scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_NoGOSpatialBias_NoPerceptualDeficit';
 
 % scenario = 'DoubleStimuli - Post: ipsi motor Bias (saccade), perceptual deficit';
