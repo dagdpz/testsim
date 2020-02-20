@@ -1,5 +1,5 @@
 % function testsim_distractor_LG_KK_SDT
-clear all
+clear all, close all; 
 plot_mainExpectations = 1;
 SaveGraph = 1;
 % predictions
@@ -15,7 +15,7 @@ n_trials = 100; % for each stimulus condition
 
 % Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  scenario = 'SingleStimuli_Post_ContraSpatialBias_NoPerceptualDeficit';
-%  scenario = 'SingleStimuli_Post_ContraPerceptualDeficit';
+% scenario = 'SingleStimuli_Post_ContraPerceptualDeficit';
 %  scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_NoSpatialBias_NoPerceptualDeficit';
 
@@ -43,7 +43,7 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers3';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers2_LessFixation';
- scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
+% scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
 
 
 % scenario = 'Double D-T Stimuli - Post: perceptual deficit';
@@ -1187,8 +1187,8 @@ if plot_mainExpectations
     
     
     subplot(Plot_Rows,Plot_Colums,2);
-    plot(dprime(1),criterion(1), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
-    plot(dprime(2),-criterion(2), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;% reverse direction of criterion for ipsi
+    plot([dprime(1), dprime(3)],[criterion(1),criterion(3)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+    plot([dprime(2), dprime(4)],[-criterion(2),-criterion(4)] , 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;% reverse direction of criterion for ipsi
     
     plot(dprime(3),criterion(3), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
     plot(dprime(4),-criterion(4), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
@@ -1196,18 +1196,22 @@ if plot_mainExpectations
     xlabel('sensitivity','fontsize',fs,'fontweight','b', 'Interpreter', 'none')
     ylabel('criterion','fontsize',fs,'fontweight','b', 'Interpreter', 'none')
     set(gca,'ylim',[-2 2],'xlim',[-1 4] ,'fontsize',fs)
-
+    %legend('con pre', 'ipsi pre', 'con pst', 'ipsi pst','Location','NorthEast')
+    text(-0.5,-1.8, 'more Contra & ipsi:NoGo /contra:Go', 'Color', 'k')
+    text(-0.5,1.8, 'less Contra & ipsi:Go /contra:NoGo', 'Color', 'k')
     
     % Accuracy
     subplot(Plot_Rows,Plot_Colums,3);
     
-    plot([0.9;1.9], [Accuracy_ipsi(1),Accuracy_ipsi(2)], 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
-    line([0.9;1.9], [Accuracy_ipsi(1),Accuracy_ipsi(2)], 'Color',[0 0 1],'LineWidth', 2); hold on;
-    plot([1.1;2.1], [Accuracy_contra(1),Accuracy_contra(2)], 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
-    line([1.1;2.1], [Accuracy_contra(1),Accuracy_contra(2)], 'Color',[1 0 0],'LineWidth', 2); hold on;
-    plot([1;2], [Accuracy(1),Accuracy(2)], 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
-    line([1;2], [Accuracy(1),Accuracy(2)], 'Color',[0 0 0],'LineWidth', 2); hold on;
+ 
+    plot([0.9;1.9], [Accuracy_ipsi(1),Accuracy_ipsi(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+    plot([1.1;2.1], [Accuracy_contra(1),Accuracy_contra(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+    plot([1;2], [Accuracy(1),Accuracy(2)], 'o-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
     
+    plot(2.1,Accuracy_contra(2), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
+    plot(1.9, Accuracy_ipsi(2), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
+    plot(2,Accuracy(2), 'o','color',[0 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 0]);% reverse direction of criterion for ipsi
+
     set(gca,'ylim',[0 1])
     ylabel( 'Accuracy','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
     set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
