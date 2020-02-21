@@ -27,7 +27,7 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers2_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit';
-% scenario = 'DoubleSameStimuli_Post_NoGOSpatialBias_NoPerceptualDeficit';
+ scenario = 'DoubleSameStimuli_Post_NoGOSpatialBias_NoPerceptualDeficit';
 
 % scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit_Ver2_decreaseContraHR';
@@ -40,7 +40,7 @@ n_trials = 100; % for each stimulus condition
 % DOUBLE D-T STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers1';
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers2';
-% scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers3';
+%scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers3';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers2_LessFixation';
 % scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
@@ -622,7 +622,7 @@ switch scenario
         FA(2)  = 0.4;
         CR(2)  = M(1);
         
-        sb = 0.1;
+        sb = 0.08;
         % contra post
         H(3)   = H(1)- sb ; % less saccades to contra T
         M(3)   = M(1) + sb;
@@ -656,19 +656,20 @@ switch scenario
         FA(2)  = 0.4;
         CR(2)  = M(1);
         
-        sb = 0.1;
+        sb = 0.2;
         % contra post
         H(3)   = H(1)- sb ; % less saccades to contra T
-        M(3)   = M(1) + sb;
-        FA(3)  = FA(1); %% more saccades to contra D
-        CR(3)  = CR(1);
+        M(3)   = M(1) ;
+        FA(3)  = FA(1); 
+        CR(3)  = CR(1)+ sb; %more contra fixation
         
         % ispi post
-        H(4)   = H(2); % less saccades to ipsi T
-        M(4)   = CR(3);
-        FA(4)  = FA(2) ;
+        H(4)   = H(2)- sb ; % less saccades to ipsi T
+        M(4)   = CR(3); %more ipsi fixations ()
+        FA(4)  = FA(2)+ sb ;
         CR(4)  = M(3);
         
+
     case 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
         disp('DoubleD-Tstimuli Post: IpsiSpatialBias Vers1 (more saccades to ipsi, less saccades to contra))')
         StimulusType = 'Double D-T Stimuli';
@@ -900,22 +901,22 @@ switch StimulusType
         
     case 'Double D-T Stimuli'
         
-        if H(1)+ M(1)+ FA(2) == 100 || H(2)+ M(2)+ FA(1) == 100
+        if H(1)+ M(1)+ FA(2) == 100 && H(2)+ M(2)+ FA(1) == 100
             disp('Pre: target-trials: add up to 100')
         else
             disp('Pre: target-trials: DO NOT add up to 100')
         end
-        if FA(1)+ CR(1)+ H(2) == 100 || FA(2)+ CR(2)+ H(1) == 100
+        if FA(1)+ CR(1)+ H(2) == 100 && FA(2)+ CR(2)+ H(1) == 100
             disp('Pre: distractor-trials: add up to 100')
         else
             disp('Pre: distractor-trials: DO NOT add up to 100')
         end
-        if H(3)+ M(3)+ FA(4) == 100 || H(4)+ M(4)+ FA(3) == 100
+        if H(3)+ M(3)+ FA(4) == 100 && H(4)+ M(4)+ FA(3) == 100
             disp('Post: target-trials: add up to 100')
         else
             disp('Post: target-trials: DO NOT add up to 100')
         end
-        if FA(3)+ CR(3)+ H(4) == 100 || FA(4)+ CR(4)+ H(3) == 100
+        if FA(3)+ CR(3)+ H(4) == 100 && FA(4)+ CR(4)+ H(3) == 100
             disp('Post: distractor-trials: add up to 100')
         else
             disp('Post: distractor-trials: DO NOT add up to 100')
@@ -1197,19 +1198,19 @@ if plot_mainExpectations
     ylabel('criterion','fontsize',fs,'fontweight','b', 'Interpreter', 'none')
     set(gca,'ylim',[-2 2],'xlim',[-1 4] ,'fontsize',fs)
     %legend('con pre', 'ipsi pre', 'con pst', 'ipsi pst','Location','NorthEast')
-    text(-0.5,-1.8, 'more Contra & ipsi:NoGo /contra:Go', 'Color', 'k')
-    text(-0.5,1.8, 'less Contra & ipsi:Go /contra:NoGo', 'Color', 'k')
+    text(-0.5,-1.8, 'more Contra', 'Color', 'k' ,'fontsize',11)
+    text(-0.5,1.8, 'less Contra', 'Color', 'k' ,'fontsize',11)
     
     % Accuracy
     subplot(Plot_Rows,Plot_Colums,3);
     
  
-    plot([0.9;1.9], [Accuracy_ipsi(1),Accuracy_ipsi(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
-    plot([1.1;2.1], [Accuracy_contra(1),Accuracy_contra(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
-    plot([1;2], [Accuracy(1),Accuracy(2)], 'o-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+%     plot([0.9;1.9], [Accuracy_ipsi(1),Accuracy_ipsi(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+%     plot([1.1;2.1], [Accuracy_contra(1),Accuracy_contra(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+     plot([1;2], [Accuracy(1),Accuracy(2)], 'o-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
     
-    plot(2.1,Accuracy_contra(2), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
-    plot(1.9, Accuracy_ipsi(2), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
+%    plot(2.1,Accuracy_contra(2), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
+%    plot(1.9, Accuracy_ipsi(2), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
     plot(2,Accuracy(2), 'o','color',[0 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 0]);% reverse direction of criterion for ipsi
 
     set(gca,'ylim',[0 1])
