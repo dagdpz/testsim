@@ -13,34 +13,36 @@ SaveGraph = 1;
 IndependentCalculation = 0; % for double stimuli, using all three outcomes (dependent) or only two out of three (independent for contra/ipsi)
 n_trials = 100; % for each stimulus condition
 
-% Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  scenario = 'SingleStimuli_Post_ContraSpatialBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_ContraPerceptualDeficit';
+% scenario = 'SingleStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
+
 %  scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_NoSpatialBias_NoPerceptualDeficit';
 
-% scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
-% scenario = 'Single Stimuli: contra perceptual problem';
-% scenario = 'Single Stimuli: high hit rate, but ipsi spatial bias'; % like Curius early stim single targets, difficult distractor
 
-% DOUBLE SAME STIMULI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
+%%%%%%% DOUBLE SAME STIMULI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers2_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit';
- scenario = 'DoubleSameStimuli_Post_NoGOSpatialBias_NoPerceptualDeficit';
+% scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
+% scenario = 'DoubleSameStimuli_Post_NoGOBias_NoPerceptualDeficit'; 
 
-% scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
-% scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit_Ver2_decreaseContraHR';
-% scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
-
-
-% scenario = 'Double Stimuli - Pre: No spatial choice bias & Post: ipsi choice Bias';
+% CHOICE BIAS - Cornelius  decrease in HR and FAR for contralateral side
+     %scenario = 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+     %scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+% CHOICE BIAS - Curius  decrease in HR and FAR for contralateral side
+    %scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
 
-% DOUBLE D-T STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% DOUBLE D-T STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers1';
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers2';
-%scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers3';
+% scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers3';
+ scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
+
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers2_LessFixation';
 % scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
@@ -78,6 +80,8 @@ switch scenario
         M(4)   = M(2);
         FA(4)  = FA(2);
         CR(4)  = CR(2);
+        
+        
     case 'SingleStimuli_Post_ContraPerceptualDeficit';
         disp('Single Stimuli Post: No Spatial Bias & Contra PerceptualDeficit')
         StimulusType = 'Sgl_Stimuli';
@@ -103,6 +107,33 @@ switch scenario
         M(4)   = M(2);
         FA(4)  = FA(2);
         CR(4)  = CR(2);
+     
+    case 'SingleStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
+        disp('Single Stimuli Post: NoGo Bias & Contra PerceptualDeficit')
+        StimulusType = 'Sgl_Stimuli';
+        IndependentCalculation = 1;
+        
+        H(1)   = 0.7; %0.7
+        M(1)   = 0.3; %0.3
+        FA(1)  = 0.3;
+        CR(1)  = 0.7;
+        
+        H(2)   = 0.6;
+        M(2)   = 0.4;
+        FA(2)  = 0.4;
+        CR(2)  = 0.6;
+        
+        sb = 0.19;
+        H(3)   = H(1)-sb;
+        M(3)   = M(1)+sb;
+        FA(3)  = FA(1);
+        CR(3)  = CR(1);
+        
+        H(4)   = H(2);
+        M(4)   = M(2);
+        FA(4)  = FA(2);
+        CR(4)  = CR(2);
+        
         
     case 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
         disp('Single Stimuli Post: NoGo-Bias & No PerceptualDeficit')
@@ -182,57 +213,7 @@ switch scenario
         CR(4)  = CR(2)+sb;
         
         
-    case 'Single Stimuli: contra perceptual problem';
-        StimulusType = 'Sgl_Stimuli';
-        IndependentCalculation = 1;
         
-        H(1)   = 0.7;
-        M(1)   = 0.3;
-        FA(1)  = 0.25;
-        CR(1)  = 0.75;
-        
-        H(2)   = 0.6;
-        M(2)   = 0.4;
-        FA(2)  = 0.4;
-        CR(2)  = 0.6;
-        
-        sb = 0.15; % here sb is not spatial bias, it is perceptual deficit
-        
-        %general increase in errors: reduce Hits, increase Miss, reduce CR, increase FA
-        H(3)   = H(1) - sb; % 0.55;
-        M(3)   = M(1) + sb; %0.45;
-        FA(3)  = FA(1)+ sb; %0.45;
-        CR(3)  = CR(1)- sb; %0.55;
-        
-        H(4)   = H(2);
-        M(4)   = M(2);
-        FA(4)  = FA(2);
-        CR(4)  = CR(2);
-        
-    case 'Single Stimuli: high hit rate, but ipsi spatial bias';
-        StimulusType = 'Sgl_Stimuli';
-        IndependentCalculation = 1;
-        
-        H(1)   = 0.9;
-        M(1)   = 0.1;
-        FA(1)  = 0.25;
-        CR(1)  = 0.75;
-        
-        H(2)   = 0.9;
-        M(2)   = 0.1;
-        FA(2)  = 0.7;
-        CR(2)  = 0.3;
-        
-        sb = 0.1;
-        H(3)   = H(1);
-        M(3)   = M(1);
-        FA(3)  = FA(1);
-        CR(3)  = CR(1);
-        
-        H(4)   = H(2);
-        M(4)   = M(2);
-        FA(4)  = FA(2)+sb;
-        CR(4)  = CR(2)-sb;
         
     case 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
         disp('DoubleStimuli - Pre: Ipsi selection bias, Post: ipsi selection Bias (less contra saccade), No perceptual deficit')
@@ -303,7 +284,7 @@ switch scenario
         % FA(1) + CR(1) + FA(2) should add to 1
         
         % contra pre
-        H(1)   = 0.45;
+        H(1)   = 0.45; %0.45;
         M(1)   = 0.1;
         FA(1)  = 0.2;
         CR(1)  = 0.6;
@@ -315,6 +296,42 @@ switch scenario
         CR(2)  = CR(1);
         
         sb = 0.1;
+        % contra post
+        H(3)   = H(1)- sb ; %less saccades to contra
+        M(3)   = M(1);
+        FA(3)  = FA(1)- sb; %less saccades to contra
+        CR(3)  = CR(1) ;
+        
+        % ispi post
+        H(4)   = H(2)+ sb ; %more saccades to ipsi
+        M(4)   = M(3);
+        FA(4)  = FA(2)+ sb;
+        CR(4)  = CR(3);
+    
+        case 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+        disp('DoubleSameStimuli - Pre_ContraSpatialBias Post: ipsi spatial Bias (Vers1,saccade), NO perceptual deficit')
+        StimulusType = 'DoubleSameStimuli';
+        
+        % A condition for double stimuli: Fixation is the same for contra vs ipsi M(1) = M(2)
+        % spatial-saccade choice bias  (ipsi) without same discrimination performance
+        % Pre: no choice bias -> Post: ipsi choice bias -> fixations do not change for both hemifields
+        % Post: ipsi targets are highly selected
+        % H(1) + M(1) + H(2) should add to 1
+        % FA(1) + CR(1) + FA(2) should add to 1
+        
+        % contra pre
+        H(1)   = 0.55; %0.45;
+        M(1)   = 0.1;
+        FA(1)  = 0.3;
+        CR(1)  = 0.6;
+        
+        % ipsi pre
+        H(2)   = 0.35;
+        M(2)   = M(1);
+        FA(2)  = 0.1;
+        CR(2)  = CR(1);
+        
+        sb = 0.2;
         % contra post
         H(3)   = H(1)- sb ; %less saccades to contra
         M(3)   = M(1);
@@ -365,8 +382,8 @@ switch scenario
         CR(4)  = CR(3);
         
         
-    case 'DoubleSameStimuli_Post_NoGOSpatialBias_NoPerceptualDeficit';
-        disp('DoubleSameStimuli - Post: NoGo spatial Bias (less contra & ipsi saccades), NO perceptual deficit')
+    case 'DoubleSameStimuli_Post_NoGOBias_NoPerceptualDeficit';
+        disp('DoubleSameStimuli - Post: NoGo Bias (less contra & ipsi saccades), NO perceptual deficit')
         StimulusType = 'DoubleSameStimuli';
         
         % A condition for double stimuli: Fixation is the same for contra vs ipsi M(1) = M(2)
@@ -432,8 +449,8 @@ switch scenario
         CR(4)  = CR(3);
         
         
-    case 'DoubleSameStimuli_Post_ContraPerceptualDeficit_Ver2_decreaseContraHR';
-        disp('Double Stimuli - Post: contra perceptual deficit by selecting less targets & making more misses')
+    case 'DoubleSameStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
+        disp('Double Stimuli - Post: contra perceptual deficit & NoGoBias by selecting less targets & making more misses')
         StimulusType = 'DoubleSameStimuli';
         % contra pre
         H(1)   = 0.45;
@@ -447,11 +464,11 @@ switch scenario
         FA(2)  = 0.2;
         CR(2)  = CR(1);
         
-        sb = 0.1;
+        sb = 0.3;
         % contra post
         H(3)   = H(1)- sb ;
         M(3)   = M(1)+ sb; %contra fixation
-        FA(3)  = FA(1);%contra Saccade
+        FA(3)  = FA(1) ;%contra Saccade
         CR(3)  = CR(1);
         
         % ispi post
@@ -669,6 +686,39 @@ switch scenario
         FA(4)  = FA(2)+ sb ;
         CR(4)  = M(3);
         
+      case 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
+        disp('Double D-T Stimuli - Post: contra perceptual deficit (less ipsiTarget, more ipsi distractor)')
+        StimulusType = 'Double D-T Stimuli';
+        %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
+        % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1
+        % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased
+        % ipsi perceptual deficit - increased selection of FA (ipsi)
+        
+        % contra pre
+        % contra pre
+        H(1)   = 0.5;
+        M(1)   = 0.1;
+        FA(1)  = 0.4; %0.1;
+        CR(1)  = 0.1; %0.6;
+        
+        % ipsi pre
+        H(2)   = 0.5;
+        M(2)   = CR(1);
+        FA(2)  = 0.4;
+        CR(2)  = M(1);
+        
+        sb = 0.1;
+        % contra post
+        H(3)   = H(1)- sb ; % less saccades to contra T
+        M(3)   = M(1)+ sb;
+        FA(3)  = FA(1); 
+        CR(3)  = CR(1);
+        
+        % ispi post
+        H(4)   = H(2) ; 
+        M(4)   = CR(3);
+        FA(4)  = FA(2) ;
+        CR(4)  = M(3);    
 
     case 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
         disp('DoubleD-Tstimuli Post: IpsiSpatialBias Vers1 (more saccades to ipsi, less saccades to contra))')
