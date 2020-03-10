@@ -1,6 +1,6 @@
 function testsim_choice_bias
 
-N = 100; % trials
+N = 20; % trials
 
 C = [0:N];
 I = [0:N];
@@ -21,9 +21,11 @@ surf(C,I,CB);
 ylabel('contra');
 xlabel('ipsi');
 title('Choice bias');
+colorbar;
 
 subplot(2,1,2)
 surf(C,I,f);
 ylabel('contra');
 xlabel('ipsi');
-title('fixation');
+title('number of fixations');
+colorbar;
