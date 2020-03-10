@@ -1,6 +1,6 @@
 % function testsim_distractor_LG_KK_SDT
 clear all, close all;
-plot_mainExpectations = 1;
+plot_mainExpectations = 0;
 SaveGraph = 1;
 % predictions
 
@@ -1241,9 +1241,9 @@ plot([SelectionBias],[(-1*criterion(2)), (-1*criterion(4))], '-','color',[0 0 1]
 
 axis square
 xlabel('Selection Bias')
-ylabel('Contra - Ipsi criterion')
+ylabel('criterion (Black: contra - ipsi)')
 set(gca,'ylim',[-2 2])
-set(gca,'xlim',[0 1])
+set(gca,'xlim',[-1 1])
 grid on
 
 %% Main Expectations
@@ -1262,31 +1262,7 @@ if plot_mainExpectations
     
     Plot_Colums = 3;
     Plot_Rows = 1;
-    
-    
-    % subplot(Plot_Rows,Plot_Colums,1);
-    % plot([1;2], [Tar_ContraSelection(1),Tar_ContraSelection(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ],'LineWidth', 2); hold on;
-    % plot([1;2], [Tar_IpsiSelection(1),Tar_IpsiSelection(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1],'LineWidth', 2); hold on;
-    % plot([1;2], [Tar_ContraFixation(1),Tar_ContraFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0.5 0 0 ],'LineWidth', 2); hold on;
-    % plot([1;2], [Tar_IpsiFixation(1),Tar_IpsiFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0.5 ],'LineWidth', 2); hold on;
-    % axis square
-    % set(gca,'ylim',[0 1])
-    % ylabel( 'Target selection','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
-    % set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
-    %
-    %
-    % subplot(Plot_Rows,Plot_Colums,2);
-    % plot([1;2], [Dis_ContraSelection(1),Dis_ContraSelection(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0],'LineWidth', 2); hold on;
-    % plot([1;2], [Dis_IpsiSelection(1),Dis_IpsiSelection(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1],'LineWidth', 2); hold on;
-    % plot([1;2], [Dis_ContraFixation(1),Dis_ContraFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0.5 0 0 ],'LineWidth', 2); hold on;
-    % plot([1;2], [Dis_IpsiFixation(1),Dis_IpsiFixation(2)], 'o:','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0.5 ],'LineWidth', 2); hold on;
-    %  axis square
-    % set(gca,'ylim',[0 1])
-    % ylabel( 'Distractor selection','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
-    % set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
-    % legend('con', 'ipsi', 'fix con', 'fix ipsi','Location','BestOutside')
-    
-    
+
     %Hit rate vs False alarm rate
     subplot(Plot_Rows,Plot_Colums,1);
     plot([pFA(2),pFA(4)], [pHit(2),pHit(4)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', 2); hold on;
@@ -1332,7 +1308,7 @@ if plot_mainExpectations
     axis square
     
     
-end
+
 
 if SaveGraph
     h = figure(2);
@@ -1342,4 +1318,4 @@ if SaveGraph
     %print(h,'-depsc',compl_filename);
     %close all;
 end
-
+end
