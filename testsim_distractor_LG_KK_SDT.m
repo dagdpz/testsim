@@ -1,5 +1,5 @@
 % function testsim_distractor_LG_KK_SDT
-clear all, close all; 
+clear all, close all;
 plot_mainExpectations = 1;
 SaveGraph = 1;
 % predictions
@@ -20,6 +20,7 @@ n_trials = 100; % for each stimulus condition
 
 %  scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_NoSpatialBias_NoPerceptualDeficit';
+scenario = 'SingleStimuli_PreSpatialBias_Contra';
 
 
 % scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
@@ -28,20 +29,20 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers2_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
-% scenario = 'DoubleSameStimuli_Post_NoGOBias_NoPerceptualDeficit'; 
+% scenario = 'DoubleSameStimuli_Post_NoGOBias_NoPerceptualDeficit';
 
 % CHOICE BIAS - Cornelius  decrease in HR and FAR for contralateral side
-     %scenario = 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
-     %scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+% scenario = 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+%scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % CHOICE BIAS - Curius  decrease in HR and FAR for contralateral side
-    %scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+%scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
 
 %%%%%%% DOUBLE D-T STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers1';
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers2';
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_Vers3';
- scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
+% scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
 
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers2_LessFixation';
@@ -107,7 +108,7 @@ switch scenario
         M(4)   = M(2);
         FA(4)  = FA(2);
         CR(4)  = CR(2);
-     
+        
     case 'SingleStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
         disp('Single Stimuli Post: NoGo Bias & Contra PerceptualDeficit')
         StimulusType = 'Sgl_Stimuli';
@@ -213,6 +214,34 @@ switch scenario
         CR(4)  = CR(2)+sb;
         
         
+    case 'SingleStimuli_PreSpatialBias_Contra'
+          StimulusType = 'Sgl_Stimuli';
+        IndependentCalculation = 1;
+        
+        % contra pre
+        H(1)   = 0.55; %0.45;
+        M(1)   = 0.45;
+        FA(1)  = 0.35;
+        CR(1)  = 0.65;
+        
+        % ipsi pre
+        H(2)   = 0.5;
+        M(2)   = 0.5;
+        FA(2)  = 0.5;
+        CR(2)  = 0.5;
+        
+        sb = 0;
+        % contra post
+        H(3)   = H(1)- sb ; %less saccades to contra
+        M(3)   = M(1);
+        FA(3)  = FA(1)- sb; %less saccades to contra
+        CR(3)  = CR(1) ;
+        
+        % ispi post
+        H(4)   = H(2)+ sb ; %more saccades to ipsi
+        M(4)   = M(3);
+        FA(4)  = FA(2)+ sb;
+        CR(4)  = CR(3);
         
         
     case 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
@@ -228,7 +257,7 @@ switch scenario
         % ipsi pre
         H(2)   = 0.55; %increased ipsi T selection
         M(2)   = M(1);
-        FA(2)  = 0.2; 
+        FA(2)  = 0.2;
         CR(2)  = CR(1);
         
         sb = 0.1;
@@ -243,7 +272,7 @@ switch scenario
         M(4)   = M(3);
         FA(4)  = FA(2)+ sb;
         CR(4)  = CR(3);
-      case 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+    case 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
         disp('DoubleSameStimuli - Pre: IpsiSelectionBias (Cornelius) Post: ipsi spatial Bias (Vers1,saccade), NO perceptual deficit')
         StimulusType = 'DoubleSameStimuli';
         
@@ -307,8 +336,8 @@ switch scenario
         M(4)   = M(3);
         FA(4)  = FA(2)+ sb;
         CR(4)  = CR(3);
-    
-        case 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+        
+    case 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
         disp('DoubleSameStimuli - Pre_ContraSpatialBias Post: ipsi spatial Bias (Vers1,saccade), NO perceptual deficit')
         StimulusType = 'DoubleSameStimuli';
         
@@ -677,7 +706,7 @@ switch scenario
         % contra post
         H(3)   = H(1)- sb ; % less saccades to contra T
         M(3)   = M(1) ;
-        FA(3)  = FA(1); 
+        FA(3)  = FA(1);
         CR(3)  = CR(1)+ sb; %more contra fixation
         
         % ispi post
@@ -686,7 +715,7 @@ switch scenario
         FA(4)  = FA(2)+ sb ;
         CR(4)  = M(3);
         
-      case 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
+    case 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
         disp('Double D-T Stimuli - Post: contra perceptual deficit (less ipsiTarget, more ipsi distractor)')
         StimulusType = 'Double D-T Stimuli';
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
@@ -711,15 +740,15 @@ switch scenario
         % contra post
         H(3)   = H(1)- sb ; % less saccades to contra T
         M(3)   = M(1)+ sb;
-        FA(3)  = FA(1); 
+        FA(3)  = FA(1);
         CR(3)  = CR(1);
         
         % ispi post
-        H(4)   = H(2) ; 
+        H(4)   = H(2) ;
         M(4)   = CR(3);
         FA(4)  = FA(2) ;
-        CR(4)  = M(3);    
-
+        CR(4)  = M(3);
+        
     case 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
         disp('DoubleD-Tstimuli Post: IpsiSpatialBias Vers1 (more saccades to ipsi, less saccades to contra))')
         StimulusType = 'Double D-T Stimuli';
@@ -1254,15 +1283,15 @@ if plot_mainExpectations
     % Accuracy
     subplot(Plot_Rows,Plot_Colums,3);
     
- 
-%     plot([0.9;1.9], [Accuracy_ipsi(1),Accuracy_ipsi(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
-%     plot([1.1;2.1], [Accuracy_contra(1),Accuracy_contra(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
-     plot([1;2], [Accuracy(1),Accuracy(2)], 'o-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
     
-%    plot(2.1,Accuracy_contra(2), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
-%    plot(1.9, Accuracy_ipsi(2), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
+    %     plot([0.9;1.9], [Accuracy_ipsi(1),Accuracy_ipsi(2)], 'o-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+    %     plot([1.1;2.1], [Accuracy_contra(1),Accuracy_contra(2)], 'o-','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+    plot([1;2], [Accuracy(1),Accuracy(2)], 'o-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+    
+    %    plot(2.1,Accuracy_contra(2), 'o','color',[1 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[1 0 0]);
+    %    plot(1.9, Accuracy_ipsi(2), 'o','color',[0 0 1] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 1]);% reverse direction of criterion for ipsi
     plot(2,Accuracy(2), 'o','color',[0 0 0] ,'MarkerSize',MarkSize,'markerfacecolor',[0 0 0]);% reverse direction of criterion for ipsi
-
+    
     set(gca,'ylim',[0 1])
     ylabel( 'Accuracy','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
     set(gca,'xlim',[0 3],'Xtick',1:2,'XTickLabel',{'pre' 'post'},'fontsize',fs);
