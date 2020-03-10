@@ -1073,6 +1073,21 @@ for k = 1:4,
     [dprime(k),beta(k),criterion(k)] = testsim_dprime(pHit(k),pFA(k));
 end
 
+
+%% calculate selection Bias (contra - ipsi)/ all
+if strcmp(StimulusType , 'Sgl_Stimuli')
+    SelectionBias(1) = ((H(1) +FA(1)) -(H(2) +FA(2)))/(H(1) +FA(1)+ H(2) +FA(2)+M(1) +M(2)+CR(1) +CR(2));
+    SelectionBias(2) = ((H(3) +FA(3)) -(H(4) +FA(4)))/(H(3) +FA(3)+ H(4) +FA(4)+M(3) +M(4)+CR(3) +CR(4));
+    
+elseif strcmp(StimulusType , 'DoubleSameStimuli')
+    SelectionBias(1) = ((H(1) +FA(1)) -(H(2) +FA(2)))/(H(1) +FA(1)+ H(2) +FA(2)+M(1)+CR(1));
+    SelectionBias(2) = ((H(3) +FA(3)) -(H(4) +FA(4)))/(H(3) +FA(3)+ H(4) +FA(4)+M(3)+CR(3));
+    
+elseif strcmp(StimulusType , 'Double D-T Stimuli')
+    SelectionBias(1) = ((H(1) +FA(1)) -(H(2) +FA(2)))/(H(1) +FA(1)+ H(2) +FA(2)+M(1) +M(2));
+    SelectionBias(2) = ((H(3) +FA(3)) -(H(4) +FA(4)))/(H(3) +FA(3)+ H(4) +FA(4)+M(3) +M(4));
+end
+
 %% Plotting
 
 % Selection
@@ -1180,19 +1195,6 @@ ylabel('criterion','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
 set(gca,'ylim',[-2 2],'xlim',[-1 4] ,'fontsize',fs)
 
 
-%% Graph - change in criterion or change in dprime
-subplot(Plot_Colums,Plot_Rows,9);
-
-plot((dprime(1)-dprime(3)),(criterion(1)-criterion(3)), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
-plot((dprime(2)-dprime(4)),((mult*criterion(2))-(mult*criterion(4))), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
-axis square
-xlabel('Pre-Post sensitivity')
-ylabel('Pre-Post criterion')
-set(gca,'ylim',[-2 2])
-set(gca,'xlim',[-2 2])
-legend('contra', 'ipsi')
-grid on
-
 %% OLD  graphs for criterion and dprime
 
 subplot(Plot_Colums,Plot_Rows,7);
@@ -1211,6 +1213,38 @@ set(gca,'Xlim',[0 5],'Xtick',[1:4],'XtickLabel',{'con pre' 'ipsi pre' 'con pst' 
 ylabel(['criterion'])
 set(gca,'ylim',[-2 2])
 
+%% Graph - change in criterion or change in dprime
+subplot(Plot_Colums,Plot_Rows,9);
+
+% plot((dprime(1)-dprime(3)),(criterion(1)-criterion(3)), 'o','color',[1 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 0 ]); hold on;
+% plot((dprime(2)-dprime(4)),((mult*criterion(2))-(mult*criterion(4))), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
+% axis square
+% xlabel('Pre-Post sensitivity')
+% ylabel('Pre-Post criterion')
+% set(gca,'ylim',[-2 2])
+% set(gca,'xlim',[-2 2])
+% legend('contra', 'ipsi')
+% grid on
+
+% Selection Bias
+plot(SelectionBias(1),(criterion(1)- (-1*criterion(2))), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+plot(SelectionBias(2),(criterion(3)-(mult*criterion(4))), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+plot([SelectionBias],[(criterion(1)- (-1*criterion(2))),((criterion(3))-(mult*criterion(4)))], '-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+
+plot(SelectionBias(1), criterion(1), 'o','color',[1 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+plot(SelectionBias(1), (-1*criterion(2)), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+plot(SelectionBias(2),(criterion(3)), 'o','color',[1 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 0 1 ]); hold on;
+plot(SelectionBias(2),(-1*criterion(4)), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 1 ]); hold on;
+
+plot([SelectionBias],[criterion(1),criterion(3)], '-','color',[1 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+plot([SelectionBias],[(-1*criterion(2)), (-1*criterion(4))], '-','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+
+axis square
+xlabel('Selection Bias')
+ylabel('Contra - Ipsi criterion')
+set(gca,'ylim',[-2 2])
+set(gca,'xlim',[0 1])
+grid on
 
 %% Main Expectations
 MarkSize = 15;
