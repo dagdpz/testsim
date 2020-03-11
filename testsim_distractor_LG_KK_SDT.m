@@ -20,7 +20,7 @@ n_trials = 100; % for each stimulus condition
 
 %  scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_NoSpatialBias_NoPerceptualDeficit';
-scenario = 'SingleStimuli_PreSpatialBias_Contra';
+%scenario = 'SingleStimuli_PreSpatialBias_Contra';
 
 
 % scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
@@ -32,10 +32,10 @@ scenario = 'SingleStimuli_PreSpatialBias_Contra';
 % scenario = 'DoubleSameStimuli_Post_NoGOBias_NoPerceptualDeficit';
 
 % CHOICE BIAS - Cornelius  decrease in HR and FAR for contralateral side
-% scenario = 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+ scenario = 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 %scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % CHOICE BIAS - Curius  decrease in HR and FAR for contralateral side
-%scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+% scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % scenario = 'Double Stimuli - Curius inactivation session 7 20190913';
 
 %%%%%%% DOUBLE D-T STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1058,6 +1058,8 @@ else
         FA_ = [FA(2) FA(1) FA(4) FA(3) ];
         pHit = H ./ (H + M +H_);
         pFA = FA ./ (FA + CR +FA_);
+        
+
     elseif strcmp(StimulusType , 'Double D-T Stimuli')
         %change the order of the Hits because
         % example: H (contra) ./ (H(contra) + M(contra) +FA(ipsi));
@@ -1065,6 +1067,7 @@ else
         FA_ = [FA(2) FA(1) FA(4) FA(3) ];
         pHit = H ./ (H + M +FA_);
         pFA = FA ./ (FA + CR +H_);
+        
         
     end
 end
@@ -1227,9 +1230,13 @@ subplot(Plot_Colums,Plot_Rows,9);
 % grid on
 
 % Selection Bias
-plot(SelectionBias(1),(criterion(1)- (-1*criterion(2))), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
-plot(SelectionBias(2),(criterion(3)-(mult*criterion(4))), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
-plot([SelectionBias],[(criterion(1)- (-1*criterion(2))),((criterion(3))-(mult*criterion(4)))], '-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+diff_criterion(1) = (criterion(1)- (-1*criterion(2))); 
+diff_criterion(2) = (criterion(3)- (-1*criterion(4))); 
+
+ plot(SelectionBias(1),diff_criterion(1), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
+ plot(SelectionBias(2),diff_criterion(2), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+ plot(SelectionBias,diff_criterion, '-','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
+
 
 plot(SelectionBias(1), criterion(1), 'o','color',[1 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
 plot(SelectionBias(1), (-1*criterion(2)), 'o','color',[0 0 1] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
@@ -1241,7 +1248,7 @@ plot([SelectionBias],[(-1*criterion(2)), (-1*criterion(4))], '-','color',[0 0 1]
 
 axis square
 xlabel('Selection Bias')
-ylabel('criterion (Black: contra - ipsi)')
+ylabel('criterion')
 set(gca,'ylim',[-2 2])
 set(gca,'xlim',[-1 1])
 grid on
