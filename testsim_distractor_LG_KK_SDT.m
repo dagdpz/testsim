@@ -17,10 +17,9 @@ n_trials = 100; % for each stimulus condition
 %  scenario = 'SingleStimuli_Post_ContraSpatialBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_ContraPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
-
-%  scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
+% scenario = 'SingleStimuli_Post_NoGoBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_NoSpatialBias_NoPerceptualDeficit';
-%scenario = 'SingleStimuli_PreSpatialBias_Contra';
+scenario = 'SingleStimuli_PreSpatialBias_Contra';
 
 
 % scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
@@ -32,7 +31,7 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'DoubleSameStimuli_Post_NoGOBias_NoPerceptualDeficit';
 
 % CHOICE BIAS - Cornelius  decrease in HR and FAR for contralateral side
- scenario = 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
+% scenario = 'DoubleSameStimuli_Pre_ContraSpatialBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 %scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Cornelius_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
 % CHOICE BIAS - Curius  decrease in HR and FAR for contralateral side
 % scenario = 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
@@ -219,29 +218,29 @@ switch scenario
         IndependentCalculation = 1;
         
         % contra pre
-        H(1)   = 0.55; %0.45;
-        M(1)   = 0.45;
-        FA(1)  = 0.35;
-        CR(1)  = 0.65;
+        H(1)   = 0.9; %0.55;
+        M(1)   = 0.1; % 0.45
+        FA(1)  = 0.8; %0.35
+        CR(1)  = 0.2; %0.65
         
         % ipsi pre
-        H(2)   = 0.5;
-        M(2)   = 0.5;
-        FA(2)  = 0.5;
-        CR(2)  = 0.5;
+        H(2)   = 0.9;
+        M(2)   = 0.1;
+        FA(2)  = 0.8;
+        CR(2)  = 0.2;
         
-        sb = 0;
+        sb = 0.2;
         % contra post
         H(3)   = H(1)- sb ; %less saccades to contra
-        M(3)   = M(1);
+        M(3)   = M(1)+ sb ;
         FA(3)  = FA(1)- sb; %less saccades to contra
-        CR(3)  = CR(1) ;
+        CR(3)  = CR(1)+ sb  ;
         
         % ispi post
-        H(4)   = H(2)+ sb ; %more saccades to ipsi
-        M(4)   = M(3);
-        FA(4)  = FA(2)+ sb;
-        CR(4)  = CR(3);
+        H(4)   = H(2) ; %more saccades to ipsi
+        M(4)   = M(2);
+        FA(4)  = FA(2);
+        CR(4)  = CR(2);
         
         
     case 'DoubleSameStimuli_Pre_IpsiSelectionBias_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit';
@@ -1230,8 +1229,8 @@ subplot(Plot_Colums,Plot_Rows,9);
 % grid on
 
 % Selection Bias
-diff_criterion(1) = (criterion(1)- (-1*criterion(2))); 
-diff_criterion(2) = (criterion(3)- (-1*criterion(4))); 
+diff_criterion(1) = ((criterion(1)+ (-1*criterion(2)))/2); 
+diff_criterion(2) = ((criterion(3)+ (-1*criterion(4)))/2); 
 
  plot(SelectionBias(1),diff_criterion(1), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ]); hold on;
  plot(SelectionBias(2),diff_criterion(2), 'o','color',[0 0 0] , 'MarkerSize',MarkSize,'markerfacecolor',[0 0 0 ]); hold on;
