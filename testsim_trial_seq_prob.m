@@ -11,8 +11,9 @@
 
 % 1. Completely random 
 % L_prob = 0.72;
-% n_trials = 100;
-% seq = randsample([1 2],n_trials,true,[L_prob 1-L_prob]);
+L_prob = 0.5;
+n_trials = 100;
+seq = randsample([1 2],n_trials,true,[L_prob 1-L_prob]);
 
 % 2.
 % seq = [1 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2]; n_trials = length(seq);
@@ -49,14 +50,24 @@
 % q1 = -TM(2,1)/(TM(1,1)-1-TM(2,1)) % L_prob_theoretical
 
 % 5. Markov chain of 1st order, equal transitions: meaning that L and R are fully independent
-n_trials = 1000;
-TM = [0.25 0.75; 0.25 0.75]; % independent L-R transition matrix
-% OR (for contrast)
-TM = [0.1 0.9; 0.3 0.7]; % transition matrix where prob. or L (1) is increasing after R (2), and prob. of R is increasing after L
-seq = testsim_markov_chain(n_trials,TM,1); % states 1 and 2
+% n_trials = 1000;
+% TM = [0.25 0.75; 0.25 0.75]; % independent L-R transition matrix
+% % OR (for contrast)
+% TM = [0.1 0.9; 0.3 0.7]; % transition matrix where prob. or L (1) is increasing after R (2), and prob. of R is increasing after L
+% seq = testsim_markov_chain(n_trials,TM,1); % states 1 and 2
 % P = TM - [1 0; 0 1];
 % q1 = -P(2,1)/(P(1,1)-P(2,1)) % L_prob_theoretical
 % q1 = -TM(2,1)/(TM(1,1)-1-TM(2,1)) % L_prob_theoretical
+
+
+% 6. L->R->L ...
+% seq = [1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2]; n_trials = length(seq);
+
+% 7. FRD DAGU SI
+% seq = [2     1     2     2     2     2     1     2     1     1     2     1     1     2     2     1     1     2     1     2     1     1     2     1     2     1     2     1     2     1     2     1     2     2     1     2     1 ...
+%     1     1     2     1     2     2     1     2     2     1     1     1     2     1     2     1     2     2     1     2     1     2     1     2     1     2     2     2     1     2     2     1     1     1     2     2     1 ...
+%     2     1     2     1     2];
+% n_trials = length(seq);
 
 
 % output
