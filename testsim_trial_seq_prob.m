@@ -11,9 +11,9 @@
 
 % 1. Completely random 
 % L_prob = 0.72;
-% L_prob = 0.5;
-% n_trials = 100;
-% seq = randsample([1 2],n_trials,true,[L_prob 1-L_prob]);
+L_prob = 0.5;
+n_trials = 100;
+seq = randsample([1 2],n_trials,true,[L_prob 1-L_prob]);
 
 % 2.
 % seq = [1 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2]; n_trials = length(seq);
@@ -61,7 +61,7 @@
 
 
 % 6. L->R->L ...
- seq = [1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2]; n_trials = length(seq);
+% seq = [1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2]; n_trials = length(seq);
 
 % 7. FRD DAGU SI
 % seq = [2     1     2     2     2     2     1     2     1     1     2     1     1     2     2     1     1     2     1     2     1     1     2     1     2     1     2     1     2     1     2     1     2     2     1     2     1 ...
