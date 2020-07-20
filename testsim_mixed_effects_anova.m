@@ -1,6 +1,6 @@
 % testsim_mixed_effects_anova
 
-% http://www.statisticshell.com/docs/mixed.pdf
+% http://www.statisticshell.com/docs/mixed.pdf -> https://www.discoveringstatistics.com/repository/mixed_2020.pdf
 % https://en.wikipedia.org/wiki/Mixed-design_analysis_of_variance
 
 santa = repmat([1; 2; 3],12,1);
@@ -62,11 +62,11 @@ X = [rating rater santa subj];
 % X(1:24,3) = [1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2];
 % X(1:24,4) = [1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12];
 
-clear X; % other examples
-X(1:34,1) = rand(34,1);
-X(1:34,2) = [ones(1,6) 2*ones(1,11) ones(1,6) 2*ones(1,11)];
-X(1:34,3) = [ones(1,17) 2*ones(1,17)];
-X(1:34,4) = [1:17 1:17];
+% clear X; % other examples
+% X(1:34,1) = rand(34,1);
+% X(1:34,2) = [ones(1,6) 2*ones(1,11) ones(1,6) 2*ones(1,11)];
+% X(1:34,3) = [ones(1,17) 2*ones(1,17)];
+% X(1:34,4) = [1:17 1:17];
 
 % X: design matrix with four columns (future versions may allow different input configurations)
 %     - first column  (i.e., X(:,1)) : all dependent variable values
@@ -76,7 +76,7 @@ X(1:34,4) = [1:17 1:17];
 %         L is the # of levels for the within-subjects factor)
 %     - fourth column (i.e., X(:,4)) : subject codes (ranging from 1:N where N is the total number of subjects)
 
-[SSQs, DFs, MSQs, Fs, Ps]=mixed_between_within_anova(X) % works very well, corresponds to SPSS http://www.statisticshell.com/docs/mixed.pdf
+[SSQs, DFs, MSQs, Fs, Ps] = mixed_between_within_anova(X) % works very well, corresponds to SPSS http://www.statisticshell.com/docs/mixed.pdf
 
 
 % now try unbalanced groups: 6 elves but 4 deer

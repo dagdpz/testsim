@@ -2,6 +2,7 @@
 % https://www.discoveringstatistics.com/repository/repeatedmeasures.pdf
 
 % one-way repeated measures ANOVA
+% bushtacker.sav : 4 different animals to eat for each subject (celebrity)
 r = [
 1 
 8 
@@ -49,7 +50,17 @@ r = reshape(r,5,8)';
 r = r(:,2:5);
 
 % https://de.mathworks.com/matlabcentral/fileexchange/22088-repeated-measures-anova
-[p, table] = anova_rm(r);
+[p, table_] = anova_rm(r);
+
+
+% now MATLAB way:
+t = table(r(:,1),r(:,2),r(:,3),r(:,4),...
+'VariableNames',{'ani1','ani2','ani3','ani4'});
+Meas = table([1 2 3 4]','VariableNames',{'Animals'});
+
+rm = fitrm(t,'ani1-ani4~1','WithinDesign',Meas);
+ranova(rm);
+
 
 % two-way repeated measures ANOVA
 % https://www.discoveringstatistics.com/repository/repeatedmeasures.pdf
@@ -104,5 +115,29 @@ stats = rm_anova2(reshape(Y,10*9,1),reshape(S,10*9,1),reshape(F1,10*9,1),reshape
 %     A x S = (a - 1)(n - 1)
 %     B x S = (b - 1)(n - 1)
 %     A x B x S = (a - 1)(b - 1)(n - 1)
+
+% Repeated measures via fitrm
+% http://compneurosci.com/wiki/images/e/e6/Repeated_ANOVA_MATLAB_v2.pdf
+% same data from http://www.discoveringstatistics.com/docs/LooksOrPersonality.dat
+T = readtable('testsim_repeated_measures_anova_LooksOrPersonality.dat','Delimiter','\t');
+% but we need it in a different format:
+
+% Rating = reshape(Y,10*9,1);
+% Subject = reshape(S,10*9,1);
+% Looks = reshape(F1,10*9,1);
+% Charisma = reshape(F2,10*9,1);
+% T1 = table(Subject,Rating,Looks,Charisma);
+
+between = table(Y(:,1),Y(:,2),Y(:,3),Y(:,4),Y(:,5),Y(:,6),Y(:,7),Y(:,8),Y(:,9),...
+'VariableNames',{'att_high', 'av_high', 'ug_high', 'att_some', 'av_some', 'ug_some', 'att_none', 'av_none', 'ug_none'});
+
+within = table(['1'	'2'	'3'	'1'	'2'	'3'	'1'	'2'	'3']',['1' '1' '1' '2' '2' '2' '3' '3' '3']','VariableNames',{'Looks','Charisma'}); 
+% within = table([1 2 3 1 2 3 1 2 3]',[1 1 1 2 2 2 3 3 3]','VariableNames',{'Looks','Charisma'}); % NOT WORKING!
+%!!! very important !!! to define within factors as 'categorical'! otherwise (if numeric, [1 2 3]), the results don't make sense
+
+rm = fitrm(between,'att_high,av_high,ug_high,att_some,av_some,ug_some,att_none,av_none,ug_none ~ 1','WithinDesign',within);
+% ranovatbl = ranova(rm)
+ranovatbl = ranova(rm,'WithinModel','Looks*Charisma')
+
 
 

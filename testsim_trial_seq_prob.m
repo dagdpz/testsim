@@ -11,8 +11,8 @@
 
 % 1. Completely random 
 % L_prob = 0.72;
-L_prob = 0.5;
-n_trials = 100;
+L_prob = 0.1;
+n_trials = 200;
 seq = randsample([1 2],n_trials,true,[L_prob 1-L_prob]);
 
 % 2.
