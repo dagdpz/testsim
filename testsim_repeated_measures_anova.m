@@ -50,7 +50,7 @@ r = reshape(r,5,8)';
 r = r(:,2:5);
 
 % https://de.mathworks.com/matlabcentral/fileexchange/22088-repeated-measures-anova
-[p, table_] = anova_rm(r);
+% [p, table_] = anova_rm(r);
 
 
 % now MATLAB way:
@@ -140,4 +140,32 @@ rm = fitrm(between,'att_high,av_high,ug_high,att_some,av_some,ug_some,att_none,a
 ranovatbl = ranova(rm,'WithinModel','Looks*Charisma')
 
 
+%% repeated measures anova using lme
+% Y:\Books you now find "Discovering Statistics using R".
+% On page 562 both methods for doing the normal repeated measures anova are described (ezANOVA and lme).
+
+% wide to long
+Y_wide = between;
+Y_wide.subj = categorical([1:height(Y_wide)]');
+
+Y_long = stack(Y_wide,{'att_high', 'av_high', 'ug_high', 'att_some', 'av_some', 'ug_some', 'att_none', 'av_none', 'ug_none'},...
+    'NewDataVariableName','date_preference',...
+    'IndexVariableName','looks_charisma');
+
+Y_helper = table();
+Y_helper.looks_charisma = (unique(Y_long.looks_charisma));
+Y_helper.looks = categorical({'attractive', 'average', 'ugly', 'attractive', 'average', 'ugly', 'attractive', 'average', 'ugly'})';
+Y_helper.charisma = categorical({'high', 'high', 'high', 'some', 'some', 'some', 'none', 'none', 'none'})';
+
+Y_long = join(Y_long,Y_helper); % final table in long format
+
+% Model
+% random_intercept_model = fitlme(Y_long,'date_preference ~ looks * charisma + (1|subj)');
+% random_intercept_model = fitlme(Y_long,'date_preference ~ 1 + looks*charisma + (looks*charisma|subj)');
+random_intercept_model = fitlme(Y_long,'date_preference ~ 1 + looks * charisma + (1|subj)');
+% random_intercept_model = fitlme(data,'predictor ~ fixedEffect_1 * fixedEffect_2 + (1|randomEffect)');
+
+
+random_intercept_model
+random_intercept_model.anova
 
