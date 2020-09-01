@@ -198,12 +198,12 @@ ylabel('stim. effect');
 
 
 
-if 0
+if 1
 % Another question: how additive or multiplicative effects translate into ANOVA task-dependence, within each ROI
 N_trials = [100 100 100 100 100 100];
 task_ra = [1.3 1.6 1.9];
-task_ra_noise_level = [0.5 0.5 0.5];
-Stim_effect_noise_level = [0.1 0.1 0.1];
+task_ra_noise_level = [1.5 1.5 1.5];
+Stim_effect_noise_level = [1.1 1.1 1.1];
 
 task = [ones(N_trials(1),1) ; 2*ones(N_trials(2),1) ; 3*ones(N_trials(3),1) ; ones(N_trials(4),1) ; 2*ones(N_trials(5),1) ; 3*ones(N_trials(6),1)];
 stim = [ones(sum(N_trials(1:3)),1) ; 2*ones(sum(N_trials(4:6)),1)];

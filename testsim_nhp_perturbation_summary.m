@@ -4,7 +4,7 @@ function testsim_nhp_perturbation_summary
 % Current list of methods:
 % ------------------------
 % Permanent Lesions
-% Pharmacology
+% Pharmacology/FDG
 % Reversible pharmacological inactivation
 % Genetic Manipulation
 % DREADDs
@@ -13,39 +13,41 @@ function testsim_nhp_perturbation_summary
 % Optogenetics
 % Infrared
 % Ultrasound
+% Pathway-specific perturbations
+% Anaesthesia
 
-% TR - temporal resolution (in s, will be converted to log10 - e.g. log10(60*60) = 3.56 (1 hour)
-% SR - 1D spatial resolution (in mm, will be converted to log10 of mm^3- e.g. log10(10^3) = 3 (1 cubic cm)
+% TR - temporal resolution (in s, will be converted to log10 - e.g. log10(60*60) = 3.56 (1 hour))
+% SR - 1D spatial resolution (in mm, will be converted to log10 of mm^3- e.g. log10(10^3) = 3 (1 cubic cm))
 % SP - cell type specificity: from [0-1] - no specificity - to [2-3] - very high cell type sensitivity 
 
-alpha = 0.8; % transparency of frames
+alpha = 1; % transparency of frames
 
 k = 1;
 
-T(k).name = 'Permanent lesions';
-T(k).tr = [60*60*24*15 60*60*24*180]; % 15 days - 180 days
-T(k).sr = [5 50]; % 5 mm - 50 mm
+T(k).name = 'Lesions';
+T(k).tr = [60*60*24*7 60*60*24*180]; % 7 days - 180 days
+T(k).sr = [4.5 50]; % 4.5 mm - 50 mm
 T(k).sp = [0 1];
-T(k).color = [0.7 0 0];
+T(k).color = [1 0.84 0];
 
 k = k + 1;
 T(k).name = 'Pharmacology';
-T(k).tr = [60*60*24 60*60*24*15];
-T(k).sr = [30 80]; 
-T(k).sp = [0 1];
-T(k).color = [0 0.45 0.74];
+T(k).tr = [60*45 60*60*24*2];
+T(k).sr = [1.5 80]; 
+T(k).sp = [0 2];
+T(k).color = [0.47 0.7 0.19];
 
 k = k + 1;
 T(k).name = 'Reversible inactivation';
 T(k).tr = [60*60 60*60*4]; % 1 hour - 4 hours
-T(k).sr = [1 8]; % the extent of inactivation typically 1 - 8 mm 
+T(k).sr = [1 9]; % the extent of inactivation typically 1 - 9 mm 
 T(k).sp = [0 1]; % no cell specificity
 T(k).color = [0.5 0 0.8];
 
 k = k + 1;
 T(k).name = 'Genetic manipulation';
 T(k).tr = [60*60*24 60*60*24*180];
-T(k).sr = [2 20];
+T(k).sr = [1.75 20];
 T(k).sp = [1 3]; % cell-specificity, can match opto/dreadds. 
 T(k).color = [0.31 0.40 0.58];
 
@@ -54,45 +56,56 @@ T(k).name = 'DREADDs';
 T(k).tr = [20*60 60*60*3]; % 20 min - 3 hours -- technically, it could be chronic.
 T(k).sr = [.5 8]; % the extent of inactivation typically .5 - 8 mm, technically it could be systemic… 
 T(k).sp = [1 3]; % from some to very cell-specific
-T(k).color = [ 0.40             0          0.20]; % I will let someone else pick the colors… 
-
+T(k).color = [ 0 1 1]; % I will let someone else pick the colors… 
 
 k = k + 1;
 T(k).name = 'Deep Brain Stimulation';
 T(k).tr = [5 15.5e6]; % seconds (e.g., tremor) to months (e.g., depression)
-T(k).sr = [2 10]; % 2 - 10 mm >> even larger? Depends on electrode...
+T(k).sr = [2 15]; % 2 - 15 mm >> even larger? Depends on electrode...
 T(k).sp = [0 1]; % no cell specificity
-T(k).color = [0.85 0.23 0.10]; % ????
-
+T(k).color = [0.80 0.23 0.10]; % ????
 
 k = k + 1;
 T(k).name = 'Electrical stimulation';
-T(k).tr = [0.1 15]; % 0.2 s - 15 s (but if we consider long-term effects, could be a couple of hours)
+T(k).tr = [0.15 15]; % 0.15 s - 15 s (but if we consider long-term effects, could be a couple of hours)
 T(k).sr = [1 5]; % 1 - 5 mm
 T(k).sp = [0 1]; % no cell specificity
-T(k).color = [0.9 0.53 0];
+T(k).color = [1 0.5 0.3];
 
 k = k + 1;
 T(k).name = 'Optogenetics';
 T(k).tr = [0.1 10];
-T(k).sr = [0.5 5];
+T(k).sr = [0.5 4];
 T(k).sp = [2 3];
-T(k).color = [0.2 0.77 0.77];
+T(k).color = [0 0.45 0.74];
 
 k = k + 1;
 T(k).name = 'Infrared';
-T(k).tr = [0.2 10];
-T(k).sr = [2 4];
+T(k).tr = [0.3 12];
+T(k).sr = [1.75 3.5];
 T(k).sp = [1 2];
-T(k).color = [1.00 0.20 0.50];
+T(k).color = [0.5 0 0];
 
 k = k + 1;
 T(k).name = 'Ultrasound';
-T(k).tr = [1 30];
-T(k).sr = [5 20];
+T(k).tr = [1 60*60*5];
+T(k).sr = [4.5 20];
 T(k).sp = [0 1];
-T(k).color = [0.75 0.75 0];
+T(k).color = [0 0.5 0];
 
+k = k + 1;
+T(k).name = 'Anaesthesia';
+T(k).tr = [60*60*1.5 60*60*5];
+T(k).sr = [30 82]; 
+T(k).sp = [0 1];
+T(k).color = [1 0.2 0.4];
+
+% k = k + 1;
+% T(k).name = 'Pathway-specific perturbations';
+% T(k).tr = [2 60*60*24*15];
+% T(k).sr = [1.5 10];
+% T(k).sp = [2 3];
+% T(k).color = [0 1 0.2];
 
 figure('Position',[200 200 800 600]);
 
@@ -116,13 +129,17 @@ for k = 1:length(T),
                 ls = ':';
         end
                 
-        set(h,'FaceColor',T(k).color,'EdgeColor',T(k).color*0.8,'LineWidth',2,'LineStyle',ls,'FaceAlpha',alpha);
+        % set(h,'FaceColor',T(k).color,'EdgeColor',T(k).color*0.8,'LineWidth',2,'LineStyle',ls,'FaceAlpha',alpha); % filled
+        set(h,'FaceColor','none','EdgeColor',T(k).color*0.8,'LineWidth',2,'LineStyle',ls,'FaceAlpha',alpha); % filled
+        
         text(log10(T(k).tr(1)), log10(T(k).sr(1)),T(k).name,'Color',T(k).color*0.7);
 
     end
 end
 
-set(gca,'Ztick',[0 1 2 3]);
+% set(gca,'Ztick',[0 1 2 3]); % for 3D
+
+set(gca,'Xlim',[-1.2 7.5],'Xtick',round2([log10(0.1) log10(1) log10(60) log10(60*60) log10(60*60*24) log10(60*60*24*30)],0.01),'YLim',[-1.2 5.8],'TickDir','out');
 
 % set(gca, 'XScale', 'log');
 % set(gca, 'YScale', 'log');
