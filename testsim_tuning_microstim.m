@@ -4,7 +4,7 @@ fig_size = [200 200 500 500];
 N = 50; % ROIs
 RA_noise_level = 0.25;
 
-Stim_effect_l = 0.3; % %BOLD change % contraversive
+Stim_effect_l = 0.25; % %BOLD change % contraversive
 Stim_effect_r = 0.2; % %BOLD change
 Stim_effect_noise_level = 0.02;
 
@@ -166,6 +166,15 @@ title(sprintf(' %s hemi stim effect: %.2f contraversive, %.2f ipsi',hemi,mean(ra
 xlabel('contraversive');
 ylabel('ipsiversive');
 
+ig_figure('Name','Average stimulation effect','Position',fig_size);
+SE_r = ra_s_r - ra_c_r;
+SE_l = ra_s_l - ra_c_l;
+bar(1, mean(SE_l),'b'); hold on; % contraversive responses
+errorbar(1, mean(SE_l), sterr(SE_l),'k');
+bar(2, mean(SE_r),'r'); hold on; % ipsiversive responses
+errorbar(2, mean(SE_r), sterr(SE_r),'k');
+
+
 
 ig_figure('Name','Stim. effect vs spatial selectivity','Position',fig_size);
 plot(csi(ra_c_l,ra_c_r),ra_s_l - ra_c_l,'bo'); hold on;
@@ -198,12 +207,12 @@ ylabel('stim. effect');
 
 
 
-if 1
+if 0
 % Another question: how additive or multiplicative effects translate into ANOVA task-dependence, within each ROI
 N_trials = [100 100 100 100 100 100];
 task_ra = [1.3 1.6 1.9];
 task_ra_noise_level = [1.5 1.5 1.5];
-Stim_effect_noise_level = [1.1 1.1 1.1];
+Stim_effect_noise_level = [0.1 0.1 0.1];
 
 task = [ones(N_trials(1),1) ; 2*ones(N_trials(2),1) ; 3*ones(N_trials(3),1) ; ones(N_trials(4),1) ; 2*ones(N_trials(5),1) ; 3*ones(N_trials(6),1)];
 stim = [ones(sum(N_trials(1:3)),1) ; 2*ones(sum(N_trials(4:6)),1)];
