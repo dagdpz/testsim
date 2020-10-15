@@ -15,7 +15,7 @@ IndependentCalculation = 0; % for double stimuli, using all three outcomes (depe
 n_trials = 100; % for each stimulus condition
 
 %%%%%%% Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias' %(Presentation)
+ scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias';  %(Presentation)
 % scenario = 'SingleStimuli_DifficultDistr_Post_ContraPerceptualDeficit';%(Presentation)
 % scenario = 'SingleStimuli_EasyDistr_Post_NoGoBias' 
 
@@ -43,7 +43,7 @@ n_trials = 100; % for each stimulus condition
 %%%%%%% 2HF: DOUBLE D-T STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % scenario = '2HF_DoubleD-Tstimuli_DifficultDistr_Post_BilateralPerceptualDeficit';%(Presentation. GENERAL PERCEPTUAL )
 % scenario = '2HF_DoubleD-Tstimuli_DifficultDistr_Post_ContraPerceptualDeficit';%(Presentation)
- scenario = '2HF_DoubleD-Tstimuli_EasyDistr_Post_DecreasedContraHitrate'; %(Presentation. )
+% scenario = '2HF_DoubleD-Tstimuli_EasyDistr_Post_DecreasedContraHitrate'; %(Presentation. )
 
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
 % scenario = '2HF_DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra'; %(Presentation)
@@ -174,7 +174,7 @@ switch scenario
         FA(2)  = 0.4;
         CR(2)  = 0.6;
         
-        sb = 0.19;
+        sb = 0.2;
         H(3)   = H(1)-sb;
         M(3)   = M(1)+sb;
         FA(3)  = FA(1)-sb;
@@ -227,7 +227,7 @@ switch scenario
         FA(2)  = 0.4;
         CR(2)  = 0.6;
         
-        sb = 0.19;
+        sb = 0.2;
         H(3)   = H(1)-sb;
         M(3)   = M(1)+sb;
         FA(3)  = FA(1)+sb;
@@ -1548,3 +1548,73 @@ if SaveGraph
     %close all;
 end
 end
+
+
+
+
+step = 0.01;
+cmb  = ig_nchoosek_with_rep_perm([0:step:1],2); %combvec([0:step:1],[0:step:1]); %
+% 2xMatrix with all combine all possible cases
+pHit_S = cmb(:,1);
+pFA_S = cmb(:,2);
+
+for k = 1:length(cmb(:,1)),
+    [dprime_S(k),beta_S(k),criterion_S(k)] = testsim_dprime(pHit_S(k),pFA_S(k));
+end
+idx = find(dprime_S == Inf | dprime_S == -Inf | isnan(dprime_S));
+dprime_S(idx)=[];
+pFA_S(idx)=[];
+pHit_S(idx)=[];
+criterion_S(idx)=[];
+
+if IndependentCalculation == 1
+    Title = 'pHit/FA independent Calculations: ';
+    mult = -1;
+else
+    Title = 'pHit/FA dependent Calculation';
+    mult = -1;
+end
+ig_figure('Position',[200 200 1200 900],'PaperPositionMode','auto','Name',[Title, ' - scenario - ',scenario]); % ,'PaperOrientation','landscape'
+
+Plot_Colums = 3;
+Plot_Rows = 2;
+
+%Hit rate vs False alarm rate
+c = subplot(Plot_Rows,Plot_Colums,1);
+%max(dprim_S(dprime_S == Inf))
+
+
+scatter(pFA_S,pHit_S,60,dprime_S, 'filled'); hold on;
+Settings.Graph.cmap = colormap( c, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
+
+
+c = colorbar;
+c.Label.String = 'sensitivity';
+grid on;
+plot([pFA(2),pFA(4)], [pHit(2),pHit(4)], 'o-','color',Color.Ipsi, 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', LineWith);
+plot([pFA(4)], [pHit(4)], 'o','color',Color.Ipsi , 'MarkerSize',MarkSize-1,'markerfacecolor',Color.Ipsi,'LineWidth', LineWith); hold on;
+line([0 1],[1 0],'Color',[0 0 0],'LineStyle',':');
+plot([pFA(1),pFA(3)], [pHit(1),pHit(3)], 'o-','color',Color.Contra , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', LineWith); hold on;
+plot([pFA(3)], [pHit(3)], 'o','color',Color.Contra , 'MarkerSize',MarkSize-1,'markerfacecolor',Color.Contra,'LineWidth', LineWith); hold on;
+set(gca,'ylim',[0 1],'xlim',[0 1],'fontsize',fs)
+xlabel( 'FA rate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+ylabel( 'Hitrate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+axis square
+hold off;
+
+d = subplot(Plot_Rows,Plot_Colums,4);
+Settings.Graph.cmap = colormap(cbrewer( 'div', 'BrBG', 100)); %colormap(flip(linspecer));
+scatter(pFA_S,pHit_S,60,criterion_S, 'filled'); hold on;
+d = colorbar;
+d.Label.String = 'criterion';
+grid on;
+plot([pFA(2),pFA(4)], [pHit(2),pHit(4)], 'o-','color',Color.Ipsi, 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', LineWith);
+plot([pFA(4)], [pHit(4)], 'o','color',Color.Ipsi , 'MarkerSize',MarkSize-1,'markerfacecolor',Color.Ipsi,'LineWidth', LineWith); hold on;
+line([0 1],[1 0],'Color',[0 0 0],'LineStyle',':');
+plot([pFA(1),pFA(3)], [pHit(1),pHit(3)], 'o-','color',Color.Contra , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', LineWith); hold on;
+plot([pFA(3)], [pHit(3)], 'o','color',Color.Contra , 'MarkerSize',MarkSize-1,'markerfacecolor',Color.Contra,'LineWidth', LineWith); hold on;
+set(gca,'ylim',[0 1],'xlim',[0 1],'fontsize',fs)
+xlabel( 'FA rate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+ylabel( 'Hitrate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+axis square
+
