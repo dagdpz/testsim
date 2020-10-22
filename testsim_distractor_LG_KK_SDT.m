@@ -1,5 +1,6 @@
 % function testsim_distractor_LG_KK_SDT
 clear all, close all;
+warning off; 
 plot_mainExpectations = 1;
 SaveGraph = 1;
 % predictions
@@ -15,7 +16,7 @@ IndependentCalculation = 0; % for double stimuli, using all three outcomes (depe
 n_trials = 100; % for each stimulus condition
 
 %%%%%%% Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias';  %(Presentation)
+% scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias';  %(Presentation)
 % scenario = 'SingleStimuli_DifficultDistr_Post_ContraPerceptualDeficit';%(Presentation)
 % scenario = 'SingleStimuli_EasyDistr_Post_NoGoBias' 
 
@@ -51,7 +52,7 @@ n_trials = 100; % for each stimulus condition
 % scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
 
 %%%%%%% 1HF: DOUBLE D-T STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%scenario = '1HF_TarDistStimuli_Post_contraNoGoBias';
+scenario = '1HF_TarDistStimuli_Post_contraNoGoBias';
 % scenario = '1HF_TarDistStimuli_Post_contraHitrateDecreased';
 % scenario = '1HF_TarDistStimuli_Post_contraPerceptualDeficit';
 
@@ -102,11 +103,12 @@ switch scenario
         StimulusType = '1HF_TarDistStimuli';
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
         % H(1)+ M(1)+ FA(1) == 1  &FA(1)+ CR(1)+ H(1) == 1
-       % H(1)+ M(1)+ FA(1) == 100 
+       %H(4)+ M(4)+ FA(4) == 100 
        % H(2)+ M(2)+ FA(2) == 100
+       %H(3)+ M(3)+ FA(3) == 100
         % contra pre
-        H(1)   = 0.6;
-        M(1)   = 0;
+        H(1)   = 0.5999;
+        M(1)   = 0.0001;
         FA(1)  = 0.4; %0.1;
         CR(1)  = M(1); %0.6;
         
@@ -1550,7 +1552,7 @@ end
 end
 
 
-
+%% the relationship between hitrate/false alarm rate with sensitivity, criterion and accuracy
 
 step = 0.01;
 cmb  = ig_nchoosek_with_rep_perm([0:step:1],2); %combvec([0:step:1],[0:step:1]); %
@@ -1560,12 +1562,16 @@ pFA_S = cmb(:,2);
 
 for k = 1:length(cmb(:,1)),
     [dprime_S(k),beta_S(k),criterion_S(k)] = testsim_dprime(pHit_S(k),pFA_S(k));
-end
+    %accuracy
+    Accuracy_S(k) = (pHit_S(k) + (1-pFA_S(k))) /2; 
+ end
 idx = find(dprime_S == Inf | dprime_S == -Inf | isnan(dprime_S));
 dprime_S(idx)=[];
 pFA_S(idx)=[];
 pHit_S(idx)=[];
 criterion_S(idx)=[];
+Accuracy_S(idx)=[];
+
 
 if IndependentCalculation == 1
     Title = 'pHit/FA independent Calculations: ';
@@ -1576,7 +1582,7 @@ else
 end
 ig_figure('Position',[200 200 1200 900],'PaperPositionMode','auto','Name',[Title, ' - scenario - ',scenario]); % ,'PaperOrientation','landscape'
 
-Plot_Colums = 3;
+Plot_Colums = 2;
 Plot_Rows = 2;
 
 %Hit rate vs False alarm rate
@@ -1586,8 +1592,6 @@ c = subplot(Plot_Rows,Plot_Colums,1);
 
 scatter(pFA_S,pHit_S,60,dprime_S, 'filled'); hold on;
 Settings.Graph.cmap = colormap( c, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
-
-
 c = colorbar;
 c.Label.String = 'sensitivity';
 grid on;
@@ -1602,7 +1606,7 @@ ylabel( 'Hitrate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
 axis square
 hold off;
 
-d = subplot(Plot_Rows,Plot_Colums,4);
+d = subplot(Plot_Rows,Plot_Colums,2);
 Settings.Graph.cmap = colormap(cbrewer( 'div', 'BrBG', 100)); %colormap(flip(linspecer));
 scatter(pFA_S,pHit_S,60,criterion_S, 'filled'); hold on;
 d = colorbar;
@@ -1616,5 +1620,38 @@ plot([pFA(3)], [pHit(3)], 'o','color',Color.Contra , 'MarkerSize',MarkSize-1,'ma
 set(gca,'ylim',[0 1],'xlim',[0 1],'fontsize',fs)
 xlabel( 'FA rate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
 ylabel( 'Hitrate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+axis square
+
+
+e = subplot(Plot_Rows,Plot_Colums,3);
+Settings.Graph.cmap = colormap( e, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
+scatter(pFA_S,pHit_S,60,Accuracy_S, 'filled'); hold on;
+e = colorbar;
+e.Label.String = 'Accuracy';
+grid on;
+plot([pFA(2),pFA(4)], [pHit(2),pHit(4)], 'o-','color',Color.Ipsi, 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', LineWith);
+plot([pFA(4)], [pHit(4)], 'o','color',Color.Ipsi , 'MarkerSize',MarkSize-1,'markerfacecolor',Color.Ipsi,'LineWidth', LineWith); hold on;
+line([0 1],[1 0],'Color',[0 0 0],'LineStyle',':');
+plot([pFA(1),pFA(3)], [pHit(1),pHit(3)], 'o-','color',Color.Contra , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', LineWith); hold on;
+plot([pFA(3)], [pHit(3)], 'o','color',Color.Contra , 'MarkerSize',MarkSize-1,'markerfacecolor',Color.Contra,'LineWidth', LineWith); hold on;
+set(gca,'ylim',[0 1],'xlim',[0 1],'fontsize',fs)
+xlabel( 'FA rate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+ylabel( 'Hitrate','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+axis square
+
+f = subplot(Plot_Rows,Plot_Colums,4);
+Settings.Graph.cmap = colormap( f, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
+scatter(dprime_S,criterion_S,60,Accuracy_S, 'filled'); hold on;
+e = colorbar;
+e.Label.String = 'Accuracy';
+grid on;
+    plot([dprime(2), dprime(4)],[-criterion(2),-criterion(4)] , 'o-','color',Color.Ipsi , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ],'LineWidth', LineWith); hold on;% reverse direction of criterion for ipsi
+    plot(dprime(4),-criterion(4), 'o','color',Color.Ipsi ,'MarkerSize',MarkSize,'markerfacecolor',Color.Ipsi);% reverse direction of criterion for ipsi
+    plot([dprime(1), dprime(3)],[criterion(1),criterion(3)], 'o-','color',Color.Contra , 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1 ],'LineWidth', LineWith); hold on; 
+    plot(dprime(3),criterion(3), 'o','color',Color.Contra ,'MarkerSize',MarkSize,'markerfacecolor',Color.Contra);
+
+set(gca,'xlim',[-5 5],'ylim',[-3 3],'fontsize',fs)
+xlabel( 'sensitivity','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
+ylabel( 'criterion','fontsize',fs,'fontweight','b', 'Interpreter', 'none' );
 axis square
 
