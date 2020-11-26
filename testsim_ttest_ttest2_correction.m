@@ -1,3 +1,4 @@
+% testsim_ttest_ttest2_correction
 % testing ttest and ttest2, with and without RT baseline correction
 
 n_subj = 10;
