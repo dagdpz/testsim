@@ -24,13 +24,13 @@ if 0 % simulate average response amplitude
         r = abs(r);
     end
     
-else % simulate timecourses
+else % simulate timecoures
     n_samples = 100; % per epoch
     btt = repmat(normrnd(b_mean,noise_trial2trial_sd,[N_trials,1]),1,n_samples);
     bt = btt + normrnd(b_mean,1,[N_trials,n_samples]); % trial x sample
     rt = btt + normrnd(response_mean,response_sd,[N_trials,n_samples]);
     
-    if 1 % baseline correction
+    if 0 % baseline correction
         bc = repmat(mean(bt,2),1,n_samples);
         bt = bt - bc;
         rt = rt - bc;
@@ -46,8 +46,14 @@ else % simulate timecourses
     
 end
 
+subplot(2,1,1)
+plot([bt rt]');
+
+subplot(2,1,2)
 plot([1 2],[b r],'ko'); hold on
 plot([1 2],[b r],'k-'); hold on
+
+
 
 [h,p] = ttest(b,r) % paired ttest
 [h2,p2] = ttest2(b,r) % nonpaired ttest
