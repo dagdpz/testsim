@@ -16,7 +16,7 @@ IndependentCalculation = 0; % for double stimuli, using all three outcomes (depe
 n_trials = 100; % for each stimulus condition
 
 %%%%%%% Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias';  %(Presentation)
+% scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias';  %(Presentation)
 % scenario = 'SingleStimuli_DifficultDistr_Post_ContraPerceptualDeficit';%(Presentation)
 % scenario = 'SingleStimuli_EasyDistr_Post_NoGoBias' 
 
@@ -28,7 +28,7 @@ n_trials = 100; % for each stimulus condition
 
 % scenario = 'Single Stimuli: add contra spatial bias to contra and ipsi';
 %%%%%%% DOUBLE SAME STIMULI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit'; %presentation
+%scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit'; %presentation
 % scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers2_NoPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit';
 % scenario = 'DoubleSameStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
@@ -47,7 +47,7 @@ scenario = 'DoubleSameStimuli_Post_IpsiSpatialBias_Vers1_NoPerceptualDeficit'; %
 % scenario = '2HF_DoubleD-Tstimuli_EasyDistr_Post_DecreasedContraHitrate'; %(Presentation. )
 
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
-% scenario = '2HF_DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra'; %(Presentation)
+ scenario = '2HF_DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra'; %(Presentation)
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers2_LessFixation';
 % scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
 
@@ -165,7 +165,8 @@ switch scenario
         disp('Single Stimuli Post: Contra Spatial Bias')
         StimulusType = 'Sgl_Stimuli';
         IndependentCalculation = 1;
-        
+        Sensitvity_Change =0; 
+
         H(1)   = 0.7; %0.7
         M(1)   = 0.3; %0.3
         FA(1)  = 0.3;
@@ -218,7 +219,8 @@ switch scenario
         disp('Single Stimuli - DifficultDistr - Post: No Spatial Bias & Contra PerceptualDeficit')
         StimulusType = 'Sgl_Stimuli';
         IndependentCalculation = 1;
-        
+        Sensitvity_Change = 0; 
+
         H(1)   = 0.7; %0.7
         M(1)   = 0.3; %0.3
         FA(1)  = 0.3;
@@ -749,14 +751,16 @@ switch scenario
     case '2HF_DoubleD-Tstimuli_DifficultDistr_Post_BilateralPerceptualDeficit';
         disp('Double D-T Stimuli -  Post: bilateral perceptual deficit (less ipsi & contra Target, more ipsi & contra distractor)')
         StimulusType = 'Double D-T Stimuli';
+        Sensitvity_Change =1; 
+
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
-        % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1
+        % H(1)+ M(1)+ FA(2) == 1  & FA(1)+ CR(1)+ H(2) == 1
         % ipsi selection bias - increase ipsilateral target selection, FA (contra) decreased
         % ipsi perceptual deficit - increased selection of FA (ipsi)
         
         % contra pre
         % contra pre
-        H(1)   = 0.7;
+        H(1)   = 0.8;
         M(1)   = 0.1;
         FA(1)  = 0.2; %0.1;
         CR(1)  = 0.1; %0.6;
@@ -764,7 +768,7 @@ switch scenario
         % ipsi pre
         H(2)   = 0.7;
         M(2)   = CR(1);
-        FA(2)  = 0.2;
+        FA(2)  = 0.1;
         CR(2)  = M(1);
         
         sb = 0.2;
@@ -886,6 +890,8 @@ switch scenario
     case '2HF_DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra';
         disp('2HF_DoubleD-Tstimuli Post: IpsiSpatialBias Vers1 (more saccades to ipsi, less saccades to contra))')
         StimulusType = 'Double D-T Stimuli';
+        Sensitvity_Change =0; 
+
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
         % H(1)+ M(1)+ FA(2) == 1  &FA(1)+ CR(1)+ H(2) == 1
         
@@ -1490,20 +1496,20 @@ LineWith = 3;
 step = 0.01;
 cmb  = ig_nchoosek_with_rep_perm([0:step:1],2); %combvec([0:step:1],[0:step:1]); %
 % 2xMatrix with all combine all possible cases
-pHit_S = cmb(:,1);
-pFA_S = cmb(:,2);
+pHR_S = cmb(:,1);
+pFAR_S = cmb(:,2);
 
 for k = 1:length(cmb(:,1)),
-    [dprime_S(k),beta_S(k),criterion_S(k)] = testsim_dprime(pHit_S(k),pFA_S(k));
+    [dprime_S(k),beta_S(k),criterion_S(k)] = testsim_dprime(pHR_S(k),pFAR_S(k));
     %accuracy
-    Accuracy_S(k) = (pHit_S(k) + (1-pFA_S(k))) /2; 
+    Accuracy_S(k) = (pHR_S(k) + (1-pFAR_S(k))) /2; 
  end
 idx = find(dprime_S == Inf | dprime_S == -Inf | isnan(dprime_S));
-dprime_S(idx)=[];
-pFA_S(idx)=[];
-pHit_S(idx)=[];
+dprime_S(idx)   =[];
+pFAR_S(idx)     =[];
+pHR_S(idx)      =[];
 criterion_S(idx)=[];
-Accuracy_S(idx)=[];
+Accuracy_S(idx) =[];
 
 
 if IndependentCalculation == 1
@@ -1524,7 +1530,7 @@ c = subplot(Plot_Rows,Plot_Colums,1);
 
 
 Settings.Graph.cmap = colormap( c, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
-scatter(pFA_S,pHit_S,60,dprime_S, 'filled'); hold on;
+scatter(pFAR_S,pHR_S,60,dprime_S, 'filled'); hold on;
 c = colorbar;
 c.Label.String = 'sensitivity';
 grid on;
@@ -1541,7 +1547,7 @@ hold off;
 
 d = subplot(Plot_Rows,Plot_Colums,2);
 Settings.Graph.cmap = colormap(d,cbrewer( 'div', 'BrBG', 100)); %colormap(flip(linspecer));
-scatter(pFA_S,pHit_S,60,criterion_S, 'filled'); hold on;
+scatter(pFAR_S,pHR_S,60,criterion_S, 'filled'); hold on;
 d = colorbar;
 d.Label.String = 'criterion';
 grid on;
@@ -1558,7 +1564,7 @@ axis square
 
 e = subplot(Plot_Rows,Plot_Colums,3);
 Settings.Graph.cmap = colormap( e, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
-scatter(pFA_S,pHit_S,60,Accuracy_S, 'filled'); hold on;
+scatter(pFAR_S,pHR_S,60,Accuracy_S, 'filled'); hold on;
 e = colorbar;
 e.Label.String = 'Accuracy';
 grid on;
@@ -1621,14 +1627,14 @@ if plot_mainExpectations
    a =  subplot(Plot_Rows,Plot_Colums,1);
 
    if Sensitvity_Change
-scatter(pFA_S,pHit_S,60,dprime_S, 'filled'); hold on;
+scatter(pFAR_S,pHR_S,60,dprime_S, 'filled'); hold on;
 Settings.Graph.cmap = colormap( a, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
 a = colorbar;
 a.Label.String = 'sensitivity';
     
    elseif Sensitvity_Change == 0; 
 Settings.Graph.cmap = colormap(a,cbrewer( 'div', 'BrBG', 100)); %colormap(flip(linspecer));
-scatter(pFA_S,pHit_S,60,criterion_S, 'filled'); hold on;
+scatter(pFAR_S,pHR_S,60,criterion_S, 'filled'); hold on;
 a = colorbar;
 a.Label.String = 'criterion';
    end
@@ -1750,7 +1756,7 @@ if plot_mainExpectations
     Plot_Colums = 4;
     Plot_Rows = 2;
     else
-    Plot_Colums = 4;
+    Plot_Colums = 3;
     Plot_Rows = 1;
     end
 
@@ -1759,7 +1765,7 @@ if plot_mainExpectations
 
    if Sensitvity_Change
 Settings.Graph.cmap = colormap( a, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
-scatter(pFA_S,pHit_S,60,dprime_S, 'filled'); hold on;
+scatter(pFAR_S,pHR_S,60,dprime_S, 'filled'); hold on;
 
 a = colorbar;
 pos=get(cb,'Position');
@@ -1767,7 +1773,7 @@ a.Label.String = 'Sensitivity';
     
    elseif Sensitvity_Change == 0; 
 Settings.Graph.cmap = colormap(a,cbrewer( 'div', 'BrBG', 100)); %colormap(flip(linspecer));
-scatter(pFA_S,pHit_S,60,criterion_S, 'filled'); hold on;
+scatter(pFAR_S,pHR_S,60,criterion_S, 'filled'); hold on;
 a = colorbar;
 a.Label.String = 'Criterion';
    end
