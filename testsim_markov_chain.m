@@ -1,4 +1,6 @@
 function chain = testsim_markov_chain(chain_length,transition_probabilities,starting_value)
+% https://dag-wiki.dpz.eu/doku.php?id=analysis:stat:markovchain
+% https://www.mathworks.com/matlabcentral/answers/57961-simulating-a-markov-chain
 
 if nargin < 3,
 	chain_length = 100;
