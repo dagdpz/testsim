@@ -22,7 +22,6 @@ function [d,beta,c] = testsim_dprime(pHit,pFA)
 % Convert to Z scores
 zHit = norminv(pHit);
 zFA  = norminv(pFA);
-
 % Calculate d-prime
 d = zHit - zFA;
 
