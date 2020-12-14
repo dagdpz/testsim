@@ -7,7 +7,7 @@ b_mean = 0;
 response_mean = 1;
 response_sd = 1;
     
-if 0 % simulate average response amplitude
+if 1 % simulate average response amplitude
     
     b = normrnd(b_mean,noise_trial2trial_sd,[N_trials,1]);
     r = b + normrnd(response_mean,response_sd,[N_trials,1]);
@@ -30,13 +30,13 @@ else % simulate timecoures
     bt = btt + normrnd(b_mean,1,[N_trials,n_samples]); % trial x sample
     rt = btt + normrnd(response_mean,response_sd,[N_trials,n_samples]);
     
-    if 0 % baseline correction
+    if 1 % baseline correction
         bc = repmat(mean(bt,2),1,n_samples);
         bt = bt - bc;
         rt = rt - bc;
     end
     
-    if 1 % absolute
+    if 0 % absolute
         bt = abs(bt);
         rt = abs(rt);
     end
@@ -44,15 +44,16 @@ else % simulate timecoures
     b = mean(bt,2);
     r = mean(rt,2);
     
+    subplot(2,1,1)
+    plot([bt rt]');
+    
 end
 
-subplot(2,1,1)
-plot([bt rt]');
+
 
 subplot(2,1,2)
 plot([1 2],[b r],'ko'); hold on
 plot([1 2],[b r],'k-'); hold on
-
 
 
 [h,p] = ttest(b,r) % paired ttest
