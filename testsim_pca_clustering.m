@@ -1,7 +1,7 @@
 % function testsim_pca_clustering
 clear all
 
-Noise = 0.5;
+Noise = 1;
 class1 = ones(10,50) + Noise*randn(10,50);
 class2 = repmat(linspace(0,1,50),10,1) + Noise*randn(10,50);
 class3 = repmat(linspace(1,0,50),10,1) + Noise*randn(10,50);
