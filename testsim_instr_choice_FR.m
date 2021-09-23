@@ -34,6 +34,7 @@ for k = 1:50, % units
 	FR_c_l = unit_FR_level + noise_level*randn(1,n_trials);
 	FR_c_r = unit_FR_level + noise_level*randn(1,n_trials);
     
+    % use half of instr trials for tuning and half to comparing to choice
     trials1 = [1:n_trials/2]; % trials for instr tuning
     trials2 = [n_trials/2+1:n_trials]; % trials for CII 
     
