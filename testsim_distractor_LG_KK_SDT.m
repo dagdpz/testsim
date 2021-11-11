@@ -47,7 +47,7 @@ n_trials = 100; % for each stimulus condition
 % scenario = '2HF_DoubleD-Tstimuli_EasyDistr_Post_DecreasedContraHitrate'; %(Presentation. )
 
 % scenario = 'DoubleD-Tstimuli_Post_contraPerceptualDeficit_NoGoBias_Ver4_decreaseContraHR';
- scenario = '2HF_DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra'; %(Presentation)
+% scenario = '2HF_DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers1_LessSaccadesContra'; %(Presentation)
 % scenario = 'DoubleD-Tstimuli_Post_ipsiSpatialBias_Vers2_LessFixation';
 % scenario = 'DoubleD-Tstimuli_Post_NoGoBias';
 
@@ -55,6 +55,9 @@ n_trials = 100; % for each stimulus condition
 %scenario = '1HF_TarDistStimuli_Post_contraNoGoBias';
 % scenario = '1HF_TarDistStimuli_Post_contraHitrateDecreased';
 % scenario = '1HF_TarDistStimuli_Post_contraPerceptualDeficit';
+
+ %scenario = '1HF_DoubleSameStimuli_Post_contraPerceptualDeficit';
+ scenario = '1HF_DoubleSameStimuli_Post_NoGoBias';
 
 
 % scenario = 'Double D-T Stimuli - Post: perceptual deficit';
@@ -66,6 +69,69 @@ n_trials = 100; % for each stimulus condition
 
 % Enter the Proportion for Hits, Misses, FA, CR
 switch scenario
+     case '1HF_DoubleSameStimuli_Post_NoGoBias';  
+      disp('1HF_DoubleSameStimuli_Post_NoGoBias')
+        StimulusType = '1HF_DoubleSameStimuli';
+        Sensitvity_Change =0; 
+        %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
+        % H(1)+ M(1)+ FA(1) == 1  &FA(1)+ CR(1)+ H(1) == 1
+        
+       % assumption H(1) stands for hits up and hits down
+     
+        H(1)   = 0.7; %0.7
+        M(1)   = 0.3; %0.3
+        FA(1)  = 0.3;
+        CR(1)  = 0.7;
+        
+        H(2)   = 0.6;
+        M(2)   = 0.4;
+        FA(2)  = 0.4;
+        CR(2)  = 0.6;
+        
+        sb = 0.2;
+        H(3)   = H(1)-sb;
+        M(3)   = M(1)+sb;
+        FA(3)  = FA(1)-sb;
+        CR(3)  = CR(1)+sb;
+        
+        H(4)   = H(2);
+        M(4)   = M(2);
+        FA(4)  = FA(2);
+        CR(4)  = CR(2);
+    
+        
+    case '1HF_DoubleSameStimuli_Post_contraPerceptualDeficit';  
+      disp('1HF_DoubleSameStimuli_Post_contraPerceptualDeficit')
+        StimulusType = '1HF_DoubleSameStimuli';
+        Sensitvity_Change =1; 
+        %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
+        % H(1)+ M(1)+ FA(1) == 1  &FA(1)+ CR(1)+ H(1) == 1
+        
+       % assumption H(1) stands for hits up and hits down
+       % contra pre
+        H(1)   = 0.7; %0.7
+        M(1)   = 0.3; %0.3
+        FA(1)  = 0.3;
+        CR(1)  = 0.7;
+        
+        H(2)   = 0.6;
+        M(2)   = 0.4;
+        FA(2)  = 0.4;
+        CR(2)  = 0.6;
+  
+        
+        sb = 0.2;
+        % contra post
+        H(3)   = H(1)-sb;
+        M(3)   = M(1)+sb;
+        FA(3)  = FA(1)+sb;
+        CR(3)  = CR(1)-sb;
+        
+        H(4)   = H(2);
+        M(4)   = M(2);
+        FA(4)  = FA(2);
+        CR(4)  = CR(2);
+    
     
     case '1HF_TarDistStimuli_Post_contraHitrateDecreased';  
       disp('1HF_TarDistStimuli_Post_contraHitrateDecreased (less contra saccades))')
@@ -101,24 +167,25 @@ switch scenario
    case '1HF_TarDistStimuli_Post_contraNoGoBias';  
       disp('1HF_TarDistStimuli_Post_contraNoGoBias (less contra saccades))')
         StimulusType = '1HF_TarDistStimuli';
+        Sensitvity_Change =0; 
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
         % H(1)+ M(1)+ FA(1) == 1  &FA(1)+ CR(1)+ H(1) == 1
        %H(4)+ M(4)+ FA(4) == 100 
        % H(2)+ M(2)+ FA(2) == 100
        %H(3)+ M(3)+ FA(3) == 100
         % contra pre
-        H(1)   = 0.5999;
-        M(1)   = 0.0001;
-        FA(1)  = 0.4; %0.1;
+  
+        H(1)   = 0.7;
+        M(1)   = 0.1; %0.1;
+        FA(1)  = 0.2; %0.1;
         CR(1)  = M(1); %0.6;
-        
         % ipsi pre
-        H(2)   = 0.7;
+         H(2)   = 0.8;
         M(2)   = 0.1;
-        FA(2)  = 0.2;
+        FA(2)  = 0.1;
         CR(2)  = M(2);
-        
-        sb = 0.2;
+         
+        sb = 0.15;
         % contra post
         H(3)   = H(1) - (sb); % less saccades to contra T
         M(3)   = M(1) + sb + sb; %&+  (sb/2);
@@ -134,12 +201,13 @@ switch scenario
          case '1HF_TarDistStimuli_Post_contraPerceptualDeficit';  
       disp('1HF_TarDistStimuli_Post_contraPerceptualDeficit')
         StimulusType = '1HF_TarDistStimuli';
+        Sensitvity_Change =1; 
         %1.Target contra:  Miss contra == CR ipsi && 2.Target ipsi:  Miss ipsi == CR contra
         % H(1)+ M(1)+ FA(1) == 1  &FA(1)+ CR(1)+ H(1) == 1
         
         % contra pre
         H(1)   = 0.7;
-        M(1)   = 0.1;
+        M(1)   = 0.1; %0.1;
         FA(1)  = 0.2; %0.1;
         CR(1)  = M(1); %0.6;
         
@@ -149,7 +217,7 @@ switch scenario
         FA(2)  = 0.1;
         CR(2)  = M(2);
         
-        sb = 0.1;
+        sb = 0.2;
         % contra post
         H(3)   = H(1) - (sb) ; % less saccades to contra T
         M(3)   = M(1) ;
@@ -1209,7 +1277,56 @@ switch StimulusType
         Dis_IpsiFixation(2)     = CR(4) ./ (H(3) + FA(4) + CR(4));
         Dis_ContraFixation(2)   = CR(3) ./ (H(4) + FA(3) + CR(3));
         
-    case('1HF_TarDistStimuli')
+
+    case '1HF_DoubleSameStimuli'
+         if H(1)+ M(1) == 100 &&  CR(1)+ FA(1) == 100
+            disp('Pre: target-trials: add up to 100')
+        else
+            disp('Pre: target-trials: DO NOT add up to 100')
+        end
+        if H(2)+ M(2) == 100 &&  CR(2)+ FA(2) == 100
+            disp('Pre: distractor-trials: add up to 100')
+        else
+            disp('Pre: distractor-trials: DO NOT add up to 100')
+        end
+        if H(3)+ M(3) == 100 &&  CR(3)+ FA(3) == 100
+            disp('Post: target-trials: add up to 100')
+        else
+            disp('Post: target-trials: DO NOT add up to 100')
+        end
+        if H(4)+ M(4) == 100 &&  CR(4)+ FA(4) == 100
+            disp('Post: distractor-trials: add up to 100')
+        else
+            disp('Post: distractor-trials: DO NOT add up to 100')
+        end
+        Accuracy(1) = (H(2)+H(1))/(H(1) + FA(2) + M(1) + FA(1) + CR(1) + H(2) );
+        Accuracy(2) = (H(4)+H(3))/(H(3) + FA(4) + M(3) + FA(3) + CR(3) + H(4));
+        
+        Accuracy_ipsi(1) = (H(2))/(H(1) + H(2) + M(1) +  FA(1)+ CR(1)+ FA(2));
+        Accuracy_ipsi(2) = (H(4))/(H(3) + H(4) + M(3) +  FA(3)+ CR(3)+ FA(4));
+        
+        Accuracy_contra(1) = (H(1))/(H(1) + H(2) + M(1) +  FA(1)+ CR(1)+ FA(2));
+        Accuracy_contra(2) = (H(3))/(H(3) + H(4) + M(3) +  FA(3)+ CR(3)+ FA(4));
+        %TargetSelection
+        Tar_IpsiSelection(1)    = H(2) ./ (FA(2) + H(2) + M(2)); %ipsi
+        Tar_ContraSelection(1)  = H(1) ./ (H(1) + FA(1) + M(1));
+        Tar_IpsiFixation(1)     = M(2) ./ (FA(2) + H(2) + M(2)); %Dis_ContraFixation(1);
+        Tar_ContraFixation(1)   = M(1) ./ (FA(1) + H(1) + M(1)); %Dis_IpsiFixation(1);
+        Tar_IpsiSelection(2)    = H(4) ./ (FA(4) + H(4) + M(4));
+        Tar_ContraSelection(2)  = H(3) ./ (H(3) + FA(3) + M(3));
+        Tar_IpsiFixation(2)     = M(4) ./ (FA(4) + H(4) + M(4));
+        Tar_ContraFixation(2)   = M(3) ./ (FA(3) + H(3) + M(3));
+        %DistractorSelection
+        Dis_IpsiSelection(1)    = FA(2) ./ (H(2) + FA(2) + CR(2)); %ipsi
+        Dis_ContraSelection(1)  = FA(1) ./ (FA(1) + H(1) + CR(1));
+        Dis_IpsiFixation(1)     = CR(2) ./ (H(2) + FA(2) + CR(2));
+        Dis_ContraFixation(1)   = CR(1) ./ (H(1) + FA(1) + CR(1));
+        %post
+        Dis_IpsiSelection(2)    = FA(4) ./ (H(4) + FA(4) + CR(4));
+        Dis_ContraSelection(2)  = FA(3) ./ (FA(3) + H(3) + CR(3));
+        Dis_IpsiFixation(2)     = CR(4) ./ (H(4) + FA(4) + CR(4));
+        Dis_ContraFixation(2)   = CR(3) ./ (H(3) + FA(3) + CR(3));
+    case '1HF_TarDistStimuli'
          if H(1)+ M(1)+ FA(1) == 100 && H(2)+ M(2)+ FA(2) == 100
             disp('Pre: target-trials: add up to 100')
         else
@@ -1220,7 +1337,7 @@ switch StimulusType
         else
             disp('Pre: distractor-trials: DO NOT add up to 100')
         end
-        if H(3)+ M(3)+ FA(3) == 100 && H(4)+ M(4)+ FA(4) == 100
+        if  H(3)+ M(3)+ FA(3) == 100 && H(4)+ M(4)+ FA(4) == 100
             disp('Post: target-trials: add up to 100')
         else
             disp('Post: target-trials: DO NOT add up to 100')
@@ -1296,10 +1413,11 @@ else
         pHit = H ./ (H + M +FA_);
         pFA = FA ./ (FA + CR +H_);
      elseif strcmp(StimulusType , '1HF_TarDistStimuli')    
-         H_ = [H(2) H(1) H(4) H(3) ];
-        FA_ = [FA(2) FA(1) FA(4) FA(3) ];
         pHit = H ./ (H + M +FA);
         pFA = FA ./ (FA + CR +H);
+     elseif strcmp(StimulusType , '1HF_DoubleSameStimuli')    
+        pHit = H ./ (H + M );
+        pFA = FA ./ (FA + CR );
     end
 end
 
@@ -1320,7 +1438,9 @@ elseif strcmp(StimulusType , 'DoubleSameStimuli')
 elseif strcmp(StimulusType , 'Double D-T Stimuli') || strcmp(StimulusType , '1HF_TarDistStimuli')
     SelectionBias(1) = ((H(1) +FA(1)) -(H(2) +FA(2)))/(H(1) +FA(1)+ H(2) +FA(2)+M(1) +M(2));
     SelectionBias(2) = ((H(3) +FA(3)) -(H(4) +FA(4)))/(H(3) +FA(3)+ H(4) +FA(4)+M(3) +M(4));
-    
+elseif strcmp(StimulusType , '1HF_DoubleSameStimuli')
+    SelectionBias(1) = 0;
+    SelectionBias(2) = 0;
 end
 
 %% Plotting
@@ -1767,15 +1887,15 @@ if plot_mainExpectations
 Settings.Graph.cmap = colormap( a, cbrewer('div', 'RdYlGn', 100)); %colormap(flip(linspecer));
 scatter(pFAR_S,pHR_S,60,dprime_S, 'filled'); hold on;
 
-a = colorbar;
-pos=get(cb,'Position');
-a.Label.String = 'Sensitivity';
+%a = colorbar;
+%pos=get(cb,'Position');
+%a.Label.String = 'Sensitivity';
     
    elseif Sensitvity_Change == 0; 
 Settings.Graph.cmap = colormap(a,cbrewer( 'div', 'BrBG', 100)); %colormap(flip(linspecer));
 scatter(pFAR_S,pHR_S,60,criterion_S, 'filled'); hold on;
-a = colorbar;
-a.Label.String = 'Criterion';
+%a = colorbar;
+%a.Label.String = 'Criterion';
    end
     
     plot([pFA(2),pFA(4)], [pHit(2),pHit(4)], 'o-','color',Color.Ipsi, 'MarkerSize',MarkSize,'markerfacecolor',[1 1 1],'LineWidth', LineWith); hold on;
