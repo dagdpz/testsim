@@ -16,9 +16,10 @@ IndependentCalculation = 0; % for double stimuli, using all three outcomes (depe
 n_trials = 100; % for each stimulus condition
 
 %%%%%%% Single STIMULI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias';  %(Presentation)
+ scenario = 'SingleStimuli_DifficultDistr_Post_NoGoBias';  %(Presentation)
 % scenario = 'SingleStimuli_DifficultDistr_Post_ContraPerceptualDeficit';%(Presentation)
 % scenario = 'SingleStimuli_EasyDistr_Post_NoGoBias' 
+% scenario = 'SingleStimuli_EasyDistr_Post_ContraPerceptualDeficit' 
 
 %  scenario = 'SingleStimuli_Post_ContraSpatialBias_NoPerceptualDeficit';
 % scenario = 'SingleStimuli_Post_ContraPerceptualDeficit_NoGoBias_Ver2_decreaseContraHR';
@@ -57,7 +58,7 @@ n_trials = 100; % for each stimulus condition
 % scenario = '1HF_TarDistStimuli_Post_contraPerceptualDeficit';
 
  %scenario = '1HF_DoubleSameStimuli_Post_contraPerceptualDeficit';
- scenario = '1HF_DoubleSameStimuli_Post_NoGoBias';
+ %scenario = '1HF_DoubleSameStimuli_Post_NoGoBias';
 
 
 % scenario = 'Double D-T Stimuli - Post: perceptual deficit';
@@ -237,8 +238,8 @@ switch scenario
 
         H(1)   = 0.7; %0.7
         M(1)   = 0.3; %0.3
-        FA(1)  = 0.3;
-        CR(1)  = 0.7;
+        FA(1)  = 0.4;
+        CR(1)  = 0.6;
         
         H(2)   = 0.6;
         M(2)   = 0.4;
@@ -259,18 +260,20 @@ switch scenario
         disp('Single Stimuli - EasyDistr - Post: Contra Spatial Bias')
         StimulusType = 'Sgl_Stimuli';
         IndependentCalculation = 1;
+        Sensitvity_Change =0; 
+
         
-        H(1)   = 0.8; %0.7
-        M(1)   = 0.2; %0.3
-        FA(1)  = 0.2;
-        CR(1)  = 0.8;
+        H(1)   = 0.95; %0.7
+        M(1)   = 0.05; %0.3
+        FA(1)  = 0.05;
+        CR(1)  = 0.95;
         
         H(2)   = 0.9;
         M(2)   = 0.1;
         FA(2)  = 0.1;
         CR(2)  = 0.9;
         
-        sb = 0.3;
+        sb = 0.2;
         H(3)   = H(1)-sb;
         M(3)   = M(1)+sb;
         FA(3)  = FA(1);
@@ -280,8 +283,35 @@ switch scenario
         M(4)   = M(2);
         FA(4)  = FA(2);
         CR(4)  = CR(2); 
+       % if  FA(3) < 0 ;  FA(3) = 0 ;  end
         
+    case 'SingleStimuli_EasyDistr_Post_ContraPerceptualDeficit';
+        disp('Single Stimuli - EasyDistr - Post: No Spatial Bias & Contra PerceptualDeficit')
+        StimulusType = 'Sgl_Stimuli';
+        IndependentCalculation = 1;
+        Sensitvity_Change =1; 
+
         
+        H(1)   = 0.95; %0.7
+        M(1)   = 0.05; %0.3
+        FA(1)  = 0.05;
+        CR(1)  = 0.95;
+        
+        H(2)   = 0.9;
+        M(2)   = 0.1;
+        FA(2)  = 0.1;
+        CR(2)  = 0.9;
+        
+        sb = 0.2;
+        H(3)   = H(1)-sb;
+        M(3)   = M(1)+sb;
+        FA(3)  = FA(1)+sb;
+        CR(3)  = CR(1)-sb;
+        
+        H(4)   = H(2);
+        M(4)   = M(2);
+        FA(4)  = FA(2);
+        CR(4)  = CR(2);         
         
     case 'SingleStimuli_DifficultDistr_Post_ContraPerceptualDeficit';
         disp('Single Stimuli - DifficultDistr - Post: No Spatial Bias & Contra PerceptualDeficit')
