@@ -4,7 +4,7 @@ function testsim_z_score_normalization_pertrial_vs_concatenated
 % two "conditions", three epochs: "baseline" "response1" "response2"
 	
 % condition 1
-n_trials1 = 50;
+n_trials1 = 25;
 n_samples1 = 300;
 amp1(1) = 2; % baseline
 amp1(2) = 10; % response 1
@@ -14,7 +14,7 @@ noise1(2) = 3;
 noise1(3) = 3;
 
 % condition 2
-n_trials2 = 25;
+n_trials2 = 50;
 n_samples2 = n_samples1;
 amp2(1) = 2;
 amp2(2) = 10;
@@ -59,6 +59,7 @@ plot(mean(zs(idx1,:),1),'k'); hold on
 plot(mean(zzs(idx1,:),1),'r'); hold on
 title(sprintf('Z-scored s1'));
 grid on
+legend('across trials','per trial');
 
 subplot(2,3,2);
 plot(s2'); hold on
