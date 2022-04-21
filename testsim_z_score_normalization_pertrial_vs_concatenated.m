@@ -2,6 +2,8 @@ function testsim_z_score_normalization_pertrial_vs_concatenated
 % test z-score normalization
 
 % two "conditions", three epochs: "baseline" "response1" "response2"
+
+NORMALIZE_BY_BASELINE = 1;
 	
 % condition 1
 n_trials1 = 25;
@@ -18,7 +20,7 @@ n_trials2 = 50;
 n_samples2 = n_samples1;
 amp2(1) = 2;
 amp2(2) = 10;
-amp2(3) = 30;
+amp2(3) = 200;
 noise2(1) = 3; % the more is noise, the smaller is the z-score
 noise2(2) = 3;
 noise2(3) = 3;
@@ -30,13 +32,28 @@ s1 = [amp1(1) + noise1(1)*randn(n_trials1,n_samples1/3) amp1(2) + noise1(2)*rand
 s2 = [amp2(1) + noise2(1)*randn(n_trials2,n_samples2/3) amp2(2) + noise2(2)*randn(n_trials2,n_samples2/3) amp2(3) + noise2(3)*randn(n_trials2,n_samples2/3)]; 
 s = [s1; s2]; 
 
-zs = zscore(reshape(s,(n_trials1+n_trials2)*n_samples1,1)); % z-scoring across concatenated trials
-zzs = zscore(s,0,2); % z-scoring per trial
-
-zs = reshape(zs,(n_trials1+n_trials2),n_samples1);
-
 mean_s1 = mean(s1,1);
 mean_s2 = mean(s2,1);
+
+if NORMALIZE_BY_BASELINE,
+    
+   mean_base_pertrial = mean(s(:,1:100),2); % per trial
+   std_base_all = std(reshape(s(:,1:100),(n_trials1+n_trials2)*n_samples1/3,1)); % std across baseline
+   % std_base_all = std(reshape(s,(n_trials1+n_trials2)*n_samples1,1)); % std across entire trial
+   std_base_pertrial = std(s(:,1:100),0,2);
+   
+   zs =  (s - mean(mean_base_pertrial))/std_base_all;
+   zzs = 0*(s - repmat(mean_base_pertrial,1,300))./repmat(std_base_pertrial,1,300);
+    
+else
+        
+    zs = zscore(reshape(s,(n_trials1+n_trials2)*n_samples1,1)); % z-scoring across concatenated trials
+    zzs = zscore(s,0,2); % z-scoring per trial
+    zs = reshape(zs,(n_trials1+n_trials2),n_samples1);
+
+end
+
+
 
 
 % Difference between two conditions
