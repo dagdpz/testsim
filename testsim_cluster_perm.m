@@ -1,5 +1,6 @@
 % testsim_cluster_perm
 TO_PLOT = 1;
+UseBens = 1;
 
 p_crit = 0.05;
 p_threshold = 0.05;
@@ -32,6 +33,10 @@ for s = 1:n_samples,
     [h(s),p(s)] = ttest2(trial_group_1(s,:),trial_group_2(s,:));
 end
 
+if UseBens % Use Ben's code
+   [hh,pValCont] = ClusterPermtTest(trial_group_1',trial_group_2');
+end
+
 
 if TO_PLOT,
     figure;
@@ -39,6 +44,9 @@ if TO_PLOT,
     ig_errorband(t,m2,e2,0,'Color',[0 0 1]); hold on
     
     plot(find(h>0),0,'go');
+    if UseBens,
+        plot(find(hh>0),0,'ro','MarkerSize',10);
+    end
     
     
     for c = 1:length(clusters),
