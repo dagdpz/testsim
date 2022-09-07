@@ -4,8 +4,10 @@ function testsim_bootstrap
 % https://www.cscu.cornell.edu/news/statnews/Stnews73insert.pdf !!! CI overlap != NON SIGNIFICANT DIFFERENCE
 % http://courses.washington.edu/matlab1/Bootstrap_examples.html#36
 % http://courses.washington.edu/matlab1/Library/bootstrap.m
+% https://stats.stackexchange.com/questions/104040/resampling-simulation-methods-monte-carlo-bootstrapping-jackknifing-cross
 
-N_exp = 100;
+
+N_exp = 1;
 
 if N_exp < 5,
 	TOPLOT = 1;
@@ -18,11 +20,21 @@ data.n_samples = 100;
 data.n_boot = 1000;
 data.alpha = 0.05;
 
-m1 = 0; noise1 = 3;
-m2 = 1; noise2 = 3;
+m1 = 1; noise1 = 3;
+m2 = 2; noise2 = 3;
 
 data.x1 = m1+noise1*randn(data.n_samples,1);
 data.x2 = m2+noise2*randn(data.n_samples,1);
+
+% save lll
+
+% load lll
+% data.x1 = [data.x1; zeros(1000,1)];
+% data.x2 = [data.x2; zeros(1000,1)];
+
+% with many zeros
+% data.x1 = [m1+noise1*randn(data.n_samples,1); zeros(1,100)];
+% data.x2 = [m2+noise2*randn(data.n_samples,1); zeros(1,100)];
 
 
 for k = 1:N_exp,
@@ -200,9 +212,11 @@ legend([h1,h2,h3],{'mean jackknife',sprintf('%2.0f%% CI',100*alpha),'0'},'Locati
 
 end
 
-if 0
+if 1
 % permutation test
 % https://github.com/behinger/permtest
+
+% see also: https://towardsdatascience.com/how-to-use-permutation-tests-bacc79f45749
 
 pp = permtest(x1,x2,1000,'conservative') % approximately matches ttest2
 

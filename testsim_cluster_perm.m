@@ -1,6 +1,6 @@
 % testsim_cluster_perm
 TO_PLOT = 1;
-UseBens = 1;
+UseBens = 0;
 
 p_crit = 0.05;
 p_threshold = 0.05;
@@ -24,7 +24,7 @@ e2 = std(trial_group_2,0,2);
 
 % Using permutest
 [clusters, p_values, t_sums, permutation_distribution ] = ...
-    permutest( trial_group_1, trial_group_2, 0, 0.05, 1000, true);
+    permutest( trial_group_1, trial_group_2, 0, p_threshold, 100, true);
 %  permutest( trial_group_1, trial_group_2, dependent_samples, p_threshold, num_permutations, two_sided, num_clusters );
 
 
