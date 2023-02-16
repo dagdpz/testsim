@@ -48,14 +48,19 @@ if TO_PLOT,
         plot(find(hh>0),0,'ro','MarkerSize',10);
     end
     
-    
-    for c = 1:length(clusters),
-        if p_values(c) < p_crit,
-            plot(clusters{c},0,'r.','MarkerSize',10);
-        end
-        
-    end
-    
-    
+    valid_clusters=[clusters{p_values < p_crit}];
+     plot(valid_clusters,0,'r.','MarkerSize',10);
+      p_values(p_values > p_crit)
+
+%     for c = 1:length(clusters),
+%         if p_values(c) < p_crit,
+%             plot(clusters{c},0,'r.','MarkerSize',10);
+%         else
+%             p_values(c)
+%         end
+%         
+%     end
+%     
+%     
     
 end
