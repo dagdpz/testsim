@@ -17,7 +17,7 @@ h_bonf = ([p_null p_effect]) <0.05/(n1+n2);
 disp(sprintf('Out of %d tests, %d are significant using Bonferroni',n1+n2,sum(h_bonf)));
 
 
-[h, crit_p, adj_ci_cvrg, adj_p]=fdr_bh([p_null p_effect],.05,'pdep','yes')
+[h, crit_p, adj_ci_cvrg, adj_p]=fdr_bh([p_null p_effect],.05,'pdep','yes');
 
 % data=[nullVars effectVars];
 % fcr_adj_cis=NaN*zeros(2,20); %initialize confidence interval bounds to NaN
