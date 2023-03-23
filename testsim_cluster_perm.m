@@ -69,8 +69,8 @@ if TO_PLOT,
         
     valid_clusters=[clusters{p_values < p_crit}];
 	
-	if length(valid_clusters)>0,
-		lot(valid_clusters,0,'r.','MarkerSize',10);
+	if ~isempty(valid_clusters),
+		plot(valid_clusters,0,'r.','MarkerSize',10);
 	end
 		
 end
