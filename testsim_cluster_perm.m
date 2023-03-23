@@ -66,14 +66,11 @@ if TO_PLOT,
     if UseBens && sum(hh)>0,
         plot(find(hh>0),0,'ro','MarkerSize',10);
     end
-    
-    
-    for c = 1:length(clusters),
-        if p_values(c) < p_crit,
-            plot(clusters{c},0,'r.','MarkerSize',10);
-        end
         
-    end
-    
-    
+    valid_clusters=[clusters{p_values < p_crit}];
+	
+	if length(valid_clusters)>0,
+		lot(valid_clusters,0,'r.','MarkerSize',10);
+	end
+		
 end
