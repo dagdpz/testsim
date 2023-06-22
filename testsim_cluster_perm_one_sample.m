@@ -1,7 +1,7 @@
 % testsim_cluster_perm_one_sample
 % one-sample test condition 1 vs a fixed value
 
-% clear all;
+clear all;
 
 TO_PLOT = 1;
 nperms = 500;
@@ -13,10 +13,10 @@ p_threshold = 0.05;
 first_cluster_length = 2;
 second_cluster_length = 8;
 
-ampl_1st_clus = 0.5;
-ampl_2nd_clus = 0.5;
+ampl_1st_clus = 0.8;
+ampl_2nd_clus = 0.9;
 
-fixed_value = 0.5;
+fixed_value = 0;
 
 n_samples = 50;
 
