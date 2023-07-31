@@ -1,7 +1,7 @@
 % testsim_repeated_measures_anova
 % https://www.discoveringstatistics.com/repository/repeatedmeasures.pdf
 
-% one-way repeated measures ANOVA
+%% one-way repeated measures ANOVA
 % bushtacker.sav : 4 different animals to eat for each subject (celebrity)
 r = [
 1 
@@ -62,7 +62,7 @@ rm = fitrm(t,'ani1-ani4~1','WithinDesign',Meas);
 ranova(rm);
 
 
-% two-way repeated measures ANOVA
+%% two-way repeated measures ANOVA
 % https://www.discoveringstatistics.com/repository/repeatedmeasures.pdf
 
 % https://books.google.de/books?id=AlNdBAAAQBAJ&pg=PA594&lpg=PA594&dq=Female+LooksOrPersonality.sav&source=bl&ots=mX9jBs6wZ6&sig=h5Ng0iaj-XtZibbI4Pie9TkRHeA&hl=en&sa=X&ved=0ahUKEwja--OV4eXVAhVCthoKHTM7Cy0Q6AEILjAB#v=onepage&q=Female%20LooksOrPersonality.sav&f=false
@@ -104,6 +104,7 @@ S = [repmat([1:10],9,1)']; % subjects
 % S = [repmat([1:10],9,1)' ; repmat([1:10],9,1)']; % subjects for both genders
 
 % matches http://www.discoveringstatistics.com/docs/repeatedmeasures.pdf, page 12
+disp('*** Results of rm_anova2 ***');
 stats = rm_anova2(reshape(Y,10*9,1),reshape(S,10*9,1),reshape(F1,10*9,1),reshape(F2,10*9,1),{'looks','charisma'}) 
 
 % https://stats.stackexchange.com/questions/46735/how-to-assign-degrees-of-freedom-for-two-way-anova-with-two-within-subjects-fact
@@ -137,6 +138,7 @@ within = table(['1'	'2'	'3'	'1'	'2'	'3'	'1'	'2'	'3']',['1' '1' '1' '2' '2' '2' '
 
 rm = fitrm(between,'att_high,av_high,ug_high,att_some,av_some,ug_some,att_none,av_none,ug_none ~ 1','WithinDesign',within);
 % ranovatbl = ranova(rm)
+disp('*** Results of MATLAB ranova ***');
 ranovatbl = ranova(rm,'WithinModel','Looks*Charisma')
 
 
@@ -160,12 +162,30 @@ Y_helper.charisma = categorical({'high', 'high', 'high', 'some', 'some', 'some',
 Y_long = join(Y_long,Y_helper); % final table in long format
 
 % Model
-% random_intercept_model = fitlme(Y_long,'date_preference ~ looks * charisma + (1|subj)');
-% random_intercept_model = fitlme(Y_long,'date_preference ~ 1 + looks*charisma + (looks*charisma|subj)');
-random_intercept_model = fitlme(Y_long,'date_preference ~ 1 + looks * charisma + (1|subj)');
 % random_intercept_model = fitlme(data,'predictor ~ fixedEffect_1 * fixedEffect_2 + (1|randomEffect)');
+random_intercept_model = fitlme(Y_long,'date_preference ~ looks * charisma + (1|subj)'); % two main effects and interaction
+% random_intercept_model = fitlme(Y_long,'date_preference ~ looks + charisma + (1|subj)');
+% random_intercept_model = fitlme(Y_long,'date_preference ~ 1 + looks * charisma + (looks*charisma|subj)');
 
 
+
+disp('*** Results of MATLAB fitlme ***');
 random_intercept_model
 random_intercept_model.anova
+
+
+% Calculate means
+meanTable = groupsummary(Y_long, {'looks', 'charisma'}, 'mean', 'date_preference');
+
+% Convert 'looks' and 'personality' to strings
+meanTable.looks = string(meanTable.looks);
+meanTable.charisma = string(meanTable.charisma);
+
+% Create labels for x-axis
+XLabels = strcat(meanTable.looks, '_', meanTable.charisma);
+
+% Create bar plot
+bar(categorical(XLabels), meanTable.mean_date_preference)
+xlabel('Looks_Charisma')
+ylabel('Mean date preference')
 

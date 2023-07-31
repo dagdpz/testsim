@@ -1,5 +1,4 @@
 % testsim_cluster_perm
-% one-sample test condition 1 vs a val
 
 clear all;
 
