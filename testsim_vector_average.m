@@ -1,4 +1,4 @@
-% function [resultant_r, resultant_theta] = testsim_vector_average(thetas)
+function [resultant_r, resultant_theta] = testsim_vector_average(thetas)
 % thetas = 2 * pi * rand(1, 100);
 % testsim_vector_sum(thetas)
 
