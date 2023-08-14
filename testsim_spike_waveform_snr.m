@@ -1,6 +1,5 @@
 function testsim_spike_waveform_snr
 
-
 tic
 nSamples = 40;
 
@@ -35,7 +34,7 @@ SNR = zeros(n_levelsNoise,n_numSpikes);
 for ln = 1:n_levelsNoise
     for ns = 1:n_numSpikes
         
-        noise = filter(b, a, levelsNoise(ln)*randn(numSpikes(ns),nSamples),[],2) + levelsNoise(ln)*randn(numSpikes(ns),1);
+        noise = filter(b, a, levelsNoise(ln)*randn(numSpikes(ns),nSamples),[],2) + levelsNoise(ln)*randn(numSpikes(ns),1); % only works in MATLAB 2020b (tested), not in 2014b
         
         wf = s + noise;
         [SNR(ln,ns), meanWF, subsetWF] = calcSNR(wf,subset_percent);
