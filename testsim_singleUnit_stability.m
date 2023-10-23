@@ -1,4 +1,10 @@
 function testsim_singleUnit_stability
+% This script illustrates if Fano factor is affected by heart modulations
+%
+% in this example, two groups of units with the same firing rate are 
+% simulated. One spikes randomly and another one has heart-related 
+% modulations.
+%
 
 stability1 = nan(1000, 1);
 stability2 = nan(1000, 1);
@@ -25,17 +31,17 @@ for simNum = 1:1000
         hold off
     end
     
-    FR1 = smooth(diff(t1),10);
+    FR1 = smooth(diff(t1),10); % the same type of smoothing we have in spike analysis
     FR2 = smooth(diff(t2),10);
     
-    stability1(simNum)=nanmean(FR1)/nanstd(FR1);
-    stability2(simNum)=nanmean(FR2)/nanstd(FR2);
+    stability1(simNum)=nanstd(FR1)/nanmean(FR1); % compute Fano-factor
+    stability2(simNum)=nanstd(FR2)/nanmean(FR2);
 
 end
 
 figure,
 boxplot([stability1 stability2])
-ylabel('Stability: mean/std')
+ylabel('Stability: std/mean')
 set(gca, 'XTickLabel', {'Heart-Responsive Unit', 'Randomly Spiking Unit'})
 
 end
