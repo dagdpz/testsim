@@ -1,10 +1,12 @@
 function testsim_cosine_fits
 
-for n_bins = [32, 64, 128]
+bin_list = [32, 64, 128, 256];
 
-    x = pi/n_bins : 2*pi/n_bins : 2*pi-pi/n_bins;
+for n_bins = 1:length(bin_list)
+
+    x = pi/bin_list(n_bins) : 2*pi/bin_list(n_bins) : 2*pi-pi/bin_list(n_bins);
     
-    R = randn(100,n_bins);
+    R = randn(100,bin_list(n_bins));
     C = cos(x+pi)+1;
     RC = R + C;
     
@@ -12,37 +14,44 @@ for n_bins = [32, 64, 128]
     
     [modIndex_R, removeNoise_R, allCorr_R, allLinMod_R] = fitCardiacModulation(x, R+1, {'PSTH'}, 0, [221]);
     
-    figure
-    subplot(2,1,1)
-    rc_plot = plot(x, RC, 'b');
-    hold on
-    c_plot = plot(x, C, 'w', 'LineWidth', 2);
-    title('Cosine with Noise')
-    legend([rc_plot(1) c_plot], {'Noisy Cosine', 'Original Cosine'})
     
-    subplot(2,1,2)
-    rm_plot = plot(x, removeNoise_RC, 'k');
+    % plot the original data
+    figure(1)
+    set(1, 'Position', [591 117 1153 420])
+    subplot(1,length(bin_list),n_bins)
+    rc_plot = plot(x, RC, 'k');
     hold on
-    c_plot = plot(x, C, 'w', 'LineWidth', 2);
-    title({'Smoothed Noisy Cosine', ['Std = ' num2str(std2(removeNoise_RC))]})
-    legend([rm_plot(1) c_plot], {'Smoothed Noisy Cosine', 'Original Cosine'})
+    sm_plot = plot(x, removeNoise_RC, 'Color', [255 120 0]/255);
+    c_plot  = plot(x, C, 'y', 'LineWidth', 2);
+    title({['Cosine with Noise: N bins ' num2str(bin_list(n_bins))]})
+    if n_bins == 1
+        legend([rc_plot(1) sm_plot(1) c_plot], {'Noisy Cosine', 'Smoothed Noisy Cosine', 'Original Cosine'}, 'Location', 'Best')
+    end
+    xlim([0 2*pi])
+    ylim([-5 5])
     
-    figure
-    [~, h]=bonf_holm(modIndex_RC(:,2));
-    sig_MI    = histc(modIndex_RC(h,1), [-5:5]);
-    nonsig_MI = histc(modIndex_RC(~h,1), [-5:5]);
+    figure(2)
+    set(2, 'Position', [591 117 1153 420])
+    subplot(1,length(bin_list),n_bins)
+    h = modIndex_RC(:,2) < 0.05;
+%     [~, h]=bonf_holm(modIndex_RC(:,2));
+%     [h, crit_p]=fdr_bky(modIndex_RC(:,2));
+    sig_MI    = histc(modIndex_RC(h,1), [-1:0.5:5]);
+    nonsig_MI = histc(modIndex_RC(~h,1), [-1:0.5:5]);
     if size(nonsig_MI,1) < size(nonsig_MI,2)
         nonsig_MI = nonsig_MI';
     end
-    bar([-5:5], [sig_MI nonsig_MI]', 'stacked')
+    bar([-1:0.5:5], [sig_MI nonsig_MI]', 'stacked')
     title({'Noisy Cosine', 'Scaling Factors from the Linear Fit', ...
         ['std = ' num2str(std(modIndex_RC(:,1)))], ...
         ['True Pos.: ' num2str(sum(sig_MI)) '; False Neg.: ' num2str(sum(nonsig_MI))]})
     legend({'sig', 'nonsig'})
     
-    figure
-    sig_phase    = histc(modIndex_RC(h,1), [0:0.1:2*pi]);
-    nonsig_phase = histc(modIndex_RC(~h,1), [0:0.1:2*pi]);
+    figure(3)
+    set(3, 'Position', [591 117 1153 420])
+    subplot(1,length(bin_list),n_bins)
+    sig_phase    = histc(modIndex_RC(h,3), [0:0.1:2*pi]);
+    nonsig_phase = histc(modIndex_RC(~h,3), [0:0.1:2*pi]);
     if size(nonsig_phase,1) < size(nonsig_phase,2)
         nonsig_phase = nonsig_phase';
     end
@@ -52,23 +61,42 @@ for n_bins = [32, 64, 128]
         ['True Pos.: ' num2str(sum(sig_MI)) '; False Neg.: ' num2str(sum(nonsig_MI))]})
     legend({'sig', 'nonsig'})
     
-    figure,
-    [~, h]=bonf_holm(modIndex_R(:,2));
-    sig_MI    = histc(modIndex_R(h,1), [-5:5]);
-    nonsig_MI = histc(modIndex_R(~h,1), [-5:5]);
-    bar([-5:5], [sig_MI nonsig_MI]', 'stacked')
+    figure(4)
+    set(4, 'Position', [591 117 1153 420])
+    subplot(1,length(bin_list),n_bins)
+    h = modIndex_R(:,2) < 0.05;
+%     [~, h]=bonf_holm(modIndex_R(:,2));
+%     [h, ~]=fdr_bky(modIndex_RC(:,2));
+    sig_MI    = histc(modIndex_R(h,1), [-1:0.5:5]);
+    nonsig_MI = histc(modIndex_R(~h,1), [-1:0.5:5]);
+    bar([-1:0.5:5], [sig_MI nonsig_MI]', 'stacked')
     title({'Gaussian Noise', 'Scaling Factors from the Linear Fit', ...
         ['std = ' num2str(std(modIndex_R(:,1)))], ...
         ['False Pos.: ' num2str(sum(sig_MI)) '; True Neg.: ' num2str(sum(nonsig_MI))]})
     legend({'sig', 'nonsig'})
     
-    figure,
-    sig_phase    = histc(modIndex_R(h,1), [0:0.1:2*pi]);
-    nonsig_phase = histc(modIndex_R(~h,1), [0:0.1:2*pi]);
+    figure(5)
+    set(5, 'Position', [591 117 1153 420])
+    subplot(1,length(bin_list),n_bins)
+    sig_phase    = histc(modIndex_R(h,3), [0:0.1:2*pi]);
+    nonsig_phase = histc(modIndex_R(~h,3), [0:0.1:2*pi]);
     bar([0:0.1:2*pi], [sig_phase nonsig_phase]', 'stacked')
-    title({'Gaussian Noise', 'Phases Retrieved by the Linear Fit', ['std = ' num2str(std(modIndex_RC(:,3)))]})
+    title({'Gaussian Noise', 'Phases Retrieved by the Linear Fit', ['std = ' num2str(std(modIndex_R(:,3)))]})
     legend({'sig', 'nonsig'})
     
 end
+
+end
+
+function out = circ_smooth2(input)
+
+if size(input, 1) < size(input, 2)
+    input = input';
+end
+
+A = repmat(input, 3, 1);
+A_smoothed = smooth(A, 'rlowess');
+
+out = A_smoothed(length(input)+1:end-length(input));
 
 end
