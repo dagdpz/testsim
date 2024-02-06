@@ -6,8 +6,8 @@
 
 % rng(120); % set random seed
 
-Tx = [0 0 10 0 -10];
-Ty = [0 10 0 -10 0];
+Tx = [0 0 10 0 -10 2];
+Ty = [0 10 0 -10 0 2];
 
 % Tx = [-30 -15 0 15 30 -30 -15 0 15 30 -30 -15 0 15 30];
 % Ty = [10 10 10 10 10 0 0 0 0 0 -10 -10 -10 -10 -10];
@@ -53,20 +53,26 @@ gNy = zeros(n_TN,n_trials_per_T);
 for t=1:n_T,
     
     gx(t,:) = Tx(t) + Tx_offset(t) + x_var*randn(n_trials_per_T,1);
-    gy(t,:) = Ty(t) + Ty_offset(t) + y_var*randn(n_trials_per_T,1);   
+    gy(t,:) = Ty(t) + Ty_offset(t) + y_var*randn(n_trials_per_T,1);
+    
     
 end
-    
+
+Gx_mean_per_target = mean(gx,2);
+Gy_mean_per_target = mean(gy,2);
+
+
 for t=1:n_TN,
     
     gNx(t,:) = TNx(t) + TNx_offset(t) + x_var*randn(n_trials_per_T,1);
-    gNy(t,:) = TNy(t) + TNy_offset(t) + y_var*randn(n_trials_per_T,1);   
+    gNy(t,:) = TNy(t) + TNy_offset(t) + y_var*randn(n_trials_per_T,1);
     
 end
 
 % reshaping
 Gx = reshape(gx',n_T*n_trials_per_T,1);
 Gy = reshape(gy',n_T*n_trials_per_T,1);
+
 
 GNx = reshape(gNx',n_TN*n_trials_per_T,1);
 GNy = reshape(gNy',n_TN*n_trials_per_T,1);
@@ -75,19 +81,29 @@ TTx = reshape(repmat(Tx,n_trials_per_T,1),n_T*n_trials_per_T,1);
 TTy = reshape(repmat(Ty,n_trials_per_T,1),n_T*n_trials_per_T,1);
 
 
-    
+
 % transformationType: 'NonreflectiveSimilarity' | 'Similarity' | 'Affine' | 'Projective' | 'pwl'
-% or 'polynomial' 
-transformationType = 'Similarity';
+% or 'polynomial'
+transformationType = 'pwl';
+use_averaged_data_per_target = 1;
+
 switch transformationType
     case 'polynomial'
-        tform = fitgeotrans([TTx TTy], [Gx Gy], transformationType,2);
+        if use_averaged_data_per_target
+            tform = fitgeotrans([Tx' Ty'], [Gx_mean_per_target Gy_mean_per_target], transformationType,2); % use averaged data per target
+        else
+            tform = fitgeotrans([TTx TTy], [Gx Gy], transformationType,2);
+        end
     otherwise
-        tform = fitgeotrans([TTx TTy], [Gx Gy], transformationType);
+        if use_averaged_data_per_target
+            tform = fitgeotrans([Tx' Ty'], [Gx_mean_per_target Gy_mean_per_target], transformationType); % use averaged data per target
+        else
+            tform = fitgeotrans([TTx TTy], [Gx Gy], transformationType);
+        end
 end
 
-recG = transformPointsInverse(tform, [Gx Gy]); 
-recGN = transformPointsInverse(tform, [GNx GNy]); 
+recG = transformPointsInverse(tform, [Gx Gy]);
+recGN = transformPointsInverse(tform, [GNx GNy]);
 
 
 % plotting
