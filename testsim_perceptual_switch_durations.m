@@ -1,4 +1,5 @@
 % testsim_perceptual_switch_durations
+% Igor Kagan, ChatGPT, 2024
 
 % Parameters
 num_shapes = 5;                     % Number of shape values
