@@ -35,10 +35,10 @@ shuffled_tf = level_of_noise*randn(time_points, frequencies, n_permutations);
 null_mean = mean(shuffled_tf, 3);
 null_std = std(shuffled_tf, 0, 3);
 
-% Run permutation test
-% [clusters, cluster_stats, p_values, significance_map] = tfClusterPermTest(actual_tf, shuffled_tf, alpha, cluster_thresh);
+% Run permutation test (one of the following variants):
+[clusters, cluster_stats, p_values, significance_map] = tfClusterPermTest(actual_tf, shuffled_tf, alpha, cluster_thresh);
 % [clusters, cluster_stats, p_values, significance_map] = tfClusterPermTestWithMeanStd(actual_tf, null_mean, null_std, alpha, cluster_thresh);
-[clusters, cluster_stats, p_values, significance_map] = tfClusterPermTestWithCI(actual_tf, shuffled_tf, alpha, ci_thresh);
+% [clusters, cluster_stats, p_values, significance_map] = tfClusterPermTestWithCI(actual_tf, shuffled_tf, alpha, ci_thresh);
 
 
 
