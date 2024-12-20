@@ -4,7 +4,7 @@
 % Parameters
 num_shapes = 5;                     % Number of shape values
 num_scales = 4;                     % Number of scale values
-num_epochs = 1000;                   % Number of 40-s epochs per combination of shape and scale
+num_epochs = 1000;                  % Number of 40-s epochs per combination of shape and scale
 epoch_duration = 40;                % Duration of each epoch in seconds
 trial_duration = 5;                 % Duration of each trial in seconds
 bin_size = 0.25;                    % Size of each bin in seconds
