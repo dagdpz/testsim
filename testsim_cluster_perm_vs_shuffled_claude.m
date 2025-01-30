@@ -36,9 +36,9 @@ null_mean = mean(shuffled_tf, 3);
 null_std = std(shuffled_tf, 0, 3);
 
 % Run permutation test (one of the following variants):
-[clusters, cluster_stats, p_values, significance_map] = tfClusterPermTest(actual_tf, shuffled_tf, alpha, cluster_thresh);
+%[clusters, cluster_stats, p_values, significance_map] = tfClusterPermTest(actual_tf, shuffled_tf, alpha, cluster_thresh);
 % [clusters, cluster_stats, p_values, significance_map] = tfClusterPermTestWithMeanStd(actual_tf, null_mean, null_std, alpha, cluster_thresh);
-% [clusters, cluster_stats, p_values, significance_map] = tfClusterPermTestWithCI(actual_tf, shuffled_tf, alpha, ci_thresh);
+[clusters, cluster_stats, p_values, significance_map] = tfClusterPermTestWithCI(actual_tf, shuffled_tf, alpha, ci_thresh);
 
 
 
@@ -293,13 +293,13 @@ end
 % Build null distribution of cluster statistics using parametric approach
 num_perms = 10000;
 % Generate random maps for all permutations at once
-perm_maps = randn(n_time, n_freq, num_perms) .* null_std + null_mean;
+perm_maps = randn(n_time, n_freq, num_perms) .* repmat(null_std,[1,1,num_perms]) + repmat(null_mean,[1,1,num_perms]);
 pos_null_cluster_stats = zeros(1, num_perms);
 neg_null_cluster_stats = zeros(1, num_perms);
 
 % Process each permutation
 for i = 1:num_perms
-    curr_map = perm_maps(:,:,i);
+    curr_map = (perm_maps(:,:,i) - null_mean) ./ (null_std + eps);
     
     % Find positive clusters
     pos_perm_thresh_map = curr_map > tinv(1-cluster_thresh/2, inf);
