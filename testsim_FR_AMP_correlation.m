@@ -1,10 +1,12 @@
+% testsim_FR_AMP_correlation
+
 Njunks=10;
 nunits=1000;
 Nspikes=998;
 
 for u=1:nunits
 
-amps=rand(Nspikes,1)*2+pi;
+amps=rand(Nspikes,1);
 spikephases=rand(Nspikes,1)*2*pi;
 
 
