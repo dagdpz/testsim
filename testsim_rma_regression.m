@@ -7,7 +7,7 @@
 
 % Example data
 x = rand(100, 1); % Firing rates in condition 1
-y = 2 * x + randn(100, 1) * 0.5; % Firing rates in condition 2
+y = 3 * x + randn(100, 1) * 0.5; % Firing rates in condition 2
 
 % Calculate Pearson correlation coefficient
 r = corr(x, y);
@@ -30,9 +30,9 @@ legend('Data', 'RMA Fit', 'Location', 'Best');
 grid on;
 
 % Other options:
-if 0
+if 1
 s=[2,2];
-[b_rma,bint,l,ang,r] = rmaregress(x,y,s);
+[b_rma,bint,l,ang,r] = rmaregress(x,y,s)
 
 [b sigma2_x x_est y_est stats] = deming(x,y);
 end
