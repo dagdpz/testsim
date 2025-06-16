@@ -2,7 +2,7 @@ function testsim_cosine_fits_LS
 
 noise_levels = [1 1.5 2 2.5 3];
 bin_list     = [32, 64, 128];
-n_rpeaks     = 100;
+n_rpeaks     = 1000;
 dist_types   = {'R', 'RC', 'RvM'}; % random, nosiy cosine, noisy von Mises
 dist_names   = {'cosine', 'vonMises'};
 orig_dist    = {'C', 'vM'};
@@ -92,7 +92,7 @@ for n_level = 1:length(noise_levels)
                 %                 out.(D).cosine.rsquared{n_bins,n_level}(ii) = Rsq;
                 %                 clear Rsq
                 
-                [fittedmdl,gof] = fit(x',currCurve,cos_mod,'StartPoint',startPoint_cos, 'Lower', [-Inf 0 -Inf], 'Upper', [Inf 2*pi Inf]);
+                [fittedmdl,gof] = fit(x',currCurve,cos_mod,'StartPoint',startPoint_cos, 'Lower', [0 0 0], 'Upper', [Inf 2*pi Inf]);
                 
                 coefs = coeffvalues(fittedmdl); % get model coefficients
                 
@@ -104,7 +104,7 @@ for n_level = 1:length(noise_levels)
                 
                 % employ a linear fit to get a p-value vs. fitting with a
                 % constant model
-                mdl = fitlm(currCurve, yfit);
+                mdl = fitlm(yfit,currCurve);
                 out.(D).cosine.pvalue{n_bins,n_level}(ii)   = mdl.Coefficients.pValue(2);
                 
                 clear fittedmdl gof coefs yfit mdl
@@ -140,7 +140,7 @@ for n_level = 1:length(noise_levels)
                 %                 out.(D).vonMises.rsquared{n_bins,n_level}(ii) = Rsq;
                 %                 clear Rsq
                 
-                [fittedmdl,gof,output] = fit(x',currCurve,vonMises_mod,'StartPoint',startPoint_vm, 'Lower', [-1000 -1000 exp(-4) 0], 'Upper', [1000 1000 exp(4) 2*pi]);
+                [fittedmdl,gof,output] = fit(x',currCurve,vonMises_mod,'StartPoint',startPoint_vm, 'Lower', [0 -1000 exp(-4) 0], 'Upper', [1000 1000 exp(4) 2*pi]);
                 
                 coefs = coeffvalues(fittedmdl); % get model coefficients
                 
@@ -340,8 +340,8 @@ for n_level = 1:length(noise_levels)
         set(1001, 'Position', [591 42 893 954])
         subplot(length(noise_levels),length(bin_list), length(bin_list)*(n_level-1) + n_bins)
         for ii = 1:length(dist_types)
-            h_sig(ii)    = sum(out.(dist_types{ii}).cosine.pvalue{n_bins,n_level} < 0.05);
-            h_nonsig(ii) = sum(out.(dist_types{ii}).cosine.pvalue{n_bins,n_level} > 0.05);
+            h_sig(ii)    = sum(out.(dist_types{ii}).cosine.pvalue{n_bins,n_level} < 0.01);
+            h_nonsig(ii) = sum(out.(dist_types{ii}).cosine.pvalue{n_bins,n_level} > 0.01);
         end
         bar_data = [h_sig; h_nonsig];
         bar(bar_data', 'stacked')
@@ -351,15 +351,15 @@ for n_level = 1:length(noise_levels)
             ylabel('# Cases')
             set(gca, 'XTickLabel', dist_types)
         end
-        title(['Cosfit sig SNR: ' num2str(noise_levels(n_level)) ' ' num2str(bin_list(n_bins)) 'bins, ' (dist_types{n_type}) ])
+        title(['Cosfit sig SNR: ' num2str(noise_levels(n_level)) ' ' num2str(bin_list(n_bins)) 'bins'])
         
         % significance of the von Mises fit by Luba
         figure(1002)
         set(1002, 'Position', [591 42 893 954])
         subplot(length(noise_levels),length(bin_list), length(bin_list)*(n_level-1) + n_bins)
         for ii = 1:length(dist_types)
-            h_sig(ii)    = sum(out.(dist_types{ii}).vonMises.pvalue{n_bins,n_level} < 0.05);
-            h_nonsig(ii) = sum(out.(dist_types{ii}).vonMises.pvalue{n_bins,n_level} > 0.05);
+            h_sig(ii)    = sum(out.(dist_types{ii}).vonMises.pvalue{n_bins,n_level} < 0.01);
+            h_nonsig(ii) = sum(out.(dist_types{ii}).vonMises.pvalue{n_bins,n_level} > 0.01);
         end
         bar_data = [h_sig; h_nonsig];
         bar(bar_data', 'stacked')
@@ -369,7 +369,7 @@ for n_level = 1:length(noise_levels)
             ylabel('# Cases')
             set(gca, 'XTickLabel', dist_types)
         end
-        title(['VMfit sig SNR: ' num2str(noise_levels(n_level)) ' ' num2str(bin_list(n_bins)) 'bins, ' (dist_types{n_type}) ])
+        title(['VMfit sig SNR: ' num2str(noise_levels(n_level)) ' ' num2str(bin_list(n_bins)) 'bins'])
         
 %         % adjust significance by R-squared threshold - significance of the cosine fit by Mosher
 %         figure(1003)
