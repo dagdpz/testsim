@@ -7,7 +7,7 @@ n_permutations = 100;  % Number of permutations
 threshold = 2.58;  % More stringent threshold (z-score equivalent to p < 0.01)
 
 noise_level = 1;
-signal_level = 1;
+signal_level = 5;
 
 % Step 1: Simulate Actual Data with a Cluster of High Power
 actual_data = noise_level*randn(time_bins, freq_bins);  % Background noise
