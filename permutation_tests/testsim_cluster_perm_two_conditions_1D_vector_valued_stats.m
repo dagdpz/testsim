@@ -161,62 +161,50 @@ all_trials = [trials_cond1; trials_cond2];
 n_total = size(all_trials, 1);
 n_timepoints = size(all_trials, 2);
 
-% PRE-GENERATE ALL RANDOM PARTITION INDICES (no loop needed)
-% Sort random numbers to get permutation indices for all permutations at once
+% PRE-GENERATE ALL RANDOM PARTITION INDICES
 fprintf('  Generating %d random partitions...\n', n_permutations);
 [~, random_orders] = sort(rand(n_permutations, n_total), 2);
+idx_g1 = random_orders(:, 1:n_trials_cond1);
+idx_g2 = random_orders(:, n_trials_cond1+1:end);
 
-% VECTORIZED T-TEST: Compute all t-maps for all permutations at once
-fprintf('  Computing t-maps for all permutations (vectorized)...\n');
-% Extract indices for group1 and group2 for all permutations
-idx_g1 = random_orders(:, 1:n_trials_cond1);          % [n_perms x n1]
-idx_g2 = random_orders(:, n_trials_cond1+1:end);      % [n_perms x n2]
+% Pre-compute constants
+df = n_trials_cond1 + n_trials_cond2 - 2;
+t_thresh = tinv(1 - cluster_p_thresh/2, df);
 
-% Compute t-values for all permutations using 3D indexing
-% Reshape all_trials for efficient access: [n_total x n_timepoints]
-perm_tvals = zeros(n_permutations, n_timepoints);
-for perm = 1:n_permutations
-    g1 = all_trials(idx_g1(perm,:), :);  % [n1 x n_timepoints]
-    g2 = all_trials(idx_g2(perm,:), :);  % [n2 x n_timepoints]
-    
-    % Vectorized t-test for all timepoints
-    mean1 = mean(g1, 1);
-    mean2 = mean(g2, 1);
-    var1 = var(g1, 0, 1);
-    var2 = var(g2, 0, 1);
-    pooled_se = sqrt(var1/n_trials_cond1 + var2/n_trials_cond2);
-    perm_tvals(perm, :) = (mean1 - mean2) ./ pooled_se;
-end
-
-% CLUSTER FINDING: This requires a loop (can't vectorize connected components)
-fprintf('  Finding clusters...\n');
+% Storage
 perm_vectors = cell(n_permutations, 1);
 debug_clusters_before = zeros(n_permutations, 1);
 debug_clusters_after = zeros(n_permutations, 1);
 
-% Pre-compute threshold
-df = n_trials_cond1 + n_trials_cond2 - 2;
-t_thresh = tinv(1 - cluster_p_thresh/2, df);
-
+% SINGLE LOOP: partition → t-test → cluster finding
+fprintf('  Computing permutations (t-test + clusters)...\n');
 for perm = 1:n_permutations
-    tvals = perm_tvals(perm, :);
+    % 1. Get trial groups for this partition
+    g1 = all_trials(idx_g1(perm,:), :);
+    g2 = all_trials(idx_g2(perm,:), :);
     
-    % Apply smoothing if requested
+    % 2. Two-sample t-test (vectorized across timepoints)
+    mean1 = mean(g1, 1);
+    mean2 = mean(g2, 1);
+    var1 = var(g1, 0, 1);
+    var2 = var(g2, 0, 1);
+    tvals = (mean1 - mean2) ./ sqrt(var1/n_trials_cond1 + var2/n_trials_cond2);
+    
+    % 3. Smooth if requested
     if smooth_t_samples > 0
         tvals_for_thresh = smoothdata(tvals, 'gaussian', smooth_t_samples);
     else
         tvals_for_thresh = tvals;
     end
     
-    % Find clusters
+    % 4. Find clusters (bwconncomp)
     [clusters, n_before] = find_clusters_from_tvals(tvals, tvals_for_thresh, t_thresh, min_cluster_size);
     
     debug_clusters_before(perm) = n_before;
     debug_clusters_after(perm) = length(clusters);
     
     if ~isempty(clusters)
-        perm_masses = abs([clusters.mass]);
-        perm_vectors{perm} = sort(perm_masses, 'descend');
+        perm_vectors{perm} = sort(abs([clusters.mass]), 'descend');
     else
         perm_vectors{perm} = [];
     end
@@ -591,111 +579,78 @@ fprintf('=======================================================================
 
 function [clusters, tvals, n_before_filter] = calculate_cluster_stats_between_trials(...
     trials_cond1, trials_cond2, min_cluster_size, smooth_t_samples, cluster_p_thresh)
-    % Independent samples t-test at each time point
-    % Filter clusters by minimum size
-    % Optional: smooth t-values before thresholding
+    % Independent samples t-test at each time point (vectorized)
+    % Uses bwconncomp for efficient cluster detection
     
-    n_timepoints = size(trials_cond1, 2);
-    tvals = zeros(1, n_timepoints);
+    n1 = size(trials_cond1, 1);
+    n2 = size(trials_cond2, 1);
     
-    for t = 1:n_timepoints
-        % Independent samples t-test
-        [~, ~, ~, stats] = ttest2(trials_cond1(:, t), trials_cond2(:, t));
-        tvals(t) = stats.tstat;
-    end
+    % Vectorized two-sample t-test
+    mean1 = mean(trials_cond1, 1);
+    mean2 = mean(trials_cond2, 1);
+    var1 = var(trials_cond1, 0, 1);
+    var2 = var(trials_cond2, 0, 1);
+    tvals = (mean1 - mean2) ./ sqrt(var1/n1 + var2/n2);
     
-    % Optional: smooth t-values before thresholding (helps merge nearby clusters)
+    % Optional smoothing
     if smooth_t_samples > 0
         tvals_for_thresh = smoothdata(tvals, 'gaussian', smooth_t_samples);
     else
         tvals_for_thresh = tvals;
     end
     
-    % Threshold for clustering (parametric, but doesn't affect validity)
-    n1 = size(trials_cond1, 1);
-    n2 = size(trials_cond2, 1);
+    % Threshold
     df = n1 + n2 - 2;
-    t_thresh = tinv(1 - cluster_p_thresh/2, df);  % Two-sided
+    t_thresh = tinv(1 - cluster_p_thresh/2, df);
     
-    % Find clusters before filtering (use smoothed t-vals for mask, raw for mass)
-    all_clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
-    
-    % Positive clusters
-    pos_mask = tvals_for_thresh > t_thresh;
-    pos_clusters = find_connected_clusters(pos_mask, tvals);  % use raw tvals for mass
-    all_clusters = [all_clusters, pos_clusters];
-    
-    % Negative clusters
-    neg_mask = tvals_for_thresh < -t_thresh;
-    neg_clusters = find_connected_clusters(neg_mask, tvals);  % use raw tvals for mass
-    all_clusters = [all_clusters, neg_clusters];
-    
-    n_before_filter = length(all_clusters);
-    
-    % FILTER BY MINIMUM CLUSTER SIZE
-    % This is crucial for excluding tiny clusters that are unlikely to
-    % reflect real physiological activity (Section 4.5 of paper)
-    clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
-    for i = 1:length(all_clusters)
-        if all_clusters(i).size >= min_cluster_size
-            clusters(end+1) = all_clusters(i);
-        end
-    end
-end
-
-function clusters = find_connected_clusters(mask, tvals)
-    % Find temporally adjacent samples that exceed threshold
-    
-    clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
-    
-    if ~any(mask)
-        return;
-    end
-    
-    % Find cluster boundaries
-    d_mask = diff([0, mask, 0]);
-    starts = find(d_mask == 1);
-    ends = find(d_mask == -1) - 1;
-    
-    % Calculate cluster statistics
-    for i = 1:length(starts)
-        cluster_timepoints = starts(i):ends(i);
-        
-        % Cluster mass = sum of t-values (as in paper)
-        cluster_mass = sum(tvals(cluster_timepoints));
-        
-        clusters(end+1).timepoints = cluster_timepoints;
-        clusters(end).mass = cluster_mass;
-        clusters(end).size = length(cluster_timepoints);
-    end
+    % Find clusters using bwconncomp
+    [clusters, n_before_filter] = find_clusters_from_tvals(tvals, tvals_for_thresh, t_thresh, min_cluster_size);
 end
 
 function [clusters, n_before_filter] = find_clusters_from_tvals(tvals, tvals_for_thresh, t_thresh, min_cluster_size)
-    % Find clusters from pre-computed t-values
-    % tvals: raw t-values (used for cluster mass)
-    % tvals_for_thresh: potentially smoothed t-values (used for thresholding)
-    % t_thresh: threshold value
-    % min_cluster_size: minimum cluster size filter
+    % Find clusters from pre-computed t-values using bwconncomp (vectorized)
     
-    all_clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
-    
-    % Positive clusters
+    % Get positive and negative clusters
     pos_mask = tvals_for_thresh > t_thresh;
-    pos_clusters = find_connected_clusters(pos_mask, tvals);
-    all_clusters = [all_clusters, pos_clusters];
-    
-    % Negative clusters
     neg_mask = tvals_for_thresh < -t_thresh;
-    neg_clusters = find_connected_clusters(neg_mask, tvals);
-    all_clusters = [all_clusters, neg_clusters];
     
-    n_before_filter = length(all_clusters);
+    % Use bwconncomp for efficient connected component labeling
+    CC_pos = bwconncomp(pos_mask);
+    CC_neg = bwconncomp(neg_mask);
     
-    % Filter by minimum size
-    clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
-    for i = 1:length(all_clusters)
-        if all_clusters(i).size >= min_cluster_size
-            clusters(end+1) = all_clusters(i);
-        end
+    n_before_filter = CC_pos.NumObjects + CC_neg.NumObjects;
+    
+    % Combine all pixel lists
+    all_pix = [CC_pos.PixelIdxList, CC_neg.PixelIdxList];
+    
+    if isempty(all_pix)
+        clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
+        return;
+    end
+    
+    % Vectorized: compute sizes and masses for all clusters at once
+    sizes = cellfun(@length, all_pix);
+    masses = cellfun(@(idx) sum(tvals(idx)), all_pix);
+    
+    % Filter by minimum size (vectorized)
+    keep = sizes >= min_cluster_size;
+    
+    % Build output struct array
+    n_keep = sum(keep);
+    if n_keep == 0
+        clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
+        return;
+    end
+    
+    kept_pix = all_pix(keep);
+    kept_sizes = sizes(keep);
+    kept_masses = masses(keep);
+    
+    % Pre-allocate struct array
+    clusters(n_keep) = struct('timepoints', [], 'mass', [], 'size', []);
+    for i = 1:n_keep
+        clusters(i).timepoints = kept_pix{i}(:)';  % Row vector of indices
+        clusters(i).mass = kept_masses(i);
+        clusters(i).size = kept_sizes(i);
     end
 end
