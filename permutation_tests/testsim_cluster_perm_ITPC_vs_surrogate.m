@@ -1,13 +1,16 @@
-% testsim_cluster_perm_surrogate_trigger
-% Cluster-based permutation test for trigger-locked (e.g., R-peak) modulation
-% Tests if observed effects are significantly time-locked to trigger vs. random alignment
+% testsim_cluster_perm_ITPC_vs_surrogate
+% Cluster-based permutation test for single-value timecourses (e.g., ITPC)
+% Tests if observed timecourse is significantly different from surrogate distribution
 %
-% Approach:
-%   - Actual data: trials aligned to trigger (R-peak at 500ms)
-%   - Surrogate: each trial circularly shifted by random amount (0-1000ms)
-%   - Null hypothesis: effects are NOT time-locked to trigger
+% Scenario:
+%   - Observed: ONE timecourse (e.g., ITPC computed across all trials)
+%   - Surrogates: K timecourses (e.g., ITPC from circularly-shifted trials)
+%   - No trial-by-trial data available → use z-scores instead of t-statistics
 %
-% Based on testsim_cluster_perm_two_conditions_1D_vector_valued_stats.m
+% Statistic: z-score at each timepoint
+%   z(t) = (observed(t) - mean(surrogates(:,t))) / std(surrogates(:,t))
+%
+% Null distribution: Treat each surrogate as "pseudo-observed" in turn
 
 clear; close all; rng(42);
 
@@ -15,39 +18,43 @@ clear; close all; rng(42);
 %  PART 1: PARAMETERS
 %  ========================================================================
 
-fprintf('Setting up surrogate trigger test...\n');
+fprintf('Setting up ITPC surrogate test...\n');
 
-% Trial structure
-n_trials = 200;            % Number of trials
-n_timepoints = 1000;       % Time points per trial (1000ms at 1000Hz)
+% Timecourse structure
+n_timepoints = 1000;       % Time points (e.g., 1000ms at 1000Hz)
 sampling_rate = 1000;      % Hz
 time = (0:n_timepoints-1) / sampling_rate;  % Time in seconds
 trigger_time_ms = 500;     % R-peak location (ms)
 
-% Permutation parameters
-n_permutations = 1000;
+% Number of surrogates (= number of permutations for null)
+n_surrogates = 1000;
 
 % MINIMUM CLUSTER SIZE
-min_cluster_size = 2;     % Minimum samples to be considered a cluster
+min_cluster_size = 5;      % Minimum samples to be considered a cluster
 
-% CLUSTER-FORMING THRESHOLD
-cluster_p_thresh = 0.05;   % Two-sided p-value for initial thresholding
+% CLUSTER-FORMING THRESHOLD (z-score)
+z_thresh = 1.96;           % Two-sided p < 0.05
 
-% T-VALUE SMOOTHING
-smooth_t_ms = 20;          % Gaussian smoothing of t-values (ms), 0 to disable
-smooth_t_samples = round(smooth_t_ms * sampling_rate / 1000);
+% Optional: use percentile threshold instead of fixed z
+use_percentile_thresh = false;  % If true, use 2.5/97.5 percentiles
+percentile_thresh = 2.5;        % For two-sided test
+
+% Z-VALUE SMOOTHING
+smooth_z_ms = 0;           % Gaussian smoothing of z-values (ms), 0 to disable
+smooth_z_samples = round(smooth_z_ms * sampling_rate / 1000);
 
 % Family-wise error rate
 alpha = 0.05;
 
 % INFERENCE METHOD
-use_vector_valued = true;  % true: dimension-specific nulls (Section 4.5)
+use_vector_valued = false;  % true: dimension-specific nulls (Section 4.5)
                            % false: max-stat only
 
-fprintf('  Trials: %d\n', n_trials);
+fprintf('  Timepoints: %d\n', n_timepoints);
+fprintf('  Surrogates: %d\n', n_surrogates);
 fprintf('  Trigger at: %d ms\n', trigger_time_ms);
-fprintf('  Minimum cluster size: %d samples (%.1f ms)\n', min_cluster_size, min_cluster_size);
-fprintf('  Cluster-forming threshold: p < %.3f\n', cluster_p_thresh);
+fprintf('  Minimum cluster size: %d samples\n', min_cluster_size);
+fprintf('  Cluster-forming threshold: |z| > %.2f\n', z_thresh);
 if use_vector_valued
     fprintf('  Inference: Vector-valued (Section 4.5)\n');
 else
@@ -55,62 +62,95 @@ else
 end
 
 %% ========================================================================
-%  PART 2: SIMULATE DATA
+%  PART 2: SIMULATE DATA (mimicking ITPC-like metric)
 %  ========================================================================
 
-fprintf('\nGenerating trial data...\n');
+fprintf('\nGenerating simulated ITPC-like data...\n');
 
-% Noise parameters
-noise_std = 4.5;
-noise_smooth_ms = 10;  % Temporal smoothing for correlated noise
-noise_smooth_samples = round(noise_smooth_ms * sampling_rate / 1000);
+% Background noise level (baseline ITPC fluctuation)
+baseline_mean = 0.3;       % Typical ITPC baseline
+baseline_std = 0.05;       % Fluctuation around baseline
 
-% Generate baseline noise
-trials = noise_std * randn(n_trials, n_timepoints);
+% Generate baseline for observed (smooth random walk)
+observed = baseline_mean + baseline_std * cumsum(randn(1, n_timepoints)) / sqrt(n_timepoints);
+observed = smoothdata(observed, 'gaussian', 50);  % Smooth to make realistic
+observed = observed - mean(observed) + baseline_mean;  % Re-center
 
-% Apply temporal smoothing to create correlated noise
-if noise_smooth_samples > 0
-    fprintf('  Applying %.0f ms Gaussian smoothing to noise...\n', noise_smooth_ms);
-    for trial = 1:n_trials
-        trials(trial, :) = smoothdata(trials(trial, :), 'gaussian', noise_smooth_samples);
-    end
-    % Re-scale to maintain original std
-    trials = trials * (noise_std / std(trials(:)));
-end
+% Add TRUE EFFECTS (time-locked ITPC increases)
+% CLUSTER 1: 550-650 ms (50-150 ms post-trigger) - strong effect
+cluster1_time = 550:650;
+cluster1_effect = 0.15;  % ITPC increase
+observed(cluster1_time) = observed(cluster1_time) + cluster1_effect;
 
-% Add TRUE EFFECTS (time-locked to trigger at 500ms)
-% CLUSTER 1: 600-700 ms (100-200 ms post-trigger)
-cluster1_time = 600:700;
-cluster1_amplitude = 0.7;
-trials(:, cluster1_time) = trials(:, cluster1_time) + cluster1_amplitude;
-
-% CLUSTER 2: 750-800 ms (250-300 ms post-trigger)
+% CLUSTER 2: 750-800 ms (250-300 ms post-trigger) - weaker effect
 cluster2_time = 750:800;
-cluster2_amplitude = 0.5;
-trials(:, cluster2_time) = trials(:, cluster2_time) + cluster2_amplitude;
+cluster2_effect = 0.08;  % Smaller ITPC increase
+observed(cluster2_time) = observed(cluster2_time) + cluster2_effect;
 
 fprintf('  True effect clusters (relative to trigger at %d ms):\n', trigger_time_ms);
-fprintf('    Cluster 1: %d-%d ms (%d samples, amplitude: %.2f)\n', ...
-    cluster1_time(1), cluster1_time(end), length(cluster1_time), cluster1_amplitude);
-fprintf('    Cluster 2: %d-%d ms (%d samples, amplitude: %.2f)\n', ...
-    cluster2_time(1), cluster2_time(end), length(cluster2_time), cluster2_amplitude);
+fprintf('    Cluster 1: %d-%d ms (ITPC increase: %.2f)\n', ...
+    cluster1_time(1), cluster1_time(end), cluster1_effect);
+fprintf('    Cluster 2: %d-%d ms (ITPC increase: %.2f)\n', ...
+    cluster2_time(1), cluster2_time(end), cluster2_effect);
+
+% Generate surrogates (no time-locked effect, just baseline fluctuations)
+% In real data: these would come from circularly-shifted trials
+surrogates = zeros(n_surrogates, n_timepoints);
+for k = 1:n_surrogates
+    surrogates(k,:) = baseline_mean + baseline_std * cumsum(randn(1, n_timepoints)) / sqrt(n_timepoints);
+    surrogates(k,:) = smoothdata(surrogates(k,:), 'gaussian', 50);
+    surrogates(k,:) = surrogates(k,:) - mean(surrogates(k,:)) + baseline_mean;
+end
+
+fprintf('  Observed ITPC: mean=%.3f, std=%.3f\n', mean(observed), std(observed));
+fprintf('  Surrogate ITPC: mean=%.3f, std=%.3f\n', mean(surrogates(:)), std(surrogates(:)));
 
 %% ========================================================================
-%  PART 3: CALCULATE OBSERVED STATISTICS
+%  PART 3: CALCULATE OBSERVED Z-SCORES
 %  ========================================================================
 
-fprintf('\nCalculating observed statistics...\n');
+fprintf('\nCalculating observed z-scores...\n');
 
-% One-sample t-test: is mean significantly different from 0?
-[observed_clusters, observed_tvals, n_clusters_before_filter] = ...
-    calculate_cluster_stats_one_sample(trials, min_cluster_size, smooth_t_samples, cluster_p_thresh);
+% Z-score at each timepoint: how far is observed from surrogate distribution?
+surr_mean = mean(surrogates, 1);  % [1 × n_timepoints]
+surr_std = std(surrogates, 0, 1); % [1 × n_timepoints]
 
-fprintf('  Detected %d clusters before size filter\n', n_clusters_before_filter);
+% Avoid division by zero
+surr_std(surr_std < eps) = eps;
+
+z_observed = (observed - surr_mean) ./ surr_std;
+
+% Optional smoothing
+if smooth_z_samples > 0
+    z_observed_thresh = smoothdata(z_observed, 'gaussian', smooth_z_samples);
+else
+    z_observed_thresh = z_observed;
+end
+
+fprintf('  Z-score range: [%.2f, %.2f]\n', min(z_observed), max(z_observed));
+
+% Find clusters in observed data
+if use_percentile_thresh
+    % Use percentile-based threshold
+    thresh_pos = prctile(surrogates, 100 - percentile_thresh, 1);
+    thresh_neg = prctile(surrogates, percentile_thresh, 1);
+    pos_mask = observed > thresh_pos;
+    neg_mask = observed < thresh_neg;
+else
+    % Use fixed z-threshold
+    pos_mask = z_observed_thresh > z_thresh;
+    neg_mask = z_observed_thresh < -z_thresh;
+end
+
+[observed_clusters, n_before_filter] = find_clusters_from_mask(pos_mask, neg_mask, z_observed, min_cluster_size);
+
+fprintf('  Detected %d clusters before size filter\n', n_before_filter);
 fprintf('  Retained %d clusters after size filter (>= %d samples)\n', ...
     length(observed_clusters), min_cluster_size);
 
 if isempty(observed_clusters)
-    error('No clusters found! Try lowering min_cluster_size or increasing effect sizes.');
+    warning('No clusters found in observed data! Try lowering min_cluster_size or z_thresh.');
+    return;
 end
 
 % Sort by absolute cluster mass
@@ -122,67 +162,57 @@ fprintf('%.1f ', observed_vector);
 fprintf('\n');
 
 %% ========================================================================
-%  PART 4: BUILD PERMUTATION (SURROGATE) DISTRIBUTION
+%  PART 4: BUILD NULL DISTRIBUTION (each surrogate as pseudo-observed)
 %  ========================================================================
 
-fprintf('\nRunning %d surrogate permutations...\n', n_permutations);
+fprintf('\nBuilding null distribution from %d surrogates...\n', n_surrogates);
 
-% PRE-GENERATE ALL RANDOM SHIFTS
-fprintf('  Generating random shift indices...\n');
-random_shifts = randi([0, n_timepoints-1], n_permutations, n_trials);
+perm_vectors = cell(n_surrogates, 1);
+debug_clusters_before = zeros(n_surrogates, 1);
+debug_clusters_after = zeros(n_surrogates, 1);
 
-% Pre-compute constants
-df = n_trials - 1;
-t_thresh = tinv(1 - cluster_p_thresh/2, df);
-row_idx = repmat((1:n_trials)', 1, n_timepoints);  % [n_trials × n_timepoints]
-col_base = 1:n_timepoints;  % [1 × n_timepoints]
-
-% Storage
-perm_vectors = cell(n_permutations, 1);
-debug_clusters_before = zeros(n_permutations, 1);
-debug_clusters_after = zeros(n_permutations, 1);
-
-% SINGLE LOOP: shift → t-test → cluster finding
-fprintf('  Computing surrogates (shift + t-test + clusters)...\n');
-for perm = 1:n_permutations
-    % 1. Circular shift all trials (vectorized indexing)
-    shifts = random_shifts(perm, :)';
-    shifted_col_idx = mod(bsxfun(@minus, col_base, shifts) - 1, n_timepoints) + 1;
-    linear_idx = sub2ind(size(trials), row_idx, shifted_col_idx);
-    shifted_trials = trials(linear_idx);
+for k = 1:n_surrogates
+    % Treat surrogate k as "observed"
+    pseudo_obs = surrogates(k, :);
     
-    % 2. One-sample t-test (vectorized across timepoints)
-    trial_mean = mean(shifted_trials, 1);
-    trial_std = std(shifted_trials, 0, 1);
-    tvals = trial_mean ./ (trial_std / sqrt(n_trials));
+    % Z-score against ALL surrogates (including itself - bias negligible with large K)
+    z_pseudo = (pseudo_obs - surr_mean) ./ surr_std;
     
-    % 3. Smooth if requested
-    if smooth_t_samples > 0
-        tvals_for_thresh = smoothdata(tvals, 'gaussian', smooth_t_samples);
+    % Optional smoothing
+    if smooth_z_samples > 0
+        z_pseudo_thresh = smoothdata(z_pseudo, 'gaussian', smooth_z_samples);
     else
-        tvals_for_thresh = tvals;
+        z_pseudo_thresh = z_pseudo;
     end
     
-    % 4. Find clusters (bwconncomp)
-    [clusters, n_before] = find_clusters_from_tvals(tvals, tvals_for_thresh, t_thresh, min_cluster_size);
-    
-    debug_clusters_before(perm) = n_before;
-    debug_clusters_after(perm) = length(clusters);
-    
-    if ~isempty(clusters)
-        perm_vectors{perm} = sort(abs([clusters.mass]), 'descend');
+    % Find clusters
+    if use_percentile_thresh
+        pos_mask_k = pseudo_obs > thresh_pos;
+        neg_mask_k = pseudo_obs < thresh_neg;
     else
-        perm_vectors{perm} = [];
+        pos_mask_k = z_pseudo_thresh > z_thresh;
+        neg_mask_k = z_pseudo_thresh < -z_thresh;
+    end
+    
+    [clusters_k, n_before] = find_clusters_from_mask(pos_mask_k, neg_mask_k, z_pseudo, min_cluster_size);
+    
+    debug_clusters_before(k) = n_before;
+    debug_clusters_after(k) = length(clusters_k);
+    
+    if ~isempty(clusters_k)
+        perm_vectors{k} = sort(abs([clusters_k.mass]), 'descend');
+    else
+        perm_vectors{k} = [];
     end
 end
 
-% DEBUG output
-fprintf('\n  DEBUG: Surrogate cluster stats:\n');
+fprintf('  DEBUG: Null cluster stats:\n');
 fprintf('    Clusters before size filter: mean=%.1f, max=%d\n', ...
     mean(debug_clusters_before), max(debug_clusters_before));
 fprintf('    Clusters after size filter: mean=%.1f, max=%d\n', ...
     mean(debug_clusters_after), max(debug_clusters_after));
-fprintf('    Surrogates with >=1 cluster: %d\n', sum(debug_clusters_after >= 1));
+fprintf('    Surrogates with >=1 cluster: %d (%.1f%%)\n', ...
+    sum(debug_clusters_after >= 1), 100*sum(debug_clusters_after >= 1)/n_surrogates);
 
 %% ========================================================================
 %  PART 5: BUILD DIMENSION-SPECIFIC DISTRIBUTIONS
@@ -196,18 +226,18 @@ fprintf('  Number of observed clusters (dimensions): %d\n', max_dimensions);
 dimension_distributions = cell(max_dimensions, 1);
 
 for dim = 1:max_dimensions
-    dim_values = zeros(1, n_permutations);  % All start at 0
+    dim_values = zeros(1, n_surrogates);  % All start at 0
     n_with_clusters = 0;
-    for perm = 1:n_permutations
-        if length(perm_vectors{perm}) >= dim
-            dim_values(perm) = perm_vectors{perm}(dim);
+    for k = 1:n_surrogates
+        if length(perm_vectors{k}) >= dim
+            dim_values(k) = perm_vectors{k}(dim);
             n_with_clusters = n_with_clusters + 1;
         end
         % else: stays 0 (no cluster at this dimension under null)
     end
     dimension_distributions{dim} = dim_values;
     fprintf('  Dimension %d: %d/%d surrogates (%.1f%%) had >= %d clusters\n', ...
-        dim, n_with_clusters, n_permutations, 100*n_with_clusters/n_permutations, dim);
+        dim, n_with_clusters, n_surrogates, 100*n_with_clusters/n_surrogates, dim);
 end
 
 %% ========================================================================
@@ -230,8 +260,8 @@ if use_vector_valued
     
     % Calculate actual FWER
     n_violations = 0;
-    for perm = 1:n_permutations
-        perm_vec = perm_vectors{perm};
+    for k = 1:n_surrogates
+        perm_vec = perm_vectors{k};
         violation = false;
         for dim = 1:min(length(perm_vec), max_dimensions)
             if perm_vec(dim) > critical_values(dim)
@@ -243,13 +273,12 @@ if use_vector_valued
             n_violations = n_violations + 1;
         end
     end
-    actual_fwer = n_violations / n_permutations;
+    actual_fwer = n_violations / n_surrogates;
     
     fprintf('  Actual FWER: %.4f (target: %.4f)\n', actual_fwer, alpha);
     fprintf('  Critical values per dimension:\n');
     for dim = 1:max_dimensions
-        fprintf('    Dim %d: CV = %.2f (based on %d surrogate values)\n', ...
-            dim, critical_values(dim), length(dimension_distributions{dim}));
+        fprintf('    Dim %d: CV = %.2f\n', dim, critical_values(dim));
     end
 else
     fprintf('\nCalculating critical value (STANDARD max-stat, alpha = %.3f)...\n', alpha);
@@ -314,29 +343,28 @@ fprintf('\nGenerating visualizations...\n');
 
 figure('Position', [100, 50, 1600, 900]);
 
-% Panel 1: Single-trial heatmap (subset)
+% Panel 1: Surrogate distribution (heatmap of subset)
 ax1 = subplot(3, 3, 1);
-n_show = min(50, n_trials);
-imagesc(time*1000, 1:n_show, trials(1:n_show, :));
+n_show = min(100, n_surrogates);
+imagesc(time*1000, 1:n_show, surrogates(1:n_show, :));
 hold on;
 xline(trigger_time_ms, 'w--', 'LineWidth', 2);
-xlabel('Time (ms)'); ylabel('Trial');
-title(sprintf('Single Trials (first %d)', n_show));
+xlabel('Time (ms)'); ylabel('Surrogate #');
+title(sprintf('Surrogate Timecourses (first %d of %d)', n_show, n_surrogates));
 colormap(ax1, 'parula');
-colorbar(ax1);
-drawnow;  % Let MATLAB finish rendering before continuing
+cb = colorbar(ax1);
+ylabel(cb, 'ITPC');
+drawnow;
 
-% Panel 2: Mean timecourse with 95% CI
+% Panel 2: Observed vs surrogate mean
 subplot(3, 3, 2);
-mean_tc = mean(trials, 1);
-sem_tc = std(trials, 0, 1) / sqrt(n_trials);
-ci95 = 1.96 * sem_tc;
-
+surr_ci = 1.96 * surr_std;
 t_ms = time * 1000;
-fill([t_ms, fliplr(t_ms)], [mean_tc + ci95, fliplr(mean_tc - ci95)], ...
-    'b', 'FaceAlpha', 0.2, 'EdgeColor', 'none'); hold on;
-plot(t_ms, mean_tc, 'b-', 'LineWidth', 2);
-yline(0, 'k--', 'LineWidth', 1);
+
+fill([t_ms, fliplr(t_ms)], [surr_mean + surr_ci, fliplr(surr_mean - surr_ci)], ...
+    [0.7 0.7 0.7], 'FaceAlpha', 0.5, 'EdgeColor', 'none'); hold on;
+plot(t_ms, surr_mean, 'k-', 'LineWidth', 1);
+plot(t_ms, observed, 'b-', 'LineWidth', 2);
 xline(trigger_time_ms, 'r--', 'LineWidth', 2);
 
 % Mark true clusters
@@ -346,43 +374,39 @@ patch([cluster1_time(1), cluster1_time(end), cluster1_time(end), cluster1_time(1
 patch([cluster2_time(1), cluster2_time(end), cluster2_time(end), cluster2_time(1)], ...
     [ylims(1), ylims(1), ylims(2), ylims(2)], 'g', 'FaceAlpha', 0.15, 'EdgeColor', 'none');
 
-xlabel('Time (ms)'); ylabel('Amplitude');
-title('Mean Timecourse ±95% CI (True effects = green)');
+xlabel('Time (ms)'); ylabel('ITPC');
+title('Observed (blue) vs Surrogate Mean ±95% CI (gray)');
+legend({'Surrogate 95% CI', 'Surrogate mean', 'Observed', 'Trigger'}, 'Location', 'best');
 grid on;
 
-% Panel 3: T-statistics
+% Panel 3: Z-statistics
 subplot(3, 3, 3);
-plot(t_ms, observed_tvals, 'k-', 'LineWidth', 1.5); hold on;
-yline(t_thresh, 'r--', 'LineWidth', 2);
-yline(-t_thresh, 'r--', 'LineWidth', 2);
+plot(t_ms, z_observed, 'k-', 'LineWidth', 1.5); hold on;
+yline(z_thresh, 'r--', 'LineWidth', 2);
+yline(-z_thresh, 'r--', 'LineWidth', 2);
 yline(0, 'k--', 'LineWidth', 0.5);
 xline(trigger_time_ms, 'b--', 'LineWidth', 1);
-xlabel('Time (ms)'); ylabel('t-value');
-title(sprintf('T-statistics (threshold t=±%.2f)', t_thresh));
+xlabel('Time (ms)'); ylabel('z-score');
+title(sprintf('Z-statistics (threshold z=±%.2f)', z_thresh));
 grid on;
 
-% Panel 4: Example surrogate (shifted) mean
+% Panel 4: Example surrogate z-scores
 subplot(3, 3, 4);
-% Apply one example surrogate shift (vectorized)
-example_perm = 1;
-shifts_ex = random_shifts(example_perm, :)';
-shifted_col_idx_ex = mod(bsxfun(@minus, col_base, shifts_ex) - 1, n_timepoints) + 1;
-linear_idx_ex = sub2ind(size(trials), row_idx, shifted_col_idx_ex);
-example_shifted = trials(linear_idx_ex);
-mean_shifted = mean(example_shifted, 1);
-h1 = plot(t_ms, mean_tc, 'b-', 'LineWidth', 2); hold on;
-h2 = plot(t_ms, mean_shifted, 'r-', 'LineWidth', 1.5);
+example_k = 1;
+z_example = (surrogates(example_k,:) - surr_mean) ./ surr_std;
+plot(t_ms, z_observed, 'b-', 'LineWidth', 2); hold on;
+plot(t_ms, z_example, 'r-', 'LineWidth', 1.5);
+yline(z_thresh, 'k--', 'LineWidth', 1, 'HandleVisibility', 'off');
+yline(-z_thresh, 'k--', 'LineWidth', 1, 'HandleVisibility', 'off');
 yline(0, 'k--', 'LineWidth', 0.5, 'HandleVisibility', 'off');
-xline(trigger_time_ms, 'k--', 'LineWidth', 1, 'HandleVisibility', 'off');
-xlabel('Time (ms)'); ylabel('Amplitude');
-title('Actual (blue) vs. Example Surrogate (red)');
-legend([h1 h2], {'Actual', 'Surrogate'}, 'Location', 'best');
+xlabel('Time (ms)'); ylabel('z-score');
+title('Observed z (blue) vs. Example Surrogate z (red)');
+legend({'Observed', 'Surrogate'}, 'Location', 'best');
 grid on;
 
 % Panel 5: All detected clusters
 subplot(3, 3, 5);
-plot(t_ms, mean_tc, 'Color', [0.5 0.5 0.5], 'LineWidth', 1); hold on;
-yline(0, 'k--', 'LineWidth', 0.5);
+plot(t_ms, observed, 'Color', [0.5 0.5 0.5], 'LineWidth', 1); hold on;
 ylims = ylim;
 
 colors = jet(length(observed_clusters_sorted));
@@ -395,17 +419,16 @@ for i = 1:length(observed_clusters_sorted)
         [ylims(1), ylims(1), ylims(2), ylims(2)], ...
         colors(i,:), 'FaceAlpha', 0.4, 'EdgeColor', 'k', 'LineWidth', 1);
     
-    text(mean([t_start, t_end]), ylims(2)*0.9, sprintf('%d', i), ...
+    text(mean([t_start, t_end]), ylims(2)*0.95, sprintf('%d', i), ...
         'HorizontalAlignment', 'center', 'FontWeight', 'bold', 'FontSize', 10);
 end
-xlabel('Time (ms)'); ylabel('Amplitude');
+xlabel('Time (ms)'); ylabel('ITPC');
 title(sprintf('All %d Detected Clusters', length(observed_clusters_sorted)));
 grid on;
 
 % Panel 6: Significant clusters only
 subplot(3, 3, 6);
-plot(t_ms, mean_tc, 'k-', 'LineWidth', 2); hold on;
-yline(0, 'k--', 'LineWidth', 0.5);
+plot(t_ms, observed, 'k-', 'LineWidth', 2); hold on;
 ylims = ylim;
 
 for i = 1:length(observed_clusters_sorted)
@@ -418,11 +441,11 @@ for i = 1:length(observed_clusters_sorted)
             [ylims(1), ylims(1), ylims(2), ylims(2)], ...
             'r', 'FaceAlpha', 0.4, 'EdgeColor', 'none');
         
-        text(mean([t_start, t_end]), ylims(2)*0.9, sprintf('p=%.4f', p_values(i)), ...
+        text(mean([t_start, t_end]), ylims(2)*0.95, sprintf('p=%.4f', p_values(i)), ...
             'HorizontalAlignment', 'center', 'FontWeight', 'bold', 'FontSize', 10, 'Color', 'r');
     end
 end
-xlabel('Time (ms)'); ylabel('Amplitude');
+xlabel('Time (ms)'); ylabel('ITPC');
 title(sprintf('SIGNIFICANT Clusters (n=%d)', sum(significant_clusters)));
 grid on;
 
@@ -439,7 +462,7 @@ for dim = 1:min(3, max_dimensions)
         hCV = plot([critical_values(dim), critical_values(dim)], yl, 'r--', 'LineWidth', 2.5);
         hObs = plot([observed_vector(dim), observed_vector(dim)], yl, 'b-', 'LineWidth', 2.5);
         
-        xlabel('Absolute Cluster Mass');
+        xlabel('Absolute Cluster Mass (sum of z)');
         ylabel('Probability');
         
         sig_str = '';
@@ -452,7 +475,7 @@ for dim = 1:min(3, max_dimensions)
     end
 end
 
-sgtitle('Surrogate Trigger Test: Is Modulation Time-Locked to R-peak?', ...
+sgtitle('ITPC Surrogate Test: Is Modulation Time-Locked?', ...
     'FontSize', 16, 'FontWeight', 'bold');
 
 %% ========================================================================
@@ -460,12 +483,14 @@ sgtitle('Surrogate Trigger Test: Is Modulation Time-Locked to R-peak?', ...
 %  ========================================================================
 
 fprintf('\n================================================================================\n');
-fprintf('SUMMARY: SURROGATE TRIGGER TEST\n');
+fprintf('SUMMARY: ITPC SURROGATE TEST\n');
 fprintf('================================================================================\n');
 fprintf('Parameters:\n');
-fprintf('  Trials: %d\n', n_trials);
+fprintf('  Timepoints: %d\n', n_timepoints);
+fprintf('  Surrogates: %d\n', n_surrogates);
 fprintf('  Trigger at: %d ms\n', trigger_time_ms);
-fprintf('  Surrogate method: circular shift (uniform 0-%d ms)\n', n_timepoints);
+fprintf('  Statistic: z-score (observed vs surrogate distribution)\n');
+fprintf('  Cluster-forming threshold: |z| > %.2f\n', z_thresh);
 fprintf('  Minimum cluster size: %d samples\n', min_cluster_size);
 fprintf('  Alpha: %.3f\n', alpha);
 if use_vector_valued
@@ -491,56 +516,22 @@ for i = 1:length(observed_clusters_sorted)
 end
 
 fprintf('================================================================================\n');
-fprintf('Conclusion: %d of %d clusters show significant time-locking to trigger\n', ...
+fprintf('Conclusion: %d of %d clusters show significant time-locking\n', ...
     sum(significant_clusters), length(observed_clusters_sorted));
 fprintf('================================================================================\n\n');
 
 %% ========================================================================
-%  HELPER FUNCTIONS
+%  HELPER FUNCTION
 %  ========================================================================
 
-function [clusters, tvals, n_before_filter] = calculate_cluster_stats_one_sample(...
-    trials, min_cluster_size, smooth_t_samples, cluster_p_thresh)
-    % One-sample t-test at each time point (is mean ≠ 0?)
-    % Uses bwconncomp for efficient cluster detection
+function [clusters, n_before_filter] = find_clusters_from_mask(pos_mask, neg_mask, zvals, min_cluster_size)
+    % Find clusters from binary masks using bwconncomp
     
-    n_trials = size(trials, 1);
-    
-    % Vectorized one-sample t-test
-    trial_mean = mean(trials, 1);
-    trial_std = std(trials, 0, 1);
-    trial_se = trial_std / sqrt(n_trials);
-    tvals = trial_mean ./ trial_se;
-    
-    % Optional smoothing
-    if smooth_t_samples > 0
-        tvals_for_thresh = smoothdata(tvals, 'gaussian', smooth_t_samples);
-    else
-        tvals_for_thresh = tvals;
-    end
-    
-    % Threshold
-    df = n_trials - 1;
-    t_thresh = tinv(1 - cluster_p_thresh/2, df);
-    
-    % Find clusters using bwconncomp
-    [clusters, n_before_filter] = find_clusters_from_tvals(tvals, tvals_for_thresh, t_thresh, min_cluster_size);
-end
-
-function [clusters, n_before_filter] = find_clusters_from_tvals(tvals, tvals_for_thresh, t_thresh, min_cluster_size)
-    % Find clusters from pre-computed t-values using bwconncomp (vectorized)
-    
-    % Get positive and negative clusters
-    pos_mask = tvals_for_thresh > t_thresh;
-    neg_mask = tvals_for_thresh < -t_thresh;
-    
-    % Use bwconncomp for efficient connected component labeling
     CC_pos = bwconncomp(pos_mask);
     CC_neg = bwconncomp(neg_mask);
     
     n_before_filter = CC_pos.NumObjects + CC_neg.NumObjects;
     
-    % Combine all pixel lists
     all_pix = [CC_pos.PixelIdxList, CC_neg.PixelIdxList];
     
     if isempty(all_pix)
@@ -548,14 +539,13 @@ function [clusters, n_before_filter] = find_clusters_from_tvals(tvals, tvals_for
         return;
     end
     
-    % Vectorized: compute sizes and masses for all clusters at once
+    % Compute sizes and masses
     sizes = cellfun(@length, all_pix);
-    masses = cellfun(@(idx) sum(tvals(idx)), all_pix);
+    masses = cellfun(@(idx) sum(zvals(idx)), all_pix);
     
-    % Filter by minimum size (vectorized)
+    % Filter by minimum size
     keep = sizes >= min_cluster_size;
     
-    % Build output struct array
     n_keep = sum(keep);
     if n_keep == 0
         clusters = struct('timepoints', {}, 'mass', {}, 'size', {});
@@ -566,10 +556,10 @@ function [clusters, n_before_filter] = find_clusters_from_tvals(tvals, tvals_for
     kept_sizes = sizes(keep);
     kept_masses = masses(keep);
     
-    % Pre-allocate struct array
+    % Build output struct array
     clusters(n_keep) = struct('timepoints', [], 'mass', [], 'size', []);
     for i = 1:n_keep
-        clusters(i).timepoints = kept_pix{i}(:)';  % Row vector of indices
+        clusters(i).timepoints = kept_pix{i}(:)';
         clusters(i).mass = kept_masses(i);
         clusters(i).size = kept_sizes(i);
     end

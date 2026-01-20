@@ -22,7 +22,7 @@ n_permutations = 1000;
 
 
 % MINIMUM CLUSTER SIZE (key parameter from the paper)
-min_cluster_size = 10;     % Minimum number of time samples to be considered
+min_cluster_size = 2;     % Minimum number of time samples to be considered
                            % Clusters smaller than this are excluded as
                            % unlikely to reflect physiological activity
 
@@ -40,7 +40,7 @@ smooth_t_samples = round(smooth_t_ms * sampling_rate / 1000);
 alpha = 0.05;   % family-wise error rate control
 
 % INFERENCE METHOD
-use_vector_valued = true;  % true:  Vector-valued test (Section 4.5 of Maris & Oostenveld 2007)
+use_vector_valued = false;  % true:  Vector-valued test (Section 4.5 of Maris & Oostenveld 2007)
                            %        Each cluster compared to its dimension-specific null
                            %        (k-th largest observed vs k-th largest under permutation)
                            % false: Standard max-stat test
@@ -233,16 +233,18 @@ fprintf('  Number of observed clusters (dimensions): %d\n', max_dimensions);
 dimension_distributions = cell(max_dimensions, 1);
 
 for dim = 1:max_dimensions
-    dim_values = [];
+    dim_values = zeros(1, n_permutations);  % All start at 0
+    n_with_clusters = 0;
     for perm = 1:n_permutations
-        % Only include if this permutation had >= dim clusters
         if length(perm_vectors{perm}) >= dim
-            dim_values(end+1) = perm_vectors{perm}(dim);
+            dim_values(perm) = perm_vectors{perm}(dim);
+            n_with_clusters = n_with_clusters + 1;
         end
+        % else: stays 0 (no cluster at this dimension under null)
     end
     dimension_distributions{dim} = dim_values;
-    fprintf('  Dimension %d: %d values (%.1f%% of permutations had >= %d clusters)\n', ...
-        dim, length(dim_values), 100*length(dim_values)/n_permutations, dim);
+    fprintf('  Dimension %d: %d/%d permutations (%.1f%%) had >= %d clusters\n', ...
+        dim, n_with_clusters, n_permutations, 100*n_with_clusters/n_permutations, dim);
 end
 
 %% ========================================================================
